@@ -19,7 +19,7 @@ interface BuilderComponent {
 
 function App() {
   const [components, setComponents] = useState<BuilderComponent[]>([]);
-
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const addComponent = (type: ComponentType) => {
     const newComponent: BuilderComponent = {
       id: crypto.randomUUID(),
@@ -63,7 +63,15 @@ function App() {
           )}
 
           {components.map((component) => (
-            <div key={component.id}>
+            <div
+              key={component.id}
+              className={
+                selectedId === component.id
+                  ? "builder-component selected"
+                  : "builder-component"
+              }
+              onClick={() => setSelectedId(component.id)}
+            >
               {component.type === "Navbar" && (
                 <div className="navbar-preview">
                   <div className="logo">Logo</div>
