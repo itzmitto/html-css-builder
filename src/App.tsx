@@ -15,20 +15,33 @@ type ComponentType =
 interface BuilderComponent {
   id: string;
   type: ComponentType;
+  text?: string;
 }
 
 function App() {
   const [components, setComponents] = useState<BuilderComponent[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedComponent = components.find(
+    (component) => component.id === selectedId
+  );
   const addComponent = (type: ComponentType) => {
     const newComponent: BuilderComponent = {
       id: crypto.randomUUID(),
       type,
+      text: type,
     };
 
     setComponents([...components, newComponent]);
   };
-
+  const updateText = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, text: value }
+          : component
+      )
+    );
+  };
   return (
     <div className="editor">
       <aside className="sidebar">
@@ -123,20 +136,19 @@ function App() {
 
               {component.type === "Heading" && (
                 <h1 className="heading-preview">
-                  This is a Heading
+                  {component.text}
                 </h1>
               )}
 
               {component.type === "Paragraph" && (
                 <p className="paragraph-preview">
-                  This is a paragraph. Later kun je deze tekst aanpassen via
-                  het properties panel.
+                  {component.text}
                 </p>
               )}
 
               {component.type === "Button" && (
                 <button className="button-preview">
-                  Click Me
+                  {component.text}
                 </button>
               )}
 
@@ -153,34 +165,41 @@ function App() {
       <aside className="properties">
         <h2>Properties</h2>
 
-        {selectedId ? (
+        {selectedComponent ? (
           <>
-            <p>Selected Component</p>
+            <p>Type</p>
 
             <div
               style={{
-                marginTop: "10px",
-                padding: "10px",
                 background: "#374151",
+                padding: "10px",
                 borderRadius: "8px",
+                marginBottom: "20px",
               }}
             >
-              {selectedId}
+              {selectedComponent.type}
             </div>
 
-            <div style={{ marginTop: "20px" }}>
-              <p>Coming Soon:</p>
+            {(selectedComponent.type === "Heading" ||
+              selectedComponent.type === "Paragraph" ||
+              selectedComponent.type === "Button") && (
+                <>
+                  <p>Text</p>
 
-              <ul>
-                <li>Text</li>
-                <li>Font Size</li>
-                <li>Color</li>
-                <li>Padding</li>
-                <li>Margin</li>
-                <li>Min Height</li>
-                <li>Alignment</li>
-              </ul>
-            </div>
+                  <input
+                    type="text"
+                    value={selectedComponent.text || ""}
+                    onChange={(e) => updateText(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      marginTop: "10px",
+                      borderRadius: "8px",
+                      border: "none",
+                    }}
+                  />
+                </>
+              )}
           </>
         ) : (
           <p>Selecteer een component</p>
