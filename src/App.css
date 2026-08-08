@@ -162,3 +162,30 @@ body {
   background: #111827;
   color: white;
 }
+
+.heading-preview {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.paragraph-preview {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.button-preview {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.container-preview {
+  min-height: 300px;
+  border: 2px dashed #94a3b8;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
