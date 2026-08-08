@@ -189,3 +189,15 @@ body {
   padding: 20px;
   margin-bottom: 20px;
 }
+
+.builder-component {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.selected {
+  outline: 3px solid #3b82f6;
+  outline-offset: 4px;
+  border-radius: 10px;
+}

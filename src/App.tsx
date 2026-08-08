@@ -103,7 +103,15 @@ function App() {
               {component.type === "Card" && (
                 <div className="card-preview">
                   <h3>Card Title</h3>
-                  <p>Card description</p>
+
+                  <p>
+                    This is a card description that can later be edited
+                    from the properties panel.
+                  </p>
+
+                  <button className="button-preview">
+                    Learn More
+                  </button>
                 </div>
               )}
 
@@ -145,19 +153,38 @@ function App() {
       <aside className="properties">
         <h2>Properties</h2>
 
-        <p>
-          Hier komen straks:
-        </p>
+        {selectedId ? (
+          <>
+            <p>Selected Component</p>
 
-        <ul>
-          <li>Text</li>
-          <li>Font Size</li>
-          <li>Color</li>
-          <li>Padding</li>
-          <li>Margin</li>
-          <li>Min Height</li>
-          <li>Alignment</li>
-        </ul>
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "10px",
+                background: "#374151",
+                borderRadius: "8px",
+              }}
+            >
+              {selectedId}
+            </div>
+
+            <div style={{ marginTop: "20px" }}>
+              <p>Coming Soon:</p>
+
+              <ul>
+                <li>Text</li>
+                <li>Font Size</li>
+                <li>Color</li>
+                <li>Padding</li>
+                <li>Margin</li>
+                <li>Min Height</li>
+                <li>Alignment</li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <p>Selecteer een component</p>
+        )}
       </aside>
     </div>
   );
