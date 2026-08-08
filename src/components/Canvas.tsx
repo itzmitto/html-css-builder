@@ -1,4 +1,4 @@
-import { BuilderComponent } from "../types/builder";
+import type { BuilderComponent } from "../types/builder";
 
 interface CanvasProps {
     components: BuilderComponent[];

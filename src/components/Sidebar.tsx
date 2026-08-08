@@ -1,4 +1,4 @@
-import { ComponentType } from "../types/builder";
+import type { ComponentType } from "../types/builder";
 
 interface SidebarProps {
     addComponent: (type: ComponentType) => void;
