@@ -42,8 +42,46 @@ function App() {
           )}
 
           {components.map((component, index) => (
-            <div key={index} className="canvas-block">
-              {component}
+            <div key={index}>
+              {component === "Navbar" && (
+                <div className="navbar-preview">
+                  <div className="logo">Logo</div>
+                  <div className="nav-links">
+                    <span>Home</span>
+                    <span>About</span>
+                    <span>Services</span>
+                    <span>Contact</span>
+                  </div>
+                </div>
+              )}
+
+              {component === "Hero" && (
+                <div className="hero-preview">
+                  <h1>Hero Title</h1>
+                  <p>Hero Subtitle goes here</p>
+                  <button>Get Started</button>
+                </div>
+              )}
+
+              {component === "Section" && (
+                <div className="section-preview">
+                  <h2>Section Title</h2>
+                  <p>Section content...</p>
+                </div>
+              )}
+
+              {component === "Card" && (
+                <div className="card-preview">
+                  <h3>Card Title</h3>
+                  <p>Card description</p>
+                </div>
+              )}
+
+              {component === "Footer" && (
+                <div className="footer-preview">
+                  Footer Content
+                </div>
+              )}
             </div>
           ))}
         </div>
