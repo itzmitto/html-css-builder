@@ -12,13 +12,12 @@ export type ComponentType =
 export interface BuilderComponent {
   id: string;
   type: ComponentType;
-
   text?: string;
-
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroButtonText?: string;
   minHeight?: number;
-
   fontSize?: number;
   color?: string;
-
   backgroundColor?: string;
 }
