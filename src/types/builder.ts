@@ -15,4 +15,5 @@ export interface BuilderComponent {
   text?: string;
   minHeight?: number;
   fontSize?: number;
+  color?: string;
 }
