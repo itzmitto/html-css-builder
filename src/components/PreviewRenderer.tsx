@@ -55,6 +55,7 @@ function PreviewRenderer({
       return (
         <ButtonPreview
           text={component.text}
+          fontSize={component.fontSize}
           color={component.color}
         />
       );
