@@ -4,6 +4,7 @@ interface PropertiesProps {
   selectedComponent?: BuilderComponent;
   updateText: (value: string) => void;
   updateFontSize: (value: number) => void;
+  updateColor: (value: string) => void;
   deleteComponent: () => void;
 }
 
@@ -11,6 +12,7 @@ function Properties({
   selectedComponent,
   updateText,
   updateFontSize,
+  updateColor,
   deleteComponent,
 }: PropertiesProps) {
   return (
@@ -72,6 +74,26 @@ function Properties({
                   borderRadius: "8px",
                   border: "none",
                   marginTop: "10px",
+                }}
+              />
+
+              <p style={{ marginTop: "20px" }}>
+                Text Color
+              </p>
+
+              <input
+                type="color"
+                value={selectedComponent.color || "#000000"}
+                onChange={(e) =>
+                  updateColor(e.target.value)
+                }
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginTop: "10px",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
                 }}
               />
             </>
