@@ -76,7 +76,13 @@ function Properties({
                   marginTop: "10px",
                 }}
               />
+            </>
+          )}
 
+          {(selectedComponent.type === "Heading" ||
+            selectedComponent.type === "Paragraph" ||
+            selectedComponent.type === "Button") && (
+            <>
               <p style={{ marginTop: "20px" }}>
                 Text Color
               </p>
