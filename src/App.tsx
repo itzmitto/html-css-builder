@@ -39,6 +39,16 @@ function App() {
     );
   };
 
+  const deleteComponent = () => {
+    setComponents(
+      components.filter(
+        (component) => component.id !== selectedId
+      )
+    );
+
+    setSelectedId(null);
+  };
+
   return (
     <div className="editor">
       <Sidebar addComponent={addComponent} />
@@ -52,6 +62,7 @@ function App() {
       <Properties
         selectedComponent={selectedComponent}
         updateText={updateText}
+        deleteComponent={deleteComponent}
       />
     </div>
   );
