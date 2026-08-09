@@ -5,6 +5,7 @@ interface PropertiesProps {
   updateText: (value: string) => void;
   updateFontSize: (value: number) => void;
   updateColor: (value: string) => void;
+  updateMinHeight: (value: number) => void;
   deleteComponent: () => void;
 }
 
@@ -13,6 +14,7 @@ function Properties({
   updateText,
   updateFontSize,
   updateColor,
+  updateMinHeight,
   deleteComponent,
 }: PropertiesProps) {
   return (
@@ -100,6 +102,29 @@ function Properties({
                   border: "none",
                   borderRadius: "8px",
                   cursor: "pointer",
+                }}
+              />
+            </>
+          )}
+
+          {selectedComponent.type === "Container" && (
+            <>
+              <p style={{ marginTop: "20px" }}>
+                Container Height
+              </p>
+
+              <input
+                type="number"
+                value={selectedComponent.minHeight || 300}
+                onChange={(e) =>
+                  updateMinHeight(Number(e.target.value))
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  marginTop: "10px",
                 }}
               />
             </>
