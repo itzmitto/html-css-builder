@@ -46,6 +46,8 @@ function PreviewRenderer({
       return (
         <ParagraphPreview
           text={component.text}
+          fontSize={component.fontSize}
+          color={component.color}
         />
       );
 
@@ -53,6 +55,7 @@ function PreviewRenderer({
       return (
         <ButtonPreview
           text={component.text}
+          color={component.color}
         />
       );
 
