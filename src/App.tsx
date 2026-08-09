@@ -26,6 +26,7 @@ function App() {
       minHeight: 300,
       fontSize: 32,
       color: "#000000",
+      backgroundColor: "#ffffff",
     };
 
     setComponents([...components, newComponent]);
@@ -56,6 +57,16 @@ function App() {
       components.map((component) =>
         component.id === selectedId
           ? { ...component, color: value }
+          : component
+      )
+    );
+  };
+
+  const updateBackgroundColor = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, backgroundColor: value }
           : component
       )
     );
@@ -96,6 +107,7 @@ function App() {
         updateText={updateText}
         updateFontSize={updateFontSize}
         updateColor={updateColor}
+        updateBackgroundColor={updateBackgroundColor}
         updateMinHeight={updateMinHeight}
         deleteComponent={deleteComponent}
       />
