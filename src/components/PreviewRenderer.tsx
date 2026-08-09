@@ -60,7 +60,11 @@ function PreviewRenderer({
       );
 
     case "Container":
-      return <ContainerPreview />;
+      return (
+        <ContainerPreview
+          minHeight={component.minHeight}
+        />
+      );
 
     default:
       return null;
