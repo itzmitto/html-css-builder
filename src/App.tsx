@@ -40,6 +40,16 @@ function App() {
     );
   };
 
+  const updateFontSize = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, fontSize: value }
+          : component
+      )
+    );
+  };
+
   const deleteComponent = () => {
     setComponents(
       components.filter(
@@ -63,6 +73,7 @@ function App() {
       <Properties
         selectedComponent={selectedComponent}
         updateText={updateText}
+        updateFontSize={updateFontSize}
         deleteComponent={deleteComponent}
       />
     </div>
