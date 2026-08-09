@@ -61,6 +61,16 @@ function App() {
     );
   };
 
+  const updateMinHeight = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, minHeight: value }
+          : component
+      )
+    );
+  };
+
   const deleteComponent = () => {
     setComponents(
       components.filter(
@@ -86,6 +96,7 @@ function App() {
         updateText={updateText}
         updateFontSize={updateFontSize}
         updateColor={updateColor}
+        updateMinHeight={updateMinHeight}
         deleteComponent={deleteComponent}
       />
     </div>
