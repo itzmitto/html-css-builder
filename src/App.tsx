@@ -24,6 +24,7 @@ function App() {
       type,
       text: type,
       minHeight: 300,
+      fontSize: 32,
     };
 
     setComponents([...components, newComponent]);
