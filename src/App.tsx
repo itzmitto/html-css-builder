@@ -25,6 +25,7 @@ function App() {
       text: type,
       minHeight: 300,
       fontSize: 32,
+      color: "#000000",
     };
 
     setComponents([...components, newComponent]);
@@ -45,6 +46,16 @@ function App() {
       components.map((component) =>
         component.id === selectedId
           ? { ...component, fontSize: value }
+          : component
+      )
+    );
+  };
+
+  const updateColor = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, color: value }
           : component
       )
     );
@@ -74,6 +85,7 @@ function App() {
         selectedComponent={selectedComponent}
         updateText={updateText}
         updateFontSize={updateFontSize}
+        updateColor={updateColor}
         deleteComponent={deleteComponent}
       />
     </div>
