@@ -38,6 +38,7 @@ function PreviewRenderer({
         <HeadingPreview
           text={component.text}
           fontSize={component.fontSize}
+          color={component.color}
         />
       );
 
