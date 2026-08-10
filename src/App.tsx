@@ -5,6 +5,8 @@ import Sidebar from "./components/Sidebar";
 import Canvas from "./components/Canvas";
 import Properties from "./components/Properties";
 
+import { generateHTML } from "./utils/generateHTML";
+
 import type {
   BuilderComponent,
   ComponentType,
@@ -115,42 +117,56 @@ function App() {
     );
   };
 
+  const updateHeroButtonText = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroButtonText: value }
+          : component
+      )
+    );
+  };
 
+  const exportHTML = () => {
+    const html = generateHTML(components);
 
-const updateHeroButtonText = (value: string) => {
-  setComponents(
-    components.map((component) =>
-      component.id === selectedId
-        ? { ...component, heroButtonText: value }
-        : component
-    )
-  );
-};
+    navigator.clipboard.writeText(html);
 
-return (
+    alert("HTML gekopieerd!");
+  };
+
+  return (
     <div className="editor">
-    <Sidebar addComponent={addComponent} />
+      <Sidebar addComponent={addComponent} />
 
-    <Canvas
-      components={components}
-      selectedId={selectedId}
-      setSelectedId={setSelectedId}
-    />
+      <div className="canvas">
+        <div className="canvas-header">
+          <button onClick={exportHTML}>
+            Export HTML
+          </button>
+        </div>
 
-    <Properties
-      selectedComponent={selectedComponent}
-      updateText={updateText}
-      updateFontSize={updateFontSize}
-      updateColor={updateColor}
-      updateBackgroundColor={updateBackgroundColor}
-      updateMinHeight={updateMinHeight}
-      updateHeroTitle={updateHeroTitle}
-      updateHeroSubtitle={updateHeroSubtitle}
-      updateHeroButtonText={updateHeroButtonText}
-      deleteComponent={deleteComponent}
-    />
-  </div>
-);
+        <Canvas
+          components={components}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
+      </div>
+
+      <Properties
+        selectedComponent={selectedComponent}
+        updateText={updateText}
+        updateFontSize={updateFontSize}
+        updateColor={updateColor}
+        updateBackgroundColor={updateBackgroundColor}
+        updateMinHeight={updateMinHeight}
+        updateHeroTitle={updateHeroTitle}
+        updateHeroSubtitle={updateHeroSubtitle}
+        updateHeroButtonText={updateHeroButtonText}
+        deleteComponent={deleteComponent}
+      />
+    </div>
+  );
 }
 
 export default App;
