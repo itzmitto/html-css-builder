@@ -14,7 +14,7 @@ function Canvas({
 }: CanvasProps) {
   return (
     <main className="canvas">
-      <div className="canvas-header">
+      <div className="device-switcher">
         <button>Desktop</button>
         <button>Tablet</button>
         <button>Mobile</button>

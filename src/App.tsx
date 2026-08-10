@@ -23,6 +23,9 @@ function App() {
       id: crypto.randomUUID(),
       type,
       text: type,
+      heroTitle: "Hero Title",
+      heroSubtitle: "Hero Subtitle goes here",
+      heroButtonText: "Get Started",
       minHeight: 300,
       fontSize: 32,
       color: "#000000",
@@ -92,27 +95,62 @@ function App() {
     setSelectedId(null);
   };
 
-  return (
-    <div className="editor">
-      <Sidebar addComponent={addComponent} />
+  const updateHeroTitle = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroTitle: value }
+          : component
+      )
+    );
+  };
 
-      <Canvas
-        components={components}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-      />
+  const updateHeroSubtitle = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroSubtitle: value }
+          : component
+      )
+    );
+  };
 
-      <Properties
-        selectedComponent={selectedComponent}
-        updateText={updateText}
-        updateFontSize={updateFontSize}
-        updateColor={updateColor}
-        updateBackgroundColor={updateBackgroundColor}
-        updateMinHeight={updateMinHeight}
-        deleteComponent={deleteComponent}
-      />
-    </div>
+
+
+const updateHeroButtonText = (value: string) => {
+  setComponents(
+    components.map((component) =>
+      component.id === selectedId
+        ? { ...component, heroButtonText: value }
+        : component
+    )
   );
+};
+
+return (
+    <div className="editor">
+    <Sidebar addComponent={addComponent} />
+
+    <Canvas
+      components={components}
+      selectedId={selectedId}
+      setSelectedId={setSelectedId}
+    />
+
+    <Properties
+      selectedComponent={selectedComponent}
+      updateText={updateText}
+      updateFontSize={updateFontSize}
+      updateColor={updateColor}
+      updateBackgroundColor={updateBackgroundColor}
+      updateMinHeight={updateMinHeight}
+      updateHeroTitle={updateHeroTitle}
+      updateHeroSubtitle={updateHeroSubtitle}
+      updateHeroButtonText={updateHeroButtonText}
+      deleteComponent={deleteComponent}
+    />
+  </div>
+);
 }
 
 export default App;

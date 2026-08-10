@@ -22,7 +22,14 @@ function PreviewRenderer({
       return <NavbarPreview />;
 
     case "Hero":
-      return <HeroPreview />;
+      return (
+        <HeroPreview
+          title={component.heroTitle}
+          subtitle={component.heroSubtitle}
+          buttonText={component.heroButtonText}
+          backgroundColor={component.backgroundColor}
+        />
+      );
 
     case "Section":
       return <SectionPreview />;
@@ -55,7 +62,6 @@ function PreviewRenderer({
       return (
         <ButtonPreview
           text={component.text}
-          fontSize={component.fontSize}
           color={component.color}
         />
       );

@@ -7,6 +7,11 @@ interface PropertiesProps {
   updateColor: (value: string) => void;
   updateBackgroundColor: (value: string) => void;
   updateMinHeight: (value: number) => void;
+
+  updateHeroTitle: (value: string) => void;
+  updateHeroSubtitle: (value: string) => void;
+  updateHeroButtonText: (value: string) => void;
+
   deleteComponent: () => void;
 }
 
@@ -17,6 +22,9 @@ function Properties({
   updateColor,
   updateBackgroundColor,
   updateMinHeight,
+  updateHeroTitle,
+  updateHeroSubtitle,
+  updateHeroButtonText,
   deleteComponent,
 }: PropertiesProps) {
   return (
@@ -62,9 +70,7 @@ function Properties({
           {(selectedComponent.type === "Heading" ||
             selectedComponent.type === "Paragraph") && (
             <>
-              <p style={{ marginTop: "20px" }}>
-                Font Size
-              </p>
+              <p style={{ marginTop: "20px" }}>Font Size</p>
 
               <input
                 type="number"
@@ -87,9 +93,7 @@ function Properties({
             selectedComponent.type === "Paragraph" ||
             selectedComponent.type === "Button") && (
             <>
-              <p style={{ marginTop: "20px" }}>
-                Text Color
-              </p>
+              <p style={{ marginTop: "20px" }}>Text Color</p>
 
               <input
                 type="color"
@@ -134,6 +138,69 @@ function Properties({
                   border: "none",
                   borderRadius: "8px",
                   cursor: "pointer",
+                }}
+              />
+            </>
+          )}
+
+          {selectedComponent.type === "Hero" && (
+            <>
+              <p style={{ marginTop: "20px" }}>
+                Hero Title
+              </p>
+
+              <input
+                type="text"
+                value={selectedComponent.heroTitle || ""}
+                onChange={(e) =>
+                  updateHeroTitle(e.target.value)
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  marginTop: "10px",
+                }}
+              />
+
+              <p style={{ marginTop: "20px" }}>
+                Hero Subtitle
+              </p>
+
+              <input
+                type="text"
+                value={selectedComponent.heroSubtitle || ""}
+                onChange={(e) =>
+                  updateHeroSubtitle(e.target.value)
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  marginTop: "10px",
+                }}
+              />
+
+              <p style={{ marginTop: "20px" }}>
+                Hero Button Text
+              </p>
+
+              <input
+                type="text"
+                value={
+                  selectedComponent.heroButtonText || ""
+                }
+                onChange={(e) =>
+                  updateHeroButtonText(e.target.value)
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  marginTop: "10px",
                 }}
               />
             </>
