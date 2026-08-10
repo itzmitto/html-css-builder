@@ -1,6 +1,6 @@
 function NavbarPreview() {
   return (
-    <div className="navbar-preview">
+    <nav className="navbar-preview">
       <div className="logo">Logo</div>
 
       <div className="nav-links">
@@ -9,7 +9,7 @@ function NavbarPreview() {
         <span>Services</span>
         <span>Contact</span>
       </div>
-    </div>
+    </nav>
   );
 }
 
