@@ -17,6 +17,7 @@ interface PreviewRendererProps {
 function PreviewRenderer({
   component,
 }: PreviewRendererProps) {
+
   switch (component.type) {
     case "Navbar":
       return <NavbarPreview />;
