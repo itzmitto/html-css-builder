@@ -137,6 +137,32 @@ function App() {
     setComponents(updated);
   };
 
+  const duplicateComponent = () => {
+    const component = components.find(
+      (component) => component.id === selectedId
+    );
+
+    if (!component) return;
+
+    const duplicatedComponent: BuilderComponent = {
+      ...component,
+      id: crypto.randomUUID(),
+    };
+
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (index === -1) return;
+
+    const updated = [...components];
+
+    updated.splice(index + 1, 0, duplicatedComponent);
+
+    setComponents(updated);
+    setSelectedId(duplicatedComponent.id);
+  };
+
   const updateHeroTitle = (value: string) => {
     setComponents(
       components.map((component) =>
@@ -166,6 +192,7 @@ function App() {
       )
     );
   };
+
   const downloadFile = (
     filename: string,
     content: string
@@ -178,32 +205,23 @@ function App() {
     );
 
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
 
     a.href = url;
     a.download = filename;
-
     a.click();
 
     URL.revokeObjectURL(url);
   };
+
   const exportHTML = () => {
     const html = generateHTML(components);
-
-    downloadFile(
-      "index.html",
-      html
-    );
+    downloadFile("index.html", html);
   };
 
   const exportCSS = () => {
     const css = generateCSS();
-
-    downloadFile(
-      "style.css",
-      css
-    );
+    downloadFile("style.css", css);
   };
 
   const saveProject = () => {
@@ -225,9 +243,17 @@ function App() {
       return;
     }
 
-    setComponents(JSON.parse(savedProject));
+    try {
+      const parsedProject: BuilderComponent[] =
+        JSON.parse(savedProject);
 
-    alert("Project geladen!");
+      setComponents(parsedProject);
+      setSelectedId(null);
+
+      alert("Project geladen!");
+    } catch {
+      alert("Het opgeslagen project is ongeldig.");
+    }
   };
 
   return (
@@ -272,6 +298,7 @@ function App() {
         updateHeroButtonText={updateHeroButtonText}
         moveComponentUp={moveComponentUp}
         moveComponentDown={moveComponentDown}
+        duplicateComponent={duplicateComponent}
         deleteComponent={deleteComponent}
       />
     </div>
