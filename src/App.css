@@ -196,3 +196,23 @@ body {
   outline-offset: 4px;
   border-radius: 10px;
 }
+
+.device-switcher {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.device-switcher button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #374151;
+  color: white;
+}
+
+.desktop-preview {
+  transition: 0.3s;
+  max-width: 100%;
+}
