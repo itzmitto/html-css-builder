@@ -166,21 +166,44 @@ function App() {
       )
     );
   };
+  const downloadFile = (
+    filename: string,
+    content: string
+  ) => {
+    const blob = new Blob(
+      [content],
+      {
+        type: "text/plain",
+      }
+    );
 
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
   const exportHTML = () => {
     const html = generateHTML(components);
 
-    navigator.clipboard.writeText(html);
-
-    alert("HTML gekopieerd!");
+    downloadFile(
+      "index.html",
+      html
+    );
   };
 
   const exportCSS = () => {
     const css = generateCSS();
 
-    navigator.clipboard.writeText(css);
-
-    alert("CSS gekopieerd!");
+    downloadFile(
+      "style.css",
+      css
+    );
   };
 
   const saveProject = () => {
