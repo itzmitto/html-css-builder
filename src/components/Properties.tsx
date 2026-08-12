@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react";
 import type { BuilderComponent } from "../types/builder";
 
 interface PropertiesProps {
@@ -10,6 +11,7 @@ interface PropertiesProps {
   updateHeroTitle: (value: string) => void;
   updateHeroSubtitle: (value: string) => void;
   updateHeroButtonText: (value: string) => void;
+  updateImage: (value: string) => void;
   moveComponentUp: () => void;
   moveComponentDown: () => void;
   duplicateComponent: () => void;
@@ -26,11 +28,35 @@ function Properties({
   updateHeroTitle,
   updateHeroSubtitle,
   updateHeroButtonText,
+  updateImage,
   moveComponentUp,
   moveComponentDown,
   duplicateComponent,
   deleteComponent,
 }: PropertiesProps) {
+  const handleImageUpload = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Selecteer een afbeelding.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        updateImage(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   return (
     <aside className="properties">
       <h2>Properties</h2>
@@ -235,6 +261,38 @@ function Properties({
               <p style={{ marginTop: "10px" }}>
                 {selectedComponent.minHeight || 300}px
               </p>
+            </>
+          )}
+
+          {selectedComponent.type === "Image" && (
+            <>
+              <p style={{ marginTop: "20px" }}>
+                Image
+              </p>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{
+                  width: "100%",
+                  marginTop: "10px",
+                  color: "white",
+                }}
+              />
+
+              {selectedComponent.imageUrl && (
+                <img
+                  src={selectedComponent.imageUrl}
+                  alt="Selected"
+                  style={{
+                    width: "100%",
+                    marginTop: "15px",
+                    borderRadius: "8px",
+                    display: "block",
+                  }}
+                />
+              )}
             </>
           )}
 
