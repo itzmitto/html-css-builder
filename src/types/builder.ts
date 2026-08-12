@@ -22,4 +22,7 @@ export interface BuilderComponent {
   color?: string;
   backgroundColor?: string;
   imageUrl?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageBorderRadius?: number;
 }

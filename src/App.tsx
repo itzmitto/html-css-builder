@@ -31,6 +31,9 @@ function App() {
       color: "#000000",
       backgroundColor: "#ffffff",
       imageUrl: "",
+      imageWidth: 100,
+      imageHeight: 300,
+      imageBorderRadius: 8,
     };
 
     setComponents([...components, newComponent]);
@@ -97,12 +100,46 @@ function App() {
     );
   };
 
+  const updateImageWidth = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageWidth: value }
+          : component
+      )
+    );
+  };
+
+  const updateImageHeight = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageHeight: value }
+          : component
+      )
+    );
+  };
+
+  const updateImageBorderRadius = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? {
+              ...component,
+              imageBorderRadius: value,
+            }
+          : component
+      )
+    );
+  };
+
   const deleteComponent = () => {
     setComponents(
       components.filter(
         (component) => component.id !== selectedId
       )
     );
+
     setSelectedId(null);
   };
 
@@ -205,12 +242,9 @@ function App() {
     filename: string,
     content: string
   ) => {
-    const blob = new Blob(
-      [content],
-      {
-        type: "text/plain",
-      }
-    );
+    const blob = new Blob([content], {
+      type: "text/plain",
+    });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -305,6 +339,9 @@ function App() {
         updateHeroSubtitle={updateHeroSubtitle}
         updateHeroButtonText={updateHeroButtonText}
         updateImage={updateImage}
+        updateImageWidth={updateImageWidth}
+        updateImageHeight={updateImageHeight}
+        updateImageBorderRadius={updateImageBorderRadius}
         moveComponentUp={moveComponentUp}
         moveComponentDown={moveComponentDown}
         duplicateComponent={duplicateComponent}
