@@ -46,6 +46,10 @@ function Sidebar({ addComponent }: SidebarProps) {
       <button onClick={() => addComponent("Container")}>
         Container
       </button>
+
+      <button onClick={() => addComponent("Image")}>
+        Image
+      </button>
     </aside>
   );
 }
