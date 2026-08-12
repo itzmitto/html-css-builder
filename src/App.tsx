@@ -1,440 +1,354 @@
-import type { ChangeEvent } from "react";
-import type { BuilderComponent } from "../types/builder";
+import { useState } from "react";
+import "./App.css";
+import Sidebar from "./components/Sidebar";
+import Canvas from "./components/Canvas";
+import Properties from "./components/Properties";
+import { generateHTML } from "./utils/generateHTML";
+import { generateCSS } from "./utils/generateCSS";
+import type {
+  BuilderComponent,
+  ComponentType,
+} from "./types/builder";
 
-interface PropertiesProps {
-  selectedComponent?: BuilderComponent;
-  updateText: (value: string) => void;
-  updateFontSize: (value: number) => void;
-  updateColor: (value: string) => void;
-  updateBackgroundColor: (value: string) => void;
-  updateMinHeight: (value: number) => void;
-  updateHeroTitle: (value: string) => void;
-  updateHeroSubtitle: (value: string) => void;
-  updateHeroButtonText: (value: string) => void;
-  updateImage: (value: string) => void;
-  updateImageWidth: (value: number) => void;
-  updateImageHeight: (value: number) => void;
-  updateImageBorderRadius: (value: number) => void;
-  moveComponentUp: () => void;
-  moveComponentDown: () => void;
-  duplicateComponent: () => void;
-  deleteComponent: () => void;
-}
+function App() {
+  const [components, setComponents] = useState<BuilderComponent[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-function Properties({
-  selectedComponent,
-  updateText,
-  updateFontSize,
-  updateColor,
-  updateBackgroundColor,
-  updateMinHeight,
-  updateHeroTitle,
-  updateHeroSubtitle,
-  updateHeroButtonText,
-  updateImage,
-  updateImageWidth,
-  updateImageHeight,
-  updateImageBorderRadius,
-  moveComponentUp,
-  moveComponentDown,
-  duplicateComponent,
-  deleteComponent,
-}: PropertiesProps) {
-  const handleImageUpload = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
+  const selectedComponent = components.find(
+    (component) => component.id === selectedId
+  );
 
-    if (!file) return;
+  const addComponent = (type: ComponentType) => {
+    const newComponent: BuilderComponent = {
+      id: crypto.randomUUID(),
+      type,
+      text: type,
+      heroTitle: "Hero Title",
+      heroSubtitle: "Hero Subtitle goes here",
+      heroButtonText: "Get Started",
+      minHeight: 300,
+      fontSize: 32,
+      color: "#000000",
+      backgroundColor: "#ffffff",
+      imageUrl: "",
+      imageWidth: 100,
+      imageHeight: 300,
+      imageBorderRadius: 8,
+    };
 
-    if (!file.type.startsWith("image/")) {
-      alert("Selecteer een afbeelding.");
+    setComponents([...components, newComponent]);
+    setSelectedId(newComponent.id);
+  };
+
+  const updateText = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, text: value }
+          : component
+      )
+    );
+  };
+
+  const updateFontSize = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, fontSize: value }
+          : component
+      )
+    );
+  };
+
+  const updateColor = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, color: value }
+          : component
+      )
+    );
+  };
+
+  const updateBackgroundColor = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, backgroundColor: value }
+          : component
+      )
+    );
+  };
+
+  const updateMinHeight = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, minHeight: value }
+          : component
+      )
+    );
+  };
+
+  const updateImage = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageUrl: value }
+          : component
+      )
+    );
+  };
+
+  const updateImageWidth = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageWidth: value }
+          : component
+      )
+    );
+  };
+
+  const updateImageHeight = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageHeight: value }
+          : component
+      )
+    );
+  };
+
+  const updateImageBorderRadius = (value: number) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? {
+              ...component,
+              imageBorderRadius: value,
+            }
+          : component
+      )
+    );
+  };
+
+  const deleteComponent = () => {
+    setComponents(
+      components.filter(
+        (component) => component.id !== selectedId
+      )
+    );
+
+    setSelectedId(null);
+  };
+
+  const moveComponentUp = () => {
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (index <= 0) return;
+
+    const updated = [...components];
+
+    [updated[index - 1], updated[index]] = [
+      updated[index],
+      updated[index - 1],
+    ];
+
+    setComponents(updated);
+  };
+
+  const moveComponentDown = () => {
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (
+      index === -1 ||
+      index === components.length - 1
+    ) {
       return;
     }
 
-    const reader = new FileReader();
+    const updated = [...components];
 
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        updateImage(reader.result);
-      }
+    [updated[index + 1], updated[index]] = [
+      updated[index],
+      updated[index + 1],
+    ];
+
+    setComponents(updated);
+  };
+
+  const duplicateComponent = () => {
+    const component = components.find(
+      (component) => component.id === selectedId
+    );
+
+    if (!component) return;
+
+    const duplicatedComponent: BuilderComponent = {
+      ...component,
+      id: crypto.randomUUID(),
     };
 
-    reader.readAsDataURL(file);
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (index === -1) return;
+
+    const updated = [...components];
+
+    updated.splice(index + 1, 0, duplicatedComponent);
+
+    setComponents(updated);
+    setSelectedId(duplicatedComponent.id);
+  };
+
+  const updateHeroTitle = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroTitle: value }
+          : component
+      )
+    );
+  };
+
+  const updateHeroSubtitle = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroSubtitle: value }
+          : component
+      )
+    );
+  };
+
+  const updateHeroButtonText = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, heroButtonText: value }
+          : component
+      )
+    );
+  };
+
+  const downloadFile = (
+    filename: string,
+    content: string
+  ) => {
+    const blob = new Blob([content], {
+      type: "text/plain",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  const exportHTML = () => {
+    const html = generateHTML(components);
+    downloadFile("index.html", html);
+  };
+
+  const exportCSS = () => {
+    const css = generateCSS();
+    downloadFile("style.css", css);
+  };
+
+  const saveProject = () => {
+    localStorage.setItem(
+      "website-builder-project",
+      JSON.stringify(components)
+    );
+
+    alert("Project opgeslagen!");
+  };
+
+  const loadProject = () => {
+    const savedProject = localStorage.getItem(
+      "website-builder-project"
+    );
+
+    if (!savedProject) {
+      alert("Geen opgeslagen project gevonden");
+      return;
+    }
+
+    try {
+      const parsedProject: BuilderComponent[] =
+        JSON.parse(savedProject);
+
+      setComponents(parsedProject);
+      setSelectedId(null);
+
+      alert("Project geladen!");
+    } catch {
+      alert("Het opgeslagen project is ongeldig.");
+    }
   };
 
   return (
-    <aside className="properties">
-      <h2>Properties</h2>
+    <div className="editor">
+      <Sidebar addComponent={addComponent} />
 
-      {selectedComponent ? (
-        <>
-          <p>Type</p>
-
-          <div
-            style={{
-              background: "#374151",
-              padding: "10px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-            }}
-          >
-            {selectedComponent.type}
-          </div>
-
-          {(selectedComponent.type === "Heading" ||
-            selectedComponent.type === "Paragraph" ||
-            selectedComponent.type === "Button") && (
-            <>
-              <p>Text</p>
-
-              <input
-                type="text"
-                value={selectedComponent.text || ""}
-                onChange={(e) => updateText(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "none",
-                  marginTop: "10px",
-                }}
-              />
-            </>
-          )}
-
-          {(selectedComponent.type === "Heading" ||
-            selectedComponent.type === "Paragraph") && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Font Size
-              </p>
-
-              <input
-                type="number"
-                value={selectedComponent.fontSize || 32}
-                onChange={(e) =>
-                  updateFontSize(Number(e.target.value))
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "none",
-                  marginTop: "10px",
-                }}
-              />
-            </>
-          )}
-
-          {(selectedComponent.type === "Heading" ||
-            selectedComponent.type === "Paragraph" ||
-            selectedComponent.type === "Button") && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Text Color
-              </p>
-
-              <input
-                type="color"
-                value={selectedComponent.color || "#000000"}
-                onChange={(e) =>
-                  updateColor(e.target.value)
-                }
-                style={{
-                  width: "100%",
-                  height: "50px",
-                  marginTop: "10px",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                }}
-              />
-            </>
-          )}
-
-          {(selectedComponent.type === "Hero" ||
-            selectedComponent.type === "Section" ||
-            selectedComponent.type === "Card" ||
-            selectedComponent.type === "Container") && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Background Color
-              </p>
-
-              <input
-                type="color"
-                value={
-                  selectedComponent.backgroundColor ||
-                  "#ffffff"
-                }
-                onChange={(e) =>
-                  updateBackgroundColor(e.target.value)
-                }
-                style={{
-                  width: "100%",
-                  height: "50px",
-                  marginTop: "10px",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                }}
-              />
-            </>
-          )}
-
-          {selectedComponent.type === "Hero" && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Hero Title
-              </p>
-
-              <input
-                type="text"
-                value={selectedComponent.heroTitle || ""}
-                onChange={(e) =>
-                  updateHeroTitle(e.target.value)
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "none",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "20px" }}>
-                Hero Subtitle
-              </p>
-
-              <input
-                type="text"
-                value={selectedComponent.heroSubtitle || ""}
-                onChange={(e) =>
-                  updateHeroSubtitle(e.target.value)
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "none",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "20px" }}>
-                Hero Button Text
-              </p>
-
-              <input
-                type="text"
-                value={selectedComponent.heroButtonText || ""}
-                onChange={(e) =>
-                  updateHeroButtonText(e.target.value)
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "none",
-                  marginTop: "10px",
-                }}
-              />
-            </>
-          )}
-
-          {selectedComponent.type === "Container" && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Container Height
-              </p>
-
-              <input
-                type="range"
-                min="100"
-                max="1000"
-                value={selectedComponent.minHeight || 300}
-                onChange={(e) =>
-                  updateMinHeight(Number(e.target.value))
-                }
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "10px" }}>
-                {selectedComponent.minHeight || 300}px
-              </p>
-            </>
-          )}
-
-          {selectedComponent.type === "Image" && (
-            <>
-              <p style={{ marginTop: "20px" }}>
-                Image
-              </p>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                  color: "white",
-                }}
-              />
-
-              <p style={{ marginTop: "20px" }}>
-                Image Width
-              </p>
-
-              <input
-                type="range"
-                min="10"
-                max="100"
-                value={selectedComponent.imageWidth || 100}
-                onChange={(e) =>
-                  updateImageWidth(Number(e.target.value))
-                }
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "10px" }}>
-                {selectedComponent.imageWidth || 100}%
-              </p>
-
-              <p style={{ marginTop: "20px" }}>
-                Image Height
-              </p>
-
-              <input
-                type="range"
-                min="50"
-                max="1000"
-                value={selectedComponent.imageHeight || 300}
-                onChange={(e) =>
-                  updateImageHeight(Number(e.target.value))
-                }
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "10px" }}>
-                {selectedComponent.imageHeight || 300}px
-              </p>
-
-              <p style={{ marginTop: "20px" }}>
-                Border Radius
-              </p>
-
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={
-                  selectedComponent.imageBorderRadius || 8
-                }
-                onChange={(e) =>
-                  updateImageBorderRadius(
-                    Number(e.target.value)
-                  )
-                }
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                }}
-              />
-
-              <p style={{ marginTop: "10px" }}>
-                {selectedComponent.imageBorderRadius || 8}px
-              </p>
-
-              {selectedComponent.imageUrl && (
-                <img
-                  src={selectedComponent.imageUrl}
-                  alt="Selected"
-                  style={{
-                    width: "100%",
-                    height: "180px",
-                    objectFit: "cover",
-                    marginTop: "15px",
-                    borderRadius: "8px",
-                    display: "block",
-                  }}
-                />
-              )}
-            </>
-          )}
-
-          <button
-            onClick={moveComponentUp}
-            style={{
-              width: "100%",
-              marginTop: "20px",
-              padding: "12px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Move Up
+      <div className="canvas">
+        <div className="canvas-header">
+          <button onClick={exportHTML}>
+            Export HTML
           </button>
 
-          <button
-            onClick={moveComponentDown}
-            style={{
-              width: "100%",
-              marginTop: "10px",
-              padding: "12px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Move Down
+          <button onClick={exportCSS}>
+            Export CSS
           </button>
 
-          <button
-            onClick={duplicateComponent}
-            style={{
-              width: "100%",
-              marginTop: "10px",
-              padding: "12px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Duplicate Component
+          <button onClick={saveProject}>
+            Save Project
           </button>
 
-          <button
-            onClick={deleteComponent}
-            style={{
-              width: "100%",
-              marginTop: "10px",
-              padding: "12px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Delete Component
+          <button onClick={loadProject}>
+            Load Project
           </button>
-        </>
-      ) : (
-        <p>Selecteer een component</p>
-      )}
-    </aside>
+        </div>
+
+        <Canvas
+          components={components}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
+      </div>
+
+      <Properties
+        selectedComponent={selectedComponent}
+        updateText={updateText}
+        updateFontSize={updateFontSize}
+        updateColor={updateColor}
+        updateBackgroundColor={updateBackgroundColor}
+        updateMinHeight={updateMinHeight}
+        updateHeroTitle={updateHeroTitle}
+        updateHeroSubtitle={updateHeroSubtitle}
+        updateHeroButtonText={updateHeroButtonText}
+        updateImage={updateImage}
+        updateImageWidth={updateImageWidth}
+        updateImageHeight={updateImageHeight}
+        updateImageBorderRadius={updateImageBorderRadius}
+        moveComponentUp={moveComponentUp}
+        moveComponentDown={moveComponentDown}
+        duplicateComponent={duplicateComponent}
+        deleteComponent={deleteComponent}
+      />
+    </div>
   );
 }
 
-export default Properties;
+export default App;
