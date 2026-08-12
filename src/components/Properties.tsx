@@ -7,14 +7,12 @@ interface PropertiesProps {
   updateColor: (value: string) => void;
   updateBackgroundColor: (value: string) => void;
   updateMinHeight: (value: number) => void;
-
   updateHeroTitle: (value: string) => void;
   updateHeroSubtitle: (value: string) => void;
   updateHeroButtonText: (value: string) => void;
-
   moveComponentUp: () => void;
   moveComponentDown: () => void;
-
+  duplicateComponent: () => void;
   deleteComponent: () => void;
 }
 
@@ -30,6 +28,7 @@ function Properties({
   updateHeroButtonText,
   moveComponentUp,
   moveComponentDown,
+  duplicateComponent,
   deleteComponent,
 }: PropertiesProps) {
   return (
@@ -198,9 +197,7 @@ function Properties({
 
               <input
                 type="text"
-                value={
-                  selectedComponent.heroButtonText || ""
-                }
+                value={selectedComponent.heroButtonText || ""}
                 onChange={(e) =>
                   updateHeroButtonText(e.target.value)
                 }
@@ -267,6 +264,20 @@ function Properties({
             }}
           >
             Move Down
+          </button>
+
+          <button
+            onClick={duplicateComponent}
+            style={{
+              width: "100%",
+              marginTop: "10px",
+              padding: "12px",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Duplicate Component
           </button>
 
           <button
