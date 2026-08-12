@@ -11,15 +11,11 @@ function ImagePreview({
         <img
           src={imageUrl}
           alt="Website image"
-          style={{
-            width: "100%",
-            display: "block",
-            borderRadius: "8px",
-          }}
+          className="image"
         />
       ) : (
         <div className="image-placeholder">
-          Image
+          <span>Image</span>
         </div>
       )}
     </div>
