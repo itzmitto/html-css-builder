@@ -98,6 +98,45 @@ function App() {
     setSelectedId(null);
   };
 
+  const moveComponentUp = () => {
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (index <= 0) return;
+
+    const updated = [...components];
+
+    [updated[index - 1], updated[index]] = [
+      updated[index],
+      updated[index - 1],
+    ];
+
+    setComponents(updated);
+  };
+
+  const moveComponentDown = () => {
+    const index = components.findIndex(
+      (component) => component.id === selectedId
+    );
+
+    if (
+      index === -1 ||
+      index === components.length - 1
+    ) {
+      return;
+    }
+
+    const updated = [...components];
+
+    [updated[index + 1], updated[index]] = [
+      updated[index],
+      updated[index + 1],
+    ];
+
+    setComponents(updated);
+  };
+
   const updateHeroTitle = (value: string) => {
     setComponents(
       components.map((component) =>
@@ -176,6 +215,8 @@ function App() {
         updateHeroTitle={updateHeroTitle}
         updateHeroSubtitle={updateHeroSubtitle}
         updateHeroButtonText={updateHeroButtonText}
+        moveComponentUp={moveComponentUp}
+        moveComponentDown={moveComponentDown}
         deleteComponent={deleteComponent}
       />
     </div>
