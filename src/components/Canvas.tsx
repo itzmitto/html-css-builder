@@ -1,16 +1,28 @@
 import type { BuilderComponent } from "../types/builder";
 import PreviewRenderer from "./PreviewRenderer";
 
+import {
+  DndContext,
+  closestCenter,
+} from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
 interface CanvasProps {
   components: BuilderComponent[];
   selectedId: string | null;
   setSelectedId: (id: string) => void;
+  onDragEnd: (event: any) => void;
 }
 
 function Canvas({
   components,
   selectedId,
   setSelectedId,
+  onDragEnd,
 }: CanvasProps) {
   return (
     <main className="canvas">
@@ -27,19 +39,33 @@ function Canvas({
           </div>
         )}
 
-        {components.map((component) => (
-          <div
-            key={component.id}
-            className={
-              selectedId === component.id
-                ? "builder-component selected"
-                : "builder-component"
-            }
-            onClick={() => setSelectedId(component.id)}
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+        >
+          <SortableContext
+            items={components.map(
+              (component) => component.id
+            )}
+            strategy={verticalListSortingStrategy}
           >
-            <PreviewRenderer component={component} />
-          </div>
-        ))}
+            {components.map((component) => (
+              <div
+                key={component.id}
+                className={
+                  selectedId === component.id
+                    ? "builder-component selected"
+                    : "builder-component"
+                }
+                onClick={() =>
+                  setSelectedId(component.id)
+                }
+              >
+                <PreviewRenderer component={component} />
+              </div>
+            ))}
+          </SortableContext>
+        </DndContext>
       </div>
     </main>
   );
