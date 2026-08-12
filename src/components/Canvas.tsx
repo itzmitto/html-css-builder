@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { BuilderComponent } from "../types/builder";
 import PreviewRenderer from "./PreviewRenderer";
 
@@ -12,15 +13,41 @@ function Canvas({
   selectedId,
   setSelectedId,
 }: CanvasProps) {
+  const [device, setDevice] = useState("desktop");
+
   return (
     <main className="canvas">
       <div className="device-switcher">
-        <button>Desktop</button>
-        <button>Tablet</button>
-        <button>Mobile</button>
+        <button
+          onClick={() => setDevice("desktop")}
+        >
+          Desktop
+        </button>
+
+        <button
+          onClick={() => setDevice("tablet")}
+        >
+          Tablet
+        </button>
+
+        <button
+          onClick={() => setDevice("mobile")}
+        >
+          Mobile
+        </button>
       </div>
 
-      <div className="desktop-preview">
+      <div
+        className="desktop-preview"
+        style={{
+          width:
+            device === "desktop"
+              ? "1440px"
+              : device === "tablet"
+              ? "768px"
+              : "375px",
+        }}
+      >
         {components.length === 0 && (
           <div className="empty-state">
             Voeg componenten toe vanuit de sidebar
@@ -35,7 +62,9 @@ function Canvas({
                 ? "builder-component selected"
                 : "builder-component"
             }
-            onClick={() => setSelectedId(component.id)}
+            onClick={() =>
+              setSelectedId(component.id)
+            }
           >
             <PreviewRenderer component={component} />
           </div>
