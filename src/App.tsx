@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { DragEndEvent } from "@dnd-kit/core";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import Canvas from "./components/Canvas";
@@ -14,88 +15,6 @@ import type {
 function App() {
   const [components, setComponents] = useState<BuilderComponent[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  const selectedComponent = (() => {
-    const findComponent = (
-      componentList: BuilderComponent[]
-    ): BuilderComponent | undefined => {
-      for (const component of componentList) {
-        if (component.id === selectedId) {
-          return component;
-        }
-
-        if (component.children?.length) {
-          const found = findComponent(component.children);
-
-          if (found) {
-            return found;
-          }
-        }
-      }
-
-      return undefined;
-    };
-
-    return findComponent(components);
-  })();
-
-  const createDefaultStyles = (): BuilderStyles => ({
-    width: 100,
-    widthUnit: "%",
-    height: 300,
-    heightUnit: "px",
-    marginTop: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    marginLeft: 0,
-    paddingTop: 0,
-    paddingRight: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    display: "block",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    gap: 0,
-    backgroundColor: "#ffffff",
-    color: "#000000",
-    fontFamily: "Arial",
-    fontSize: 16,
-    fontWeight: 400,
-    lineHeight: 1.5,
-    letterSpacing: 0,
-    textAlign: "left",
-    borderWidth: 0,
-    borderStyle: "none",
-    borderColor: "#000000",
-    borderRadius: 0,
-    opacity: 1,
-    overflow: "visible",
-    zIndex: 1,
-  });
-
-  const createComponent = (
-    type: ComponentType
-  ): BuilderComponent => {
-    return {
-      id: crypto.randomUUID(),
-      type,
-      text: type,
-      heroTitle: "Hero Title",
-      heroSubtitle: "Hero Subtitle goes here",
-      heroButtonText: "Get Started",
-      minHeight: 300,
-      fontSize: 32,
-      color: "#000000",
-      backgroundColor: "#ffffff",
-      imageUrl: "",
-      imageWidth: 100,
-      imageHeight: 300,
-      imageBorderRadius: 8,
-      styles: createDefaultStyles(),
-      children: [],
-    };
-  };
 
   const findComponentById = (
     componentList: BuilderComponent[],
@@ -149,6 +68,72 @@ function App() {
     return undefined;
   };
 
+  const selectedComponent = selectedId
+    ? findComponentById(
+        components,
+        selectedId
+      )
+    : undefined;
+
+  const createDefaultStyles =
+    (): BuilderStyles => ({
+      width: 100,
+      widthUnit: "%",
+      height: 300,
+      heightUnit: "px",
+      marginTop: 0,
+      marginRight: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      display: "block",
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+      gap: 0,
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      fontFamily: "Arial",
+      fontSize: 16,
+      fontWeight: 400,
+      lineHeight: 1.5,
+      letterSpacing: 0,
+      textAlign: "left",
+      borderWidth: 0,
+      borderStyle: "none",
+      borderColor: "#000000",
+      borderRadius: 0,
+      opacity: 1,
+      overflow: "visible",
+      zIndex: 1,
+    });
+
+  const createComponent = (
+    type: ComponentType
+  ): BuilderComponent => {
+    return {
+      id: crypto.randomUUID(),
+      type,
+      text: type,
+      heroTitle: "Hero Title",
+      heroSubtitle: "Hero Subtitle goes here",
+      heroButtonText: "Get Started",
+      minHeight: 300,
+      fontSize: 32,
+      color: "#000000",
+      backgroundColor: "#ffffff",
+      imageUrl: "",
+      imageWidth: 100,
+      imageHeight: 300,
+      imageBorderRadius: 8,
+      styles: createDefaultStyles(),
+      children: [],
+    };
+  };
+
   const updateComponentById = (
     componentList: BuilderComponent[],
     id: string,
@@ -176,24 +161,33 @@ function App() {
     });
   };
 
-  const addComponent = (type: ComponentType) => {
-    const newComponent = createComponent(type);
+  const addComponent = (
+    type: ComponentType
+  ) => {
+    const newComponent =
+      createComponent(type);
 
-    if (selectedComponent?.type === "Container") {
-      const updatedComponents = updateComponentById(
-        components,
-        selectedComponent.id,
-        (component) => ({
-          ...component,
-          children: [
-            ...(component.children ?? []),
-            newComponent,
-          ],
-        })
+    if (
+      selectedComponent?.type ===
+      "Container"
+    ) {
+      setComponents(
+        updateComponentById(
+          components,
+          selectedComponent.id,
+          (component) => ({
+            ...component,
+            children: [
+              ...(component.children ?? []),
+              newComponent,
+            ],
+          })
+        )
       );
 
-      setComponents(updatedComponents);
-      setSelectedId(newComponent.id);
+      setSelectedId(
+        newComponent.id
+      );
 
       return;
     }
@@ -203,10 +197,119 @@ function App() {
       newComponent,
     ]);
 
-    setSelectedId(newComponent.id);
+    setSelectedId(
+      newComponent.id
+    );
   };
 
-  const updateText = (value: string) => {
+  const reorderComponents = (
+    activeId: string,
+    overId: string
+  ) => {
+    if (activeId === overId) {
+      return;
+    }
+
+    const activeParent =
+      findParentById(
+        components,
+        activeId
+      );
+
+    const overParent =
+      findParentById(
+        components,
+        overId
+      );
+
+    const activeParentId =
+      activeParent?.id ?? null;
+
+    const overParentId =
+      overParent?.id ?? null;
+
+    if (
+      activeParentId !==
+      overParentId
+    ) {
+      return;
+    }
+
+    const currentList = activeParent
+      ? activeParent.children ?? []
+      : components;
+
+    const oldIndex =
+      currentList.findIndex(
+        (component) =>
+          component.id === activeId
+      );
+
+    const newIndex =
+      currentList.findIndex(
+        (component) =>
+          component.id === overId
+      );
+
+    if (
+      oldIndex === -1 ||
+      newIndex === -1
+    ) {
+      return;
+    }
+
+    const updatedList = [
+      ...currentList,
+    ];
+
+    const [movedComponent] =
+      updatedList.splice(
+        oldIndex,
+        1
+      );
+
+    updatedList.splice(
+      newIndex,
+      0,
+      movedComponent
+    );
+
+    if (activeParent) {
+      setComponents(
+        updateComponentById(
+          components,
+          activeParent.id,
+          (component) => ({
+            ...component,
+            children: updatedList,
+          })
+        )
+      );
+    } else {
+      setComponents(
+        updatedList
+      );
+    }
+  };
+
+  const handleCanvasDragEnd = (
+    event: DragEndEvent
+  ) => {
+    const { active, over } = event;
+
+    if (!over) {
+      return;
+    }
+
+    reorderComponents(
+      String(active.id),
+      String(over.id)
+    );
+  };
+
+  const updateText = (
+    value: string
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -219,7 +322,9 @@ function App() {
     );
   };
 
-  const updateFontSize = (value: number) => {
+  const updateFontSize = (
+    value: number
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -236,7 +341,9 @@ function App() {
     );
   };
 
-  const updateColor = (value: string) => {
+  const updateColor = (
+    value: string
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -272,7 +379,9 @@ function App() {
     );
   };
 
-  const updateMinHeight = (value: number) => {
+  const updateMinHeight = (
+    value: number
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -290,7 +399,9 @@ function App() {
     );
   };
 
-  const updateImage = (value: string) => {
+  const updateImage = (
+    value: string
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -303,7 +414,9 @@ function App() {
     );
   };
 
-  const updateImageWidth = (value: number) => {
+  const updateImageWidth = (
+    value: number
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -365,7 +478,9 @@ function App() {
   };
 
   const deleteComponent = () => {
-    if (!selectedId) return;
+    if (!selectedId) {
+      return;
+    }
 
     const removeComponent = (
       componentList: BuilderComponent[]
@@ -373,29 +488,37 @@ function App() {
       return componentList
         .filter(
           (component) =>
-            component.id !== selectedId
+            component.id !==
+            selectedId
         )
         .map((component) => ({
           ...component,
-          children: component.children
-            ? removeComponent(component.children)
-            : [],
+          children:
+            component.children
+              ? removeComponent(
+                  component.children
+                )
+              : [],
         }));
     };
 
     setComponents(
       removeComponent(components)
     );
+
     setSelectedId(null);
   };
 
   const moveComponentUp = () => {
-    if (!selectedId) return;
+    if (!selectedId) {
+      return;
+    }
 
-    const parent = findParentById(
-      components,
-      selectedId
-    );
+    const parent =
+      findParentById(
+        components,
+        selectedId
+      );
 
     const list = parent
       ? parent.children ?? []
@@ -406,9 +529,13 @@ function App() {
         component.id === selectedId
     );
 
-    if (index <= 0) return;
+    if (index <= 0) {
+      return;
+    }
 
-    const updatedList = [...list];
+    const updatedList = [
+      ...list,
+    ];
 
     [
       updatedList[index - 1],
@@ -425,22 +552,28 @@ function App() {
           parent.id,
           (component) => ({
             ...component,
-            children: updatedList,
+            children:
+              updatedList,
           })
         )
       );
     } else {
-      setComponents(updatedList);
+      setComponents(
+        updatedList
+      );
     }
   };
 
   const moveComponentDown = () => {
-    if (!selectedId) return;
+    if (!selectedId) {
+      return;
+    }
 
-    const parent = findParentById(
-      components,
-      selectedId
-    );
+    const parent =
+      findParentById(
+        components,
+        selectedId
+      );
 
     const list = parent
       ? parent.children ?? []
@@ -458,7 +591,9 @@ function App() {
       return;
     }
 
-    const updatedList = [...list];
+    const updatedList = [
+      ...list,
+    ];
 
     [
       updatedList[index + 1],
@@ -475,12 +610,15 @@ function App() {
           parent.id,
           (component) => ({
             ...component,
-            children: updatedList,
+            children:
+              updatedList,
           })
         )
       );
     } else {
-      setComponents(updatedList);
+      setComponents(
+        updatedList
+      );
     }
   };
 
@@ -498,40 +636,53 @@ function App() {
       children: component.children
         ? component.children.map(
             (child) =>
-              cloneComponentTree(child)
+              cloneComponentTree(
+                child
+              )
           )
         : [],
     };
   };
 
   const duplicateComponent = () => {
-    if (!selectedId) return;
+    if (!selectedId) {
+      return;
+    }
 
-    const component = findComponentById(
-      components,
-      selectedId
-    );
+    const component =
+      findComponentById(
+        components,
+        selectedId
+      );
 
-    if (!component) return;
+    if (!component) {
+      return;
+    }
 
     const duplicatedComponent =
-      cloneComponentTree(component);
+      cloneComponentTree(
+        component
+      );
 
-    const parent = findParentById(
-      components,
-      selectedId
-    );
+    const parent =
+      findParentById(
+        components,
+        selectedId
+      );
 
     if (parent) {
       const children =
         parent.children ?? [];
 
-      const index = children.findIndex(
-        (child) =>
-          child.id === selectedId
-      );
+      const index =
+        children.findIndex(
+          (child) =>
+            child.id === selectedId
+        );
 
-      if (index === -1) return;
+      if (index === -1) {
+        return;
+      }
 
       const updatedChildren = [
         ...children,
@@ -549,19 +700,26 @@ function App() {
           parent.id,
           (component) => ({
             ...component,
-            children: updatedChildren,
+            children:
+              updatedChildren,
           })
         )
       );
     } else {
-      const index = components.findIndex(
-        (component) =>
-          component.id === selectedId
-      );
+      const index =
+        components.findIndex(
+          (component) =>
+            component.id ===
+            selectedId
+        );
 
-      if (index === -1) return;
+      if (index === -1) {
+        return;
+      }
 
-      const updated = [...components];
+      const updated = [
+        ...components,
+      ];
 
       updated.splice(
         index + 1,
@@ -569,7 +727,9 @@ function App() {
         duplicatedComponent
       );
 
-      setComponents(updated);
+      setComponents(
+        updated
+      );
     }
 
     setSelectedId(
@@ -616,7 +776,8 @@ function App() {
         selectedId || "",
         (component) => ({
           ...component,
-          heroButtonText: value,
+          heroButtonText:
+            value,
         })
       )
     );
@@ -648,7 +809,9 @@ function App() {
 
   const exportHTML = () => {
     const html =
-      generateHTML(components);
+      generateHTML(
+        components
+      );
 
     downloadFile(
       "index.html",
@@ -669,10 +832,14 @@ function App() {
   const saveProject = () => {
     localStorage.setItem(
       "website-builder-project",
-      JSON.stringify(components)
+      JSON.stringify(
+        components
+      )
     );
 
-    alert("Project opgeslagen!");
+    alert(
+      "Project opgeslagen!"
+    );
   };
 
   const loadProject = () => {
@@ -690,12 +857,19 @@ function App() {
 
     try {
       const parsedProject: BuilderComponent[] =
-        JSON.parse(savedProject);
+        JSON.parse(
+          savedProject
+        );
 
-      setComponents(parsedProject);
+      setComponents(
+        parsedProject
+      );
+
       setSelectedId(null);
 
-      alert("Project geladen!");
+      alert(
+        "Project geladen!"
+      );
     } catch {
       alert(
         "Het opgeslagen project is ongeldig."
@@ -706,35 +880,68 @@ function App() {
   return (
     <div className="editor">
       <Sidebar
-        components={components}
-        selectedId={selectedId}
-        addComponent={addComponent}
-        setSelectedId={setSelectedId}
+        components={
+          components
+        }
+        selectedId={
+          selectedId
+        }
+        addComponent={
+          addComponent
+        }
+        setSelectedId={
+          setSelectedId
+        }
       />
 
       <div className="canvas">
         <div className="canvas-header">
-          <button onClick={exportHTML}>
+          <button
+            onClick={
+              exportHTML
+            }
+          >
             Export HTML
           </button>
 
-          <button onClick={exportCSS}>
+          <button
+            onClick={
+              exportCSS
+            }
+          >
             Export CSS
           </button>
 
-          <button onClick={saveProject}>
+          <button
+            onClick={
+              saveProject
+            }
+          >
             Save Project
           </button>
 
-          <button onClick={loadProject}>
+          <button
+            onClick={
+              loadProject
+            }
+          >
             Load Project
           </button>
         </div>
 
         <Canvas
-          components={components}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
+          components={
+            components
+          }
+          selectedId={
+            selectedId
+          }
+          setSelectedId={
+            setSelectedId
+          }
+          onDragEnd={
+            handleCanvasDragEnd
+          }
         />
       </div>
 
@@ -742,11 +949,15 @@ function App() {
         selectedComponent={
           selectedComponent
         }
-        updateText={updateText}
+        updateText={
+          updateText
+        }
         updateFontSize={
           updateFontSize
         }
-        updateColor={updateColor}
+        updateColor={
+          updateColor
+        }
         updateBackgroundColor={
           updateBackgroundColor
         }
@@ -762,7 +973,9 @@ function App() {
         updateHeroButtonText={
           updateHeroButtonText
         }
-        updateImage={updateImage}
+        updateImage={
+          updateImage
+        }
         updateImageWidth={
           updateImageWidth
         }
@@ -772,7 +985,9 @@ function App() {
         updateImageBorderRadius={
           updateImageBorderRadius
         }
-        updateStyles={updateStyles}
+        updateStyles={
+          updateStyles
+        }
         moveComponentUp={
           moveComponentUp
         }

@@ -1,16 +1,37 @@
 import { useState } from "react";
+import type { DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { BuilderComponent } from "../types/builder";
 import PreviewRenderer from "./PreviewRenderer";
 
-type Device = "desktop" | "tablet" | "mobile";
+type Device =
+  | "desktop"
+  | "tablet"
+  | "mobile";
 
 interface CanvasProps {
   components: BuilderComponent[];
   selectedId: string | null;
   setSelectedId: (id: string) => void;
+  onDragEnd: (event: DragEndEvent) => void;
 }
 
 interface ComponentTreeProps {
+  component: BuilderComponent;
+  selectedId: string | null;
+  setSelectedId: (id: string) => void;
+}
+
+interface SortableComponentProps {
   component: BuilderComponent;
   selectedId: string | null;
   setSelectedId: (id: string) => void;
@@ -33,7 +54,9 @@ function ComponentTree({
         setSelectedId(component.id);
       }}
     >
-      <PreviewRenderer component={component} />
+      <PreviewRenderer
+        component={component}
+      />
 
       {component.children &&
         component.children.length > 0 && (
@@ -43,7 +66,86 @@ function ComponentTree({
                 <ComponentTree
                   key={child.id}
                   component={child}
-                  selectedId={selectedId}
+                  selectedId={
+                    selectedId
+                  }
+                  setSelectedId={
+                    setSelectedId
+                  }
+                />
+              )
+            )}
+          </div>
+        )}
+    </div>
+  );
+}
+
+function SortableComponent({
+  component,
+  selectedId,
+  setSelectedId,
+}: SortableComponentProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: component.id,
+  });
+
+  const style = {
+    transform:
+      CSS.Transform.toString(
+        transform
+      ),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={
+        selectedId === component.id
+          ? "builder-component selected"
+          : "builder-component"
+      }
+      onClick={(event) => {
+        event.stopPropagation();
+        setSelectedId(
+          component.id
+        );
+      }}
+      {...attributes}
+    >
+      <div
+        className="drag-handle"
+        {...listeners}
+        title="Sleep component"
+      >
+        ⋮⋮
+      </div>
+
+      <PreviewRenderer
+        component={component}
+      />
+
+      {component.children &&
+        component.children.length > 0 && (
+          <div className="nested-components">
+            {component.children.map(
+              (child) => (
+                <ComponentTree
+                  key={child.id}
+                  component={child}
+                  selectedId={
+                    selectedId
+                  }
                   setSelectedId={
                     setSelectedId
                   }
@@ -60,6 +162,7 @@ function Canvas({
   components,
   selectedId,
   setSelectedId,
+  onDragEnd,
 }: CanvasProps) {
   const [device, setDevice] =
     useState<Device>("desktop");
@@ -138,18 +241,37 @@ function Canvas({
             </div>
           )}
 
-          {components.map(
-            (component) => (
-              <ComponentTree
-                key={component.id}
-                component={component}
-                selectedId={selectedId}
-                setSelectedId={
-                  setSelectedId
-                }
-              />
-            )
-          )}
+          <DndContext
+            collisionDetection={
+              closestCenter
+            }
+            onDragEnd={onDragEnd}
+          >
+            <SortableContext
+              items={components.map(
+                (component) =>
+                  component.id
+              )}
+              strategy={
+                verticalListSortingStrategy
+              }
+            >
+              {components.map(
+                (component) => (
+                  <SortableComponent
+                    key={component.id}
+                    component={component}
+                    selectedId={
+                      selectedId
+                    }
+                    setSelectedId={
+                      setSelectedId
+                    }
+                  />
+                )
+              )}
+            </SortableContext>
+          </DndContext>
         </div>
       </div>
     </main>
