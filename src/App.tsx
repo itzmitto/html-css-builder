@@ -15,12 +15,69 @@ function App() {
   const [components, setComponents] = useState<BuilderComponent[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const selectedComponent = components.find(
-    (component) => component.id === selectedId
-  );
+  const selectedComponent = (() => {
+    const findComponent = (
+      componentList: BuilderComponent[]
+    ): BuilderComponent | undefined => {
+      for (const component of componentList) {
+        if (component.id === selectedId) {
+          return component;
+        }
 
-  const addComponent = (type: ComponentType) => {
-    const newComponent: BuilderComponent = {
+        if (component.children?.length) {
+          const found = findComponent(component.children);
+
+          if (found) {
+            return found;
+          }
+        }
+      }
+
+      return undefined;
+    };
+
+    return findComponent(components);
+  })();
+
+  const createDefaultStyles = (): BuilderStyles => ({
+    width: 100,
+    widthUnit: "%",
+    height: 300,
+    heightUnit: "px",
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    display: "block",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    gap: 0,
+    backgroundColor: "#ffffff",
+    color: "#000000",
+    fontFamily: "Arial",
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+    textAlign: "left",
+    borderWidth: 0,
+    borderStyle: "none",
+    borderColor: "#000000",
+    borderRadius: 0,
+    opacity: 1,
+    overflow: "visible",
+    zIndex: 1,
+  });
+
+  const createComponent = (
+    type: ComponentType
+  ): BuilderComponent => {
+    return {
       id: crypto.randomUUID(),
       type,
       text: type,
@@ -35,164 +92,256 @@ function App() {
       imageWidth: 100,
       imageHeight: 300,
       imageBorderRadius: 8,
-      styles: {
-        width: 100,
-        widthUnit: "%",
-        height: 300,
-        heightUnit: "px",
-        marginTop: 0,
-        marginRight: 0,
-        marginBottom: 0,
-        marginLeft: 0,
-        paddingTop: 0,
-        paddingRight: 0,
-        paddingBottom: 0,
-        paddingLeft: 0,
-        display: "block",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        gap: 0,
-        backgroundColor: "#ffffff",
-        color: "#000000",
-        fontFamily: "Arial",
-        fontSize: 16,
-        fontWeight: 400,
-        lineHeight: 1.5,
-        letterSpacing: 0,
-        textAlign: "left",
-        borderWidth: 0,
-        borderStyle: "none",
-        borderColor: "#000000",
-        borderRadius: 0,
-        opacity: 1,
-        overflow: "visible",
-        zIndex: 1,
-      },
+      styles: createDefaultStyles(),
+      children: [],
     };
+  };
 
-    setComponents([...components, newComponent]);
+  const findComponentById = (
+    componentList: BuilderComponent[],
+    id: string
+  ): BuilderComponent | undefined => {
+    for (const component of componentList) {
+      if (component.id === id) {
+        return component;
+      }
+
+      if (component.children?.length) {
+        const found = findComponentById(
+          component.children,
+          id
+        );
+
+        if (found) {
+          return found;
+        }
+      }
+    }
+
+    return undefined;
+  };
+
+  const findParentById = (
+    componentList: BuilderComponent[],
+    childId: string
+  ): BuilderComponent | undefined => {
+    for (const component of componentList) {
+      if (
+        component.children?.some(
+          (child) => child.id === childId
+        )
+      ) {
+        return component;
+      }
+
+      if (component.children?.length) {
+        const found = findParentById(
+          component.children,
+          childId
+        );
+
+        if (found) {
+          return found;
+        }
+      }
+    }
+
+    return undefined;
+  };
+
+  const updateComponentById = (
+    componentList: BuilderComponent[],
+    id: string,
+    updater: (
+      component: BuilderComponent
+    ) => BuilderComponent
+  ): BuilderComponent[] => {
+    return componentList.map((component) => {
+      if (component.id === id) {
+        return updater(component);
+      }
+
+      if (component.children?.length) {
+        return {
+          ...component,
+          children: updateComponentById(
+            component.children,
+            id,
+            updater
+          ),
+        };
+      }
+
+      return component;
+    });
+  };
+
+  const addComponent = (type: ComponentType) => {
+    const newComponent = createComponent(type);
+
+    if (selectedComponent?.type === "Container") {
+      const updatedComponents = updateComponentById(
+        components,
+        selectedComponent.id,
+        (component) => ({
+          ...component,
+          children: [
+            ...(component.children ?? []),
+            newComponent,
+          ],
+        })
+      );
+
+      setComponents(updatedComponents);
+      setSelectedId(newComponent.id);
+
+      return;
+    }
+
+    setComponents([
+      ...components,
+      newComponent,
+    ]);
+
     setSelectedId(newComponent.id);
   };
 
   const updateText = (value: string) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, text: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          text: value,
+        })
       )
     );
   };
 
   const updateFontSize = (value: number) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              fontSize: value,
-              styles: {
-                ...component.styles,
-                fontSize: value,
-              },
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          fontSize: value,
+          styles: {
+            ...component.styles,
+            fontSize: value,
+          },
+        })
       )
     );
   };
 
   const updateColor = (value: string) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              color: value,
-              styles: {
-                ...component.styles,
-                color: value,
-              },
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          color: value,
+          styles: {
+            ...component.styles,
+            color: value,
+          },
+        })
       )
     );
   };
 
-  const updateBackgroundColor = (value: string) => {
+  const updateBackgroundColor = (
+    value: string
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              backgroundColor: value,
-              styles: {
-                ...component.styles,
-                backgroundColor: value,
-              },
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          backgroundColor: value,
+          styles: {
+            ...component.styles,
+            backgroundColor: value,
+          },
+        })
       )
     );
   };
 
   const updateMinHeight = (value: number) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              minHeight: value,
-              styles: {
-                ...component.styles,
-                height: value,
-                heightUnit: "px",
-              },
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          minHeight: value,
+          styles: {
+            ...component.styles,
+            height: value,
+            heightUnit: "px",
+          },
+        })
       )
     );
   };
 
   const updateImage = (value: string) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, imageUrl: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          imageUrl: value,
+        })
       )
     );
   };
 
   const updateImageWidth = (value: number) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, imageWidth: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          imageWidth: value,
+        })
       )
     );
   };
 
-  const updateImageHeight = (value: number) => {
+  const updateImageHeight = (
+    value: number
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, imageHeight: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          imageHeight: value,
+        })
       )
     );
   };
 
-  const updateImageBorderRadius = (value: number) => {
+  const updateImageBorderRadius = (
+    value: number
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              imageBorderRadius: value,
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          imageBorderRadius: value,
+        })
       )
     );
   };
@@ -201,127 +350,274 @@ function App() {
     updates: Partial<BuilderStyles>
   ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              styles: {
-                ...component.styles,
-                ...updates,
-              },
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          styles: {
+            ...component.styles,
+            ...updates,
+          },
+        })
       )
     );
   };
 
   const deleteComponent = () => {
-    setComponents(
-      components.filter(
-        (component) => component.id !== selectedId
-      )
-    );
+    if (!selectedId) return;
 
+    const removeComponent = (
+      componentList: BuilderComponent[]
+    ): BuilderComponent[] => {
+      return componentList
+        .filter(
+          (component) =>
+            component.id !== selectedId
+        )
+        .map((component) => ({
+          ...component,
+          children: component.children
+            ? removeComponent(component.children)
+            : [],
+        }));
+    };
+
+    setComponents(
+      removeComponent(components)
+    );
     setSelectedId(null);
   };
 
   const moveComponentUp = () => {
-    const index = components.findIndex(
-      (component) => component.id === selectedId
+    if (!selectedId) return;
+
+    const parent = findParentById(
+      components,
+      selectedId
+    );
+
+    const list = parent
+      ? parent.children ?? []
+      : components;
+
+    const index = list.findIndex(
+      (component) =>
+        component.id === selectedId
     );
 
     if (index <= 0) return;
 
-    const updated = [...components];
+    const updatedList = [...list];
 
-    [updated[index - 1], updated[index]] = [
-      updated[index],
-      updated[index - 1],
+    [
+      updatedList[index - 1],
+      updatedList[index],
+    ] = [
+      updatedList[index],
+      updatedList[index - 1],
     ];
 
-    setComponents(updated);
+    if (parent) {
+      setComponents(
+        updateComponentById(
+          components,
+          parent.id,
+          (component) => ({
+            ...component,
+            children: updatedList,
+          })
+        )
+      );
+    } else {
+      setComponents(updatedList);
+    }
   };
 
   const moveComponentDown = () => {
-    const index = components.findIndex(
-      (component) => component.id === selectedId
+    if (!selectedId) return;
+
+    const parent = findParentById(
+      components,
+      selectedId
+    );
+
+    const list = parent
+      ? parent.children ?? []
+      : components;
+
+    const index = list.findIndex(
+      (component) =>
+        component.id === selectedId
     );
 
     if (
       index === -1 ||
-      index === components.length - 1
+      index === list.length - 1
     ) {
       return;
     }
 
-    const updated = [...components];
+    const updatedList = [...list];
 
-    [updated[index + 1], updated[index]] = [
-      updated[index],
-      updated[index + 1],
+    [
+      updatedList[index + 1],
+      updatedList[index],
+    ] = [
+      updatedList[index],
+      updatedList[index + 1],
     ];
 
-    setComponents(updated);
+    if (parent) {
+      setComponents(
+        updateComponentById(
+          components,
+          parent.id,
+          (component) => ({
+            ...component,
+            children: updatedList,
+          })
+        )
+      );
+    } else {
+      setComponents(updatedList);
+    }
+  };
+
+  const cloneComponentTree = (
+    component: BuilderComponent
+  ): BuilderComponent => {
+    return {
+      ...component,
+      id: crypto.randomUUID(),
+      styles: component.styles
+        ? {
+            ...component.styles,
+          }
+        : undefined,
+      children: component.children
+        ? component.children.map(
+            (child) =>
+              cloneComponentTree(child)
+          )
+        : [],
+    };
   };
 
   const duplicateComponent = () => {
-    const component = components.find(
-      (component) => component.id === selectedId
+    if (!selectedId) return;
+
+    const component = findComponentById(
+      components,
+      selectedId
     );
 
     if (!component) return;
 
-    const duplicatedComponent: BuilderComponent = {
-      ...component,
-      id: crypto.randomUUID(),
-      styles: component.styles
-        ? { ...component.styles }
-        : undefined,
-    };
+    const duplicatedComponent =
+      cloneComponentTree(component);
 
-    const index = components.findIndex(
-      (component) => component.id === selectedId
+    const parent = findParentById(
+      components,
+      selectedId
     );
 
-    if (index === -1) return;
+    if (parent) {
+      const children =
+        parent.children ?? [];
 
-    const updated = [...components];
+      const index = children.findIndex(
+        (child) =>
+          child.id === selectedId
+      );
 
-    updated.splice(index + 1, 0, duplicatedComponent);
+      if (index === -1) return;
 
-    setComponents(updated);
-    setSelectedId(duplicatedComponent.id);
+      const updatedChildren = [
+        ...children,
+      ];
+
+      updatedChildren.splice(
+        index + 1,
+        0,
+        duplicatedComponent
+      );
+
+      setComponents(
+        updateComponentById(
+          components,
+          parent.id,
+          (component) => ({
+            ...component,
+            children: updatedChildren,
+          })
+        )
+      );
+    } else {
+      const index = components.findIndex(
+        (component) =>
+          component.id === selectedId
+      );
+
+      if (index === -1) return;
+
+      const updated = [...components];
+
+      updated.splice(
+        index + 1,
+        0,
+        duplicatedComponent
+      );
+
+      setComponents(updated);
+    }
+
+    setSelectedId(
+      duplicatedComponent.id
+    );
   };
 
-  const updateHeroTitle = (value: string) => {
+  const updateHeroTitle = (
+    value: string
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, heroTitle: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          heroTitle: value,
+        })
       )
     );
   };
 
-  const updateHeroSubtitle = (value: string) => {
+  const updateHeroSubtitle = (
+    value: string
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? { ...component, heroSubtitle: value }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          heroSubtitle: value,
+        })
       )
     );
   };
 
-  const updateHeroButtonText = (value: string) => {
+  const updateHeroButtonText = (
+    value: string
+  ) => {
     setComponents(
-      components.map((component) =>
-        component.id === selectedId
-          ? {
-              ...component,
-              heroButtonText: value,
-            }
-          : component
+      updateComponentById(
+        components,
+        selectedId || "",
+        (component) => ({
+          ...component,
+          heroButtonText: value,
+        })
       )
     );
   };
@@ -330,12 +626,18 @@ function App() {
     filename: string,
     content: string
   ) => {
-    const blob = new Blob([content], {
-      type: "text/plain",
-    });
+    const blob = new Blob(
+      [content],
+      {
+        type: "text/plain",
+      }
+    );
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const url =
+      URL.createObjectURL(blob);
+
+    const a =
+      document.createElement("a");
 
     a.href = url;
     a.download = filename;
@@ -345,13 +647,23 @@ function App() {
   };
 
   const exportHTML = () => {
-    const html = generateHTML(components);
-    downloadFile("index.html", html);
+    const html =
+      generateHTML(components);
+
+    downloadFile(
+      "index.html",
+      html
+    );
   };
 
   const exportCSS = () => {
-    const css = generateCSS();
-    downloadFile("style.css", css);
+    const css =
+      generateCSS();
+
+    downloadFile(
+      "style.css",
+      css
+    );
   };
 
   const saveProject = () => {
@@ -364,12 +676,15 @@ function App() {
   };
 
   const loadProject = () => {
-    const savedProject = localStorage.getItem(
-      "website-builder-project"
-    );
+    const savedProject =
+      localStorage.getItem(
+        "website-builder-project"
+      );
 
     if (!savedProject) {
-      alert("Geen opgeslagen project gevonden");
+      alert(
+        "Geen opgeslagen project gevonden"
+      );
       return;
     }
 
@@ -382,13 +697,20 @@ function App() {
 
       alert("Project geladen!");
     } catch {
-      alert("Het opgeslagen project is ongeldig.");
+      alert(
+        "Het opgeslagen project is ongeldig."
+      );
     }
   };
 
   return (
     <div className="editor">
-      <Sidebar addComponent={addComponent} />
+      <Sidebar
+        components={components}
+        selectedId={selectedId}
+        addComponent={addComponent}
+        setSelectedId={setSelectedId}
+      />
 
       <div className="canvas">
         <div className="canvas-header">
@@ -417,24 +739,52 @@ function App() {
       </div>
 
       <Properties
-        selectedComponent={selectedComponent}
+        selectedComponent={
+          selectedComponent
+        }
         updateText={updateText}
-        updateFontSize={updateFontSize}
+        updateFontSize={
+          updateFontSize
+        }
         updateColor={updateColor}
-        updateBackgroundColor={updateBackgroundColor}
-        updateMinHeight={updateMinHeight}
-        updateHeroTitle={updateHeroTitle}
-        updateHeroSubtitle={updateHeroSubtitle}
-        updateHeroButtonText={updateHeroButtonText}
+        updateBackgroundColor={
+          updateBackgroundColor
+        }
+        updateMinHeight={
+          updateMinHeight
+        }
+        updateHeroTitle={
+          updateHeroTitle
+        }
+        updateHeroSubtitle={
+          updateHeroSubtitle
+        }
+        updateHeroButtonText={
+          updateHeroButtonText
+        }
         updateImage={updateImage}
-        updateImageWidth={updateImageWidth}
-        updateImageHeight={updateImageHeight}
-        updateImageBorderRadius={updateImageBorderRadius}
+        updateImageWidth={
+          updateImageWidth
+        }
+        updateImageHeight={
+          updateImageHeight
+        }
+        updateImageBorderRadius={
+          updateImageBorderRadius
+        }
         updateStyles={updateStyles}
-        moveComponentUp={moveComponentUp}
-        moveComponentDown={moveComponentDown}
-        duplicateComponent={duplicateComponent}
-        deleteComponent={deleteComponent}
+        moveComponentUp={
+          moveComponentUp
+        }
+        moveComponentDown={
+          moveComponentDown
+        }
+        duplicateComponent={
+          duplicateComponent
+        }
+        deleteComponent={
+          deleteComponent
+        }
       />
     </div>
   );

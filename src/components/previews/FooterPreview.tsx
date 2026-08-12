@@ -1,8 +1,28 @@
-function FooterPreview() {
+interface FooterPreviewProps {
+  backgroundColor?: string;
+  textColor?: string;
+  fontFamily?: string;
+  textAlign?: "left" | "center" | "right";
+}
+
+function FooterPreview({
+  backgroundColor = "#111827",
+  textColor = "#ffffff",
+  fontFamily = "Arial",
+  textAlign = "center",
+}: FooterPreviewProps) {
   return (
-    <div className="footer-preview">
+    <footer
+      className="footer-preview"
+      style={{
+        backgroundColor,
+        color: textColor,
+        fontFamily,
+        textAlign,
+      }}
+    >
       Footer Content
-    </div>
+    </footer>
   );
 }
 

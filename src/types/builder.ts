@@ -71,4 +71,5 @@ export interface BuilderComponent {
   imageHeight?: number;
   imageBorderRadius?: number;
   styles?: BuilderStyles;
+  children?: BuilderComponent[];
 }

@@ -5,6 +5,7 @@ import type {
 } from "../types/builder";
 import LayoutProperties from "./properties/LayoutProperties";
 import TypographyProperties from "./properties/TypographyProperties";
+import AppearanceProperties from "./properties/AppearanceProperties";
 
 interface PropertiesProps {
   selectedComponent?: BuilderComponent;
@@ -97,6 +98,40 @@ function Properties({
             {selectedComponent.type}
           </div>
 
+          {selectedComponent.type === "Container" && (
+            <div
+              style={{
+                background: "#1d4ed8",
+                padding: "12px",
+                borderRadius: "8px",
+                marginBottom: "20px",
+              }}
+            >
+              <p
+                style={{
+                  color: "white",
+                  fontSize: "13px",
+                  marginBottom: "8px",
+                }}
+              >
+                Nieuwe componenten worden
+                automatisch in deze Container
+                geplaatst.
+              </p>
+
+              <p
+                style={{
+                  color: "#dbeafe",
+                  fontSize: "12px",
+                }}
+              >
+                Selecteer hierboven een andere
+                component uit de sidebar om hem
+                als child toe te voegen.
+              </p>
+            </div>
+          )}
+
           <LayoutProperties
             styles={styles}
             updateStyles={updateStyles}
@@ -108,6 +143,11 @@ function Properties({
               updateStyles={updateStyles}
             />
           )}
+
+          <AppearanceProperties
+            styles={styles}
+            updateStyles={updateStyles}
+          />
 
           {(selectedComponent.type === "Heading" ||
             selectedComponent.type === "Paragraph" ||
@@ -141,46 +181,6 @@ function Properties({
             </>
           )}
 
-          {(selectedComponent.type === "Hero" ||
-            selectedComponent.type === "Section" ||
-            selectedComponent.type === "Card" ||
-            selectedComponent.type === "Container") && (
-            <>
-              <h3
-                style={{
-                  marginTop: "25px",
-                  marginBottom: "15px",
-                }}
-              >
-                Background
-              </h3>
-
-              <p>Background Color</p>
-
-              <input
-                type="color"
-                value={
-                  selectedComponent.backgroundColor ||
-                  styles.backgroundColor ||
-                  "#ffffff"
-                }
-                onChange={(e) =>
-                  updateBackgroundColor(
-                    e.target.value
-                  )
-                }
-                style={{
-                  width: "100%",
-                  height: "50px",
-                  marginTop: "10px",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                }}
-              />
-            </>
-          )}
-
           {selectedComponent.type === "Hero" && (
             <>
               <h3
@@ -196,7 +196,9 @@ function Properties({
 
               <input
                 type="text"
-                value={selectedComponent.heroTitle || ""}
+                value={
+                  selectedComponent.heroTitle || ""
+                }
                 onChange={(e) =>
                   updateHeroTitle(e.target.value)
                 }
@@ -281,6 +283,7 @@ function Properties({
                   );
 
                   updateMinHeight(value);
+
                   updateStyles({
                     height: value,
                     heightUnit: "px",
@@ -425,7 +428,8 @@ function Properties({
 
           <div
             style={{
-              borderTop: "1px solid #374151",
+              borderTop:
+                "1px solid #374151",
               marginTop: "25px",
               paddingTop: "20px",
             }}

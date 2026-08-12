@@ -5,13 +5,165 @@ interface LayoutPropertiesProps {
   updateStyles: (styles: Partial<BuilderStyles>) => void;
 }
 
+interface BoxModelProps {
+  title: string;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  onChange: (
+    property:
+      | "top"
+      | "right"
+      | "bottom"
+      | "left",
+    value: number
+  ) => void;
+}
+
+function BoxModel({
+  title,
+  top,
+  right,
+  bottom,
+  left,
+  onChange,
+}: BoxModelProps) {
+  return (
+    <div style={{ marginTop: "15px" }}>
+      <h4 style={{ marginBottom: "10px" }}>
+        {title}
+      </h4>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "1fr 1fr 1fr",
+          gridTemplateRows:
+            "1fr 1fr 1fr",
+          gap: "6px",
+          background: "#111827",
+          padding: "8px",
+          borderRadius: "10px",
+        }}
+      >
+        <div />
+
+        <input
+          type="number"
+          value={top}
+          onChange={(e) =>
+            onChange(
+              "top",
+              Number(e.target.value)
+            )
+          }
+          placeholder="Top"
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "none",
+            textAlign: "center",
+          }}
+        />
+
+        <div />
+
+        <input
+          type="number"
+          value={left}
+          onChange={(e) =>
+            onChange(
+              "left",
+              Number(e.target.value)
+            )
+          }
+          placeholder="Left"
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "none",
+            textAlign: "center",
+          }}
+        />
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#9ca3af",
+            fontSize: "12px",
+            border:
+              "1px dashed #4b5563",
+            borderRadius: "6px",
+            minHeight: "36px",
+          }}
+        >
+          BOX
+        </div>
+
+        <input
+          type="number"
+          value={right}
+          onChange={(e) =>
+            onChange(
+              "right",
+              Number(e.target.value)
+            )
+          }
+          placeholder="Right"
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "none",
+            textAlign: "center",
+          }}
+        />
+
+        <div />
+
+        <input
+          type="number"
+          value={bottom}
+          onChange={(e) =>
+            onChange(
+              "bottom",
+              Number(e.target.value)
+            )
+          }
+          placeholder="Bottom"
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "6px",
+            border: "none",
+            textAlign: "center",
+          }}
+        />
+
+        <div />
+      </div>
+    </div>
+  );
+}
+
 function LayoutProperties({
   styles,
   updateStyles,
 }: LayoutPropertiesProps) {
   return (
     <div>
-      <h3 style={{ marginTop: "20px", marginBottom: "15px" }}>
+      <h3
+        style={{
+          marginTop: "20px",
+          marginBottom: "15px",
+        }}
+      >
         Layout
       </h3>
 
@@ -26,10 +178,13 @@ function LayoutProperties({
       >
         <input
           type="number"
+          min="0"
           value={styles.width ?? 100}
           onChange={(e) =>
             updateStyles({
-              width: Number(e.target.value),
+              width: Number(
+                e.target.value
+              ),
             })
           }
           style={{
@@ -44,11 +199,15 @@ function LayoutProperties({
           value={styles.widthUnit ?? "%"}
           onChange={(e) =>
             updateStyles({
-              widthUnit: e.target.value as "%" | "px",
+              widthUnit:
+                e.target.value as
+                  | "%"
+                  | "px",
             })
           }
           style={{
             width: "70px",
+            padding: "10px",
             borderRadius: "8px",
             border: "none",
           }}
@@ -71,10 +230,13 @@ function LayoutProperties({
       >
         <input
           type="number"
+          min="0"
           value={styles.height ?? 300}
           onChange={(e) =>
             updateStyles({
-              height: Number(e.target.value),
+              height: Number(
+                e.target.value
+              ),
             })
           }
           style={{
@@ -89,11 +251,15 @@ function LayoutProperties({
           value={styles.heightUnit ?? "px"}
           onChange={(e) =>
             updateStyles({
-              heightUnit: e.target.value as "%" | "px",
+              heightUnit:
+                e.target.value as
+                  | "%"
+                  | "px",
             })
           }
           style={{
             width: "70px",
+            padding: "10px",
             borderRadius: "8px",
             border: "none",
           }}
@@ -103,161 +269,78 @@ function LayoutProperties({
         </select>
       </div>
 
-      <h4 style={{ marginTop: "20px" }}>
-        Margin
-      </h4>
+      <BoxModel
+        title="Margin"
+        top={styles.marginTop ?? 0}
+        right={styles.marginRight ?? 0}
+        bottom={styles.marginBottom ?? 0}
+        left={styles.marginLeft ?? 0}
+        onChange={(property, value) => {
+          if (property === "top") {
+            updateStyles({
+              marginTop: value,
+            });
+          }
 
-      <div
+          if (property === "right") {
+            updateStyles({
+              marginRight: value,
+            });
+          }
+
+          if (property === "bottom") {
+            updateStyles({
+              marginBottom: value,
+            });
+          }
+
+          if (property === "left") {
+            updateStyles({
+              marginLeft: value,
+            });
+          }
+        }}
+      />
+
+      <BoxModel
+        title="Padding"
+        top={styles.paddingTop ?? 0}
+        right={styles.paddingRight ?? 0}
+        bottom={styles.paddingBottom ?? 0}
+        left={styles.paddingLeft ?? 0}
+        onChange={(property, value) => {
+          if (property === "top") {
+            updateStyles({
+              paddingTop: value,
+            });
+          }
+
+          if (property === "right") {
+            updateStyles({
+              paddingRight: value,
+            });
+          }
+
+          if (property === "bottom") {
+            updateStyles({
+              paddingBottom: value,
+            });
+          }
+
+          if (property === "left") {
+            updateStyles({
+              paddingLeft: value,
+            });
+          }
+        }}
+      />
+
+      <h4
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "8px",
-          marginTop: "10px",
+          marginTop: "20px",
+          marginBottom: "10px",
         }}
       >
-        <input
-          type="number"
-          placeholder="Top"
-          value={styles.marginTop ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              marginTop: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Right"
-          value={styles.marginRight ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              marginRight: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Bottom"
-          value={styles.marginBottom ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              marginBottom: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Left"
-          value={styles.marginLeft ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              marginLeft: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-      </div>
-
-      <h4 style={{ marginTop: "20px" }}>
-        Padding
-      </h4>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "8px",
-          marginTop: "10px",
-        }}
-      >
-        <input
-          type="number"
-          placeholder="Top"
-          value={styles.paddingTop ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              paddingTop: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Right"
-          value={styles.paddingRight ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              paddingRight: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Bottom"
-          value={styles.paddingBottom ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              paddingBottom: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-
-        <input
-          type="number"
-          placeholder="Left"
-          value={styles.paddingLeft ?? 0}
-          onChange={(e) =>
-            updateStyles({
-              paddingLeft: Number(e.target.value),
-            })
-          }
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-          }}
-        />
-      </div>
-
-      <h4 style={{ marginTop: "20px" }}>
         Display
       </h4>
 
@@ -274,14 +357,19 @@ function LayoutProperties({
         style={{
           width: "100%",
           padding: "10px",
-          marginTop: "8px",
           borderRadius: "8px",
           border: "none",
         }}
       >
-        <option value="block">Block</option>
-        <option value="flex">Flex</option>
-        <option value="grid">Grid</option>
+        <option value="block">
+          Block
+        </option>
+        <option value="flex">
+          Flex
+        </option>
+        <option value="grid">
+          Grid
+        </option>
       </select>
 
       {styles.display === "flex" && (
@@ -291,7 +379,10 @@ function LayoutProperties({
           </p>
 
           <select
-            value={styles.flexDirection ?? "row"}
+            value={
+              styles.flexDirection ??
+              "row"
+            }
             onChange={(e) =>
               updateStyles({
                 flexDirection:
@@ -308,8 +399,12 @@ function LayoutProperties({
               border: "none",
             }}
           >
-            <option value="row">Row</option>
-            <option value="column">Column</option>
+            <option value="row">
+              Row
+            </option>
+            <option value="column">
+              Column
+            </option>
           </select>
 
           <p style={{ marginTop: "15px" }}>
@@ -318,7 +413,8 @@ function LayoutProperties({
 
           <select
             value={
-              styles.justifyContent ?? "flex-start"
+              styles.justifyContent ??
+              "flex-start"
             }
             onChange={(e) =>
               updateStyles({
@@ -340,9 +436,15 @@ function LayoutProperties({
               border: "none",
             }}
           >
-            <option value="flex-start">Start</option>
-            <option value="center">Center</option>
-            <option value="flex-end">End</option>
+            <option value="flex-start">
+              Start
+            </option>
+            <option value="center">
+              Center
+            </option>
+            <option value="flex-end">
+              End
+            </option>
             <option value="space-between">
               Space Between
             </option>
@@ -360,7 +462,8 @@ function LayoutProperties({
 
           <select
             value={
-              styles.alignItems ?? "stretch"
+              styles.alignItems ??
+              "stretch"
             }
             onChange={(e) =>
               updateStyles({
@@ -380,10 +483,18 @@ function LayoutProperties({
               border: "none",
             }}
           >
-            <option value="stretch">Stretch</option>
-            <option value="flex-start">Start</option>
-            <option value="center">Center</option>
-            <option value="flex-end">End</option>
+            <option value="stretch">
+              Stretch
+            </option>
+            <option value="flex-start">
+              Start
+            </option>
+            <option value="center">
+              Center
+            </option>
+            <option value="flex-end">
+              End
+            </option>
           </select>
 
           <p style={{ marginTop: "15px" }}>
@@ -392,10 +503,13 @@ function LayoutProperties({
 
           <input
             type="number"
+            min="0"
             value={styles.gap ?? 0}
             onChange={(e) =>
               updateStyles({
-                gap: Number(e.target.value),
+                gap: Number(
+                  e.target.value
+                ),
               })
             }
             style={{

@@ -107,81 +107,252 @@ function getBuilderStyle(
 function PreviewRenderer({
   component,
 }: PreviewRendererProps) {
-  const builderStyle = getBuilderStyle(
-    component.styles
-  );
+  const styles = component.styles;
+
+  const builderStyle = getBuilderStyle(styles);
+
+  const backgroundColor =
+    styles?.backgroundColor ||
+    component.backgroundColor;
+
+  const textColor =
+    styles?.color ||
+    component.color ||
+    "#000000";
+
+  const fontFamily =
+    styles?.fontFamily ||
+    "Arial";
+
+  const textAlign =
+    styles?.textAlign ||
+    "left";
+
+  const renderChildren = () => {
+    if (!component.children?.length) {
+      return null;
+    }
+
+    return component.children.map(
+      (child) => (
+        <div
+          key={child.id}
+          style={{
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          <PreviewRenderer
+            component={child}
+          />
+        </div>
+      )
+    );
+  };
 
   return (
     <div
       style={{
         ...builderStyle,
-        minHeight:
-          component.type === "Container"
-            ? undefined
-            : builderStyle.height,
+        position: "relative",
+        boxSizing: "border-box",
       }}
     >
       {component.type === "Navbar" && (
-        <NavbarPreview />
+        <NavbarPreview
+          backgroundColor={
+            backgroundColor || "#ffffff"
+          }
+          textColor={textColor}
+          fontFamily={fontFamily}
+          textAlign={textAlign}
+        />
       )}
 
       {component.type === "Hero" && (
         <HeroPreview
           title={component.heroTitle}
           subtitle={component.heroSubtitle}
-          buttonText={component.heroButtonText}
+          buttonText={
+            component.heroButtonText
+          }
           backgroundColor={
-            component.backgroundColor
+            backgroundColor || "#f8fafc"
+          }
+          textColor={textColor}
+          fontFamily={fontFamily}
+          textAlign={
+            textAlign as
+              | "left"
+              | "center"
+              | "right"
           }
         />
       )}
 
       {component.type === "Section" && (
-        <SectionPreview />
+        <SectionPreview
+          backgroundColor={
+            backgroundColor || "#ffffff"
+          }
+          textColor={textColor}
+          fontFamily={fontFamily}
+          textAlign={
+            textAlign as
+              | "left"
+              | "center"
+              | "right"
+          }
+        />
       )}
 
       {component.type === "Card" && (
-        <CardPreview />
+        <CardPreview
+          backgroundColor={
+            backgroundColor || "#ffffff"
+          }
+          textColor={textColor}
+          fontFamily={fontFamily}
+          textAlign={
+            textAlign as
+              | "left"
+              | "center"
+              | "right"
+          }
+        />
       )}
 
       {component.type === "Footer" && (
-        <FooterPreview />
+        <FooterPreview
+          backgroundColor={
+            backgroundColor || "#111827"
+          }
+          textColor={
+            styles?.color || "#ffffff"
+          }
+          fontFamily={fontFamily}
+          textAlign={
+            textAlign as
+              | "left"
+              | "center"
+              | "right"
+          }
+        />
       )}
 
       {component.type === "Heading" && (
         <HeadingPreview
           text={component.text}
-          fontSize={component.fontSize}
-          color={component.color}
+          fontSize={
+            styles?.fontSize ??
+            component.fontSize
+          }
+          color={
+            styles?.color ??
+            component.color
+          }
+          fontFamily={
+            styles?.fontFamily
+          }
+          fontWeight={
+            styles?.fontWeight
+          }
+          lineHeight={
+            styles?.lineHeight
+          }
+          letterSpacing={
+            styles?.letterSpacing
+          }
+          textAlign={
+            styles?.textAlign
+          }
         />
       )}
 
       {component.type === "Paragraph" && (
         <ParagraphPreview
           text={component.text}
-          fontSize={component.fontSize}
-          color={component.color}
+          fontSize={
+            styles?.fontSize ??
+            component.fontSize
+          }
+          color={
+            styles?.color ??
+            component.color
+          }
+          fontFamily={
+            styles?.fontFamily
+          }
+          fontWeight={
+            styles?.fontWeight
+          }
+          lineHeight={
+            styles?.lineHeight
+          }
+          letterSpacing={
+            styles?.letterSpacing
+          }
+          textAlign={
+            styles?.textAlign
+          }
         />
       )}
 
       {component.type === "Button" && (
         <ButtonPreview
           text={component.text}
-          color={component.color}
+          color={
+            styles?.color ??
+            component.color
+          }
+          fontSize={
+            styles?.fontSize
+          }
+          fontFamily={
+            styles?.fontFamily
+          }
+          fontWeight={
+            styles?.fontWeight
+          }
+          lineHeight={
+            styles?.lineHeight
+          }
+          letterSpacing={
+            styles?.letterSpacing
+          }
+          textAlign={
+            styles?.textAlign
+          }
         />
       )}
 
       {component.type === "Container" && (
-        <ContainerPreview
-          minHeight={
-            component.minHeight
-          }
-        />
+        <>
+          {!component.children?.length && (
+            <ContainerPreview
+              minHeight={
+                component.minHeight ??
+                styles?.height
+              }
+            />
+          )}
+
+          {renderChildren()}
+        </>
       )}
 
       {component.type === "Image" && (
         <ImagePreview
           imageUrl={component.imageUrl}
+          width={
+            component.imageWidth
+          }
+          height={
+            component.imageHeight
+          }
+          borderRadius={
+            component.imageBorderRadius
+          }
         />
       )}
     </div>

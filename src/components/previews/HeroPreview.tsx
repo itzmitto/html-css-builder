@@ -3,6 +3,9 @@ interface HeroPreviewProps {
   subtitle?: string;
   buttonText?: string;
   backgroundColor?: string;
+  textColor?: string;
+  fontFamily?: string;
+  textAlign?: "left" | "center" | "right";
 }
 
 function HeroPreview({
@@ -10,17 +13,45 @@ function HeroPreview({
   subtitle = "Hero Subtitle goes here",
   buttonText = "Get Started",
   backgroundColor = "#f8fafc",
+  textColor = "#000000",
+  fontFamily = "Arial",
+  textAlign = "center",
 }: HeroPreviewProps) {
   return (
     <div
       className="hero-preview"
       style={{
         backgroundColor,
+        color: textColor,
+        fontFamily,
+        textAlign,
       }}
     >
-      <h1>{title}</h1>
-      <p>{subtitle}</p>
-      <button>{buttonText}</button>
+      <h1
+        style={{
+          color: textColor,
+          fontFamily,
+        }}
+      >
+        {title}
+      </h1>
+
+      <p
+        style={{
+          color: textColor,
+          fontFamily,
+        }}
+      >
+        {subtitle}
+      </p>
+
+      <button
+        style={{
+          fontFamily,
+        }}
+      >
+        {buttonText}
+      </button>
     </div>
   );
 }
