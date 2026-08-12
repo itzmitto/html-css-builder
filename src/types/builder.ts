@@ -7,7 +7,8 @@ export type ComponentType =
   | "Heading"
   | "Paragraph"
   | "Button"
-  | "Container";
+  | "Container"
+  | "Image";
 
 export interface BuilderComponent {
   id: string;
@@ -20,4 +21,5 @@ export interface BuilderComponent {
   fontSize?: number;
   color?: string;
   backgroundColor?: string;
+  imageUrl?: string;
 }
