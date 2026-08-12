@@ -12,6 +12,9 @@ interface PropertiesProps {
   updateHeroSubtitle: (value: string) => void;
   updateHeroButtonText: (value: string) => void;
 
+  moveComponentUp: () => void;
+  moveComponentDown: () => void;
+
   deleteComponent: () => void;
 }
 
@@ -25,6 +28,8 @@ function Properties({
   updateHeroTitle,
   updateHeroSubtitle,
   updateHeroButtonText,
+  moveComponentUp,
+  moveComponentDown,
   deleteComponent,
 }: PropertiesProps) {
   return (
@@ -70,7 +75,9 @@ function Properties({
           {(selectedComponent.type === "Heading" ||
             selectedComponent.type === "Paragraph") && (
             <>
-              <p style={{ marginTop: "20px" }}>Font Size</p>
+              <p style={{ marginTop: "20px" }}>
+                Font Size
+              </p>
 
               <input
                 type="number"
@@ -93,7 +100,9 @@ function Properties({
             selectedComponent.type === "Paragraph" ||
             selectedComponent.type === "Button") && (
             <>
-              <p style={{ marginTop: "20px" }}>Text Color</p>
+              <p style={{ marginTop: "20px" }}>
+                Text Color
+              </p>
 
               <input
                 type="color"
@@ -233,10 +242,38 @@ function Properties({
           )}
 
           <button
-            onClick={deleteComponent}
+            onClick={moveComponentUp}
             style={{
               width: "100%",
               marginTop: "20px",
+              padding: "12px",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Move Up
+          </button>
+
+          <button
+            onClick={moveComponentDown}
+            style={{
+              width: "100%",
+              marginTop: "10px",
+              padding: "12px",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Move Down
+          </button>
+
+          <button
+            onClick={deleteComponent}
+            style={{
+              width: "100%",
+              marginTop: "10px",
               padding: "12px",
               border: "none",
               borderRadius: "8px",
