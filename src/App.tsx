@@ -6,6 +6,7 @@ import Canvas from "./components/Canvas";
 import Properties from "./components/Properties";
 
 import { generateHTML } from "./utils/generateHTML";
+import { generateCSS } from "./utils/generateCSS";
 
 import type {
   BuilderComponent,
@@ -135,6 +136,14 @@ function App() {
     alert("HTML gekopieerd!");
   };
 
+  const exportCSS = () => {
+    const css = generateCSS();
+
+    navigator.clipboard.writeText(css);
+
+    alert("CSS gekopieerd!");
+  };
+
   return (
     <div className="editor">
       <Sidebar addComponent={addComponent} />
@@ -143,6 +152,10 @@ function App() {
         <div className="canvas-header">
           <button onClick={exportHTML}>
             Export HTML
+          </button>
+
+          <button onClick={exportCSS}>
+            Export CSS
           </button>
         </div>
 
