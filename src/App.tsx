@@ -8,6 +8,7 @@ import { generateCSS } from "./utils/generateCSS";
 import type {
   BuilderComponent,
   ComponentType,
+  BuilderStyles,
 } from "./types/builder";
 
 function App() {
@@ -34,6 +35,40 @@ function App() {
       imageWidth: 100,
       imageHeight: 300,
       imageBorderRadius: 8,
+      styles: {
+        width: 100,
+        widthUnit: "%",
+        height: 300,
+        heightUnit: "px",
+        marginTop: 0,
+        marginRight: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        paddingTop: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        display: "block",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        gap: 0,
+        backgroundColor: "#ffffff",
+        color: "#000000",
+        fontFamily: "Arial",
+        fontSize: 16,
+        fontWeight: 400,
+        lineHeight: 1.5,
+        letterSpacing: 0,
+        textAlign: "left",
+        borderWidth: 0,
+        borderStyle: "none",
+        borderColor: "#000000",
+        borderRadius: 0,
+        opacity: 1,
+        overflow: "visible",
+        zIndex: 1,
+      },
     };
 
     setComponents([...components, newComponent]);
@@ -54,7 +89,14 @@ function App() {
     setComponents(
       components.map((component) =>
         component.id === selectedId
-          ? { ...component, fontSize: value }
+          ? {
+              ...component,
+              fontSize: value,
+              styles: {
+                ...component.styles,
+                fontSize: value,
+              },
+            }
           : component
       )
     );
@@ -64,7 +106,14 @@ function App() {
     setComponents(
       components.map((component) =>
         component.id === selectedId
-          ? { ...component, color: value }
+          ? {
+              ...component,
+              color: value,
+              styles: {
+                ...component.styles,
+                color: value,
+              },
+            }
           : component
       )
     );
@@ -74,7 +123,14 @@ function App() {
     setComponents(
       components.map((component) =>
         component.id === selectedId
-          ? { ...component, backgroundColor: value }
+          ? {
+              ...component,
+              backgroundColor: value,
+              styles: {
+                ...component.styles,
+                backgroundColor: value,
+              },
+            }
           : component
       )
     );
@@ -84,7 +140,15 @@ function App() {
     setComponents(
       components.map((component) =>
         component.id === selectedId
-          ? { ...component, minHeight: value }
+          ? {
+              ...component,
+              minHeight: value,
+              styles: {
+                ...component.styles,
+                height: value,
+                heightUnit: "px",
+              },
+            }
           : component
       )
     );
@@ -127,6 +191,24 @@ function App() {
           ? {
               ...component,
               imageBorderRadius: value,
+            }
+          : component
+      )
+    );
+  };
+
+  const updateStyles = (
+    updates: Partial<BuilderStyles>
+  ) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? {
+              ...component,
+              styles: {
+                ...component.styles,
+                ...updates,
+              },
             }
           : component
       )
@@ -192,6 +274,9 @@ function App() {
     const duplicatedComponent: BuilderComponent = {
       ...component,
       id: crypto.randomUUID(),
+      styles: component.styles
+        ? { ...component.styles }
+        : undefined,
     };
 
     const index = components.findIndex(
@@ -232,7 +317,10 @@ function App() {
     setComponents(
       components.map((component) =>
         component.id === selectedId
-          ? { ...component, heroButtonText: value }
+          ? {
+              ...component,
+              heroButtonText: value,
+            }
           : component
       )
     );
@@ -342,6 +430,7 @@ function App() {
         updateImageWidth={updateImageWidth}
         updateImageHeight={updateImageHeight}
         updateImageBorderRadius={updateImageBorderRadius}
+        updateStyles={updateStyles}
         moveComponentUp={moveComponentUp}
         moveComponentDown={moveComponentDown}
         duplicateComponent={duplicateComponent}

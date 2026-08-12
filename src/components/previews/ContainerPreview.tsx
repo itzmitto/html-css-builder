@@ -10,9 +10,20 @@ function ContainerPreview({
       className="container-preview"
       style={{
         minHeight: `${minHeight || 300}px`,
+        width: "100%",
+        boxSizing: "border-box",
+        display: "flex",
+        position: "relative",
       }}
     >
-      Container
+      <div
+        style={{
+          width: "100%",
+          minHeight: "100%",
+        }}
+      >
+        Container
+      </div>
     </div>
   );
 }
