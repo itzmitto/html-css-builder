@@ -35,7 +35,10 @@ ${components
 
       case "Hero":
         return `
-<section class="hero">
+<section
+  class="hero"
+  style="background-color: ${component.backgroundColor || "#ffffff"};"
+>
   <h1>${component.heroTitle}</h1>
   <p>${component.heroSubtitle}</p>
   <button>${component.heroButtonText}</button>
@@ -44,41 +47,93 @@ ${components
 
       case "Heading":
         return `
-<h1 class="heading">
+<h1
+  class="heading"
+  style="
+    font-size: ${component.fontSize || 32}px;
+    color: ${component.color || "#000000"};
+  "
+>
   ${component.text}
 </h1>
 `;
 
       case "Paragraph":
         return `
-<p class="paragraph">
+<p
+  class="paragraph"
+  style="
+    font-size: ${component.fontSize || 16}px;
+    color: ${component.color || "#000000"};
+  "
+>
   ${component.text}
 </p>
 `;
 
       case "Button":
         return `
-<button class="custom-button">
+<button
+  class="custom-button"
+  style="
+    color: ${component.color || "#000000"};
+  "
+>
   ${component.text}
 </button>
 `;
 
       case "Section":
         return `
-<section class="section">
+<section
+  class="section"
+  style="
+    background-color: ${component.backgroundColor || "#ffffff"};
+  "
+>
 </section>
 `;
 
       case "Card":
         return `
-<div class="card">
+<div
+  class="card"
+  style="
+    background-color: ${component.backgroundColor || "#ffffff"};
+  "
+>
   Card Content
 </div>
 `;
 
       case "Container":
         return `
-<div class="container">
+<div
+  class="container"
+  style="
+    min-height: ${component.minHeight || 300}px;
+    background-color: ${component.backgroundColor || "#ffffff"};
+  "
+>
+</div>
+`;
+
+      case "Image":
+        return component.imageUrl
+          ? `
+<div class="image-container">
+  <img
+    class="image"
+    src="${component.imageUrl}"
+    alt="Website image"
+  >
+</div>
+`
+          : `
+<div class="image-container">
+  <div class="image-placeholder">
+    Image
+  </div>
 </div>
 `;
 
