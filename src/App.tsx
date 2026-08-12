@@ -1,13 +1,10 @@
 import { useState } from "react";
 import "./App.css";
-
 import Sidebar from "./components/Sidebar";
 import Canvas from "./components/Canvas";
 import Properties from "./components/Properties";
-
 import { generateHTML } from "./utils/generateHTML";
 import { generateCSS } from "./utils/generateCSS";
-
 import type {
   BuilderComponent,
   ComponentType,
@@ -33,9 +30,11 @@ function App() {
       fontSize: 32,
       color: "#000000",
       backgroundColor: "#ffffff",
+      imageUrl: "",
     };
 
     setComponents([...components, newComponent]);
+    setSelectedId(newComponent.id);
   };
 
   const updateText = (value: string) => {
@@ -88,13 +87,22 @@ function App() {
     );
   };
 
+  const updateImage = (value: string) => {
+    setComponents(
+      components.map((component) =>
+        component.id === selectedId
+          ? { ...component, imageUrl: value }
+          : component
+      )
+    );
+  };
+
   const deleteComponent = () => {
     setComponents(
       components.filter(
         (component) => component.id !== selectedId
       )
     );
-
     setSelectedId(null);
   };
 
@@ -296,6 +304,7 @@ function App() {
         updateHeroTitle={updateHeroTitle}
         updateHeroSubtitle={updateHeroSubtitle}
         updateHeroButtonText={updateHeroButtonText}
+        updateImage={updateImage}
         moveComponentUp={moveComponentUp}
         moveComponentDown={moveComponentDown}
         duplicateComponent={duplicateComponent}
