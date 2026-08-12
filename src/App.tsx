@@ -183,6 +183,30 @@ function App() {
     alert("CSS gekopieerd!");
   };
 
+  const saveProject = () => {
+    localStorage.setItem(
+      "website-builder-project",
+      JSON.stringify(components)
+    );
+
+    alert("Project opgeslagen!");
+  };
+
+  const loadProject = () => {
+    const savedProject = localStorage.getItem(
+      "website-builder-project"
+    );
+
+    if (!savedProject) {
+      alert("Geen opgeslagen project gevonden");
+      return;
+    }
+
+    setComponents(JSON.parse(savedProject));
+
+    alert("Project geladen!");
+  };
+
   return (
     <div className="editor">
       <Sidebar addComponent={addComponent} />
@@ -195,6 +219,14 @@ function App() {
 
           <button onClick={exportCSS}>
             Export CSS
+          </button>
+
+          <button onClick={saveProject}>
+            Save Project
+          </button>
+
+          <button onClick={loadProject}>
+            Load Project
           </button>
         </div>
 
