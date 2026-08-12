@@ -1,5 +1,4 @@
 import type { BuilderComponent } from "../types/builder";
-
 import NavbarPreview from "./previews/NavbarPreview";
 import HeroPreview from "./previews/HeroPreview";
 import SectionPreview from "./previews/SectionPreview";
@@ -9,6 +8,7 @@ import HeadingPreview from "./previews/HeadingPreview";
 import ParagraphPreview from "./previews/ParagraphPreview";
 import ButtonPreview from "./previews/ButtonPreview";
 import ContainerPreview from "./previews/ContainerPreview";
+import ImagePreview from "./previews/ImagePreview";
 
 interface PreviewRendererProps {
   component: BuilderComponent;
@@ -17,7 +17,6 @@ interface PreviewRendererProps {
 function PreviewRenderer({
   component,
 }: PreviewRendererProps) {
-
   switch (component.type) {
     case "Navbar":
       return <NavbarPreview />;
@@ -71,6 +70,13 @@ function PreviewRenderer({
       return (
         <ContainerPreview
           minHeight={component.minHeight}
+        />
+      );
+
+    case "Image":
+      return (
+        <ImagePreview
+          imageUrl={component.imageUrl}
         />
       );
 
