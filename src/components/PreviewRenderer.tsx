@@ -25,6 +25,50 @@ function getBuilderStyle(
     return {};
   }
 
+  const maxWidth =
+    styles.maxWidth !== undefined &&
+    styles.maxWidth > 0
+      ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
+      : undefined;
+
+  const minHeight =
+    styles.minHeight !== undefined &&
+    styles.minHeight > 0
+      ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
+      : undefined;
+
+  const horizontalAlign =
+    styles.horizontalAlign ??
+    "left";
+
+  const horizontalAlignmentStyles: CSSProperties =
+    horizontalAlign === "center"
+      ? {
+          marginLeft: "auto",
+          marginRight: "auto",
+        }
+      : horizontalAlign === "right"
+      ? {
+          marginLeft: "auto",
+          marginRight:
+            styles.marginRight !==
+            undefined
+              ? `${styles.marginRight}px`
+              : "0",
+        }
+      : {
+          marginLeft:
+            styles.marginLeft !==
+            undefined
+              ? `${styles.marginLeft}px`
+              : "0",
+          marginRight:
+            styles.marginRight !==
+            undefined
+              ? `${styles.marginRight}px`
+              : "0",
+        };
+
   return {
     width:
       styles.width !== undefined
@@ -34,22 +78,17 @@ function getBuilderStyle(
       styles.height !== undefined
         ? `${styles.height}${styles.heightUnit ?? "px"}`
         : undefined,
+    maxWidth,
+    minHeight,
     marginTop:
       styles.marginTop !== undefined
         ? `${styles.marginTop}px`
-        : undefined,
-    marginRight:
-      styles.marginRight !== undefined
-        ? `${styles.marginRight}px`
         : undefined,
     marginBottom:
       styles.marginBottom !== undefined
         ? `${styles.marginBottom}px`
         : undefined,
-    marginLeft:
-      styles.marginLeft !== undefined
-        ? `${styles.marginLeft}px`
-        : undefined,
+    ...horizontalAlignmentStyles,
     paddingTop:
       styles.paddingTop !== undefined
         ? `${styles.paddingTop}px`
@@ -67,42 +106,71 @@ function getBuilderStyle(
         ? `${styles.paddingLeft}px`
         : undefined,
     display: styles.display,
-    flexDirection: styles.flexDirection,
-    justifyContent: styles.justifyContent,
-    alignItems: styles.alignItems,
+    flexDirection:
+      styles.display === "flex"
+        ? styles.flexDirection
+        : undefined,
+    justifyContent:
+      styles.display === "flex"
+        ? styles.justifyContent
+        : undefined,
+    alignItems:
+      styles.display === "flex"
+        ? styles.alignItems
+        : undefined,
     gap:
       styles.gap !== undefined
         ? `${styles.gap}px`
         : undefined,
+    gridTemplateColumns:
+      styles.display === "grid" &&
+      styles.gridColumns !== undefined
+        ? `repeat(${styles.gridColumns}, minmax(0, 1fr))`
+        : undefined,
+    gridGap:
+      styles.display === "grid" &&
+      styles.gridGap !== undefined
+        ? `${styles.gridGap}px`
+        : undefined,
     backgroundColor:
       styles.backgroundColor,
     color: styles.color,
-    fontFamily: styles.fontFamily,
+    fontFamily:
+      styles.fontFamily,
     fontSize:
       styles.fontSize !== undefined
         ? `${styles.fontSize}px`
         : undefined,
-    fontWeight: styles.fontWeight,
-    lineHeight: styles.lineHeight,
+    fontWeight:
+      styles.fontWeight,
+    lineHeight:
+      styles.lineHeight,
     letterSpacing:
       styles.letterSpacing !== undefined
         ? `${styles.letterSpacing}px`
         : undefined,
-    textAlign: styles.textAlign,
+    textAlign:
+      styles.textAlign,
     borderWidth:
       styles.borderWidth !== undefined
         ? `${styles.borderWidth}px`
         : undefined,
-    borderStyle: styles.borderStyle,
-    borderColor: styles.borderColor,
+    borderStyle:
+      styles.borderStyle,
+    borderColor:
+      styles.borderColor,
     borderRadius:
       styles.borderRadius !== undefined
         ? `${styles.borderRadius}px`
         : undefined,
-    opacity: styles.opacity,
-    overflow: styles.overflow,
-    zIndex: styles.zIndex,
-    boxSizing: "border-box",
+    opacity:
+      styles.opacity,
+    overflow:
+      styles.overflow,
+    zIndex:
+      styles.zIndex,
+    boxSizing:
+      "border-box",
   };
 }
 
@@ -135,56 +203,127 @@ function PreviewRenderer({
   const children =
     component.children ?? [];
 
-  const renderChildren =
-    () => {
-      if (
-        children.length === 0
-      ) {
-        return null;
-      }
+  const renderChildren = () => {
+    if (
+      children.length === 0
+    ) {
+      return null;
+    }
 
-      return children.map(
-        (child) => (
-          <div
-            key={child.id}
-            style={{
-              width: "100%",
-              boxSizing:
-                "border-box",
-              position:
-                "relative",
-            }}
-          >
-            <PreviewRenderer
-              component={child}
-            />
-          </div>
-        )
-      );
-    };
+    return children.map(
+      (child) => (
+        <div
+          key={child.id}
+          style={{
+            width:
+              "100%",
+            boxSizing:
+              "border-box",
+            position:
+              "relative",
+          }}
+        >
+          <PreviewRenderer
+            component={child}
+          />
+        </div>
+      )
+    );
+  };
 
   if (
     component.type ===
     "Container"
   ) {
+    const containerStyle: CSSProperties =
+      {
+        ...builderStyle,
+        width:
+          styles?.width !==
+          undefined
+            ? `${styles.width}${styles.widthUnit ?? "%"}`
+            : "100%",
+        height:
+          styles?.height !==
+          undefined
+            ? `${styles.height}${styles.heightUnit ?? "px"}`
+            : undefined,
+        minHeight:
+          styles?.minHeight !==
+            undefined &&
+          styles.minHeight > 0
+            ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
+            : styles?.height !==
+              undefined
+            ? undefined
+            : `${component.minHeight ?? 300}px`,
+        maxWidth:
+          styles?.maxWidth !==
+            undefined &&
+          styles.maxWidth > 0
+            ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
+            : undefined,
+        backgroundColor:
+          backgroundColor ||
+          "#ffffff",
+        position:
+          "relative",
+        boxSizing:
+          "border-box",
+      };
+
+    const containerContentStyle: CSSProperties =
+      {
+        width:
+          "100%",
+        minHeight:
+          "100%",
+        display:
+          styles?.display ??
+          "block",
+        flexDirection:
+          styles?.display ===
+          "flex"
+            ? styles.flexDirection
+            : undefined,
+        justifyContent:
+          styles?.display ===
+          "flex"
+            ? styles.justifyContent
+            : undefined,
+        alignItems:
+          styles?.display ===
+          "flex"
+            ? styles.alignItems
+            : undefined,
+        gap:
+          styles?.gap !==
+          undefined
+            ? `${styles.gap}px`
+            : undefined,
+        gridTemplateColumns:
+          styles?.display ===
+            "grid" &&
+          styles.gridColumns !==
+            undefined
+            ? `repeat(${styles.gridColumns}, minmax(0, 1fr))`
+            : undefined,
+        gridGap:
+          styles?.display ===
+            "grid" &&
+          styles.gridGap !==
+            undefined
+            ? `${styles.gridGap}px`
+            : undefined,
+        boxSizing:
+          "border-box",
+      };
+
     return (
       <div
-        style={{
-          ...builderStyle,
-          width:
-            builderStyle.width ??
-            "100%",
-          minHeight:
-            builderStyle.height ??
-            `${component.minHeight ?? 300}px`,
-          backgroundColor:
-            backgroundColor ||
-            "#ffffff",
-          position:
-            "relative",
-          boxSizing:
-            "border-box",
-        }}
+        style={
+          containerStyle
+        }
       >
         {children.length ===
         0 ? (
@@ -196,27 +335,9 @@ function PreviewRenderer({
           />
         ) : (
           <div
-            style={{
-              width: "100%",
-              minHeight:
-                "100%",
-              display:
-                styles?.display ??
-                "block",
-              flexDirection:
-                styles?.flexDirection,
-              justifyContent:
-                styles?.justifyContent,
-              alignItems:
-                styles?.alignItems,
-              gap:
-                styles?.gap !==
-                undefined
-                  ? `${styles.gap}px`
-                  : undefined,
-              boxSizing:
-                "border-box",
-            }}
+            style={
+              containerContentStyle
+            }
           >
             {renderChildren()}
           </div>
@@ -229,7 +350,8 @@ function PreviewRenderer({
     <div
       style={{
         ...builderStyle,
-        position: "relative",
+        position:
+          "relative",
         boxSizing:
           "border-box",
       }}
@@ -241,7 +363,9 @@ function PreviewRenderer({
             backgroundColor ||
             "#ffffff"
           }
-          textColor={textColor}
+          textColor={
+            textColor
+          }
           fontFamily={
             fontFamily
           }
@@ -267,7 +391,9 @@ function PreviewRenderer({
             backgroundColor ||
             "#f8fafc"
           }
-          textColor={textColor}
+          textColor={
+            textColor
+          }
           fontFamily={
             fontFamily
           }
@@ -287,7 +413,9 @@ function PreviewRenderer({
             backgroundColor ||
             "#ffffff"
           }
-          textColor={textColor}
+          textColor={
+            textColor
+          }
           fontFamily={
             fontFamily
           }
@@ -307,7 +435,9 @@ function PreviewRenderer({
             backgroundColor ||
             "#ffffff"
           }
-          textColor={textColor}
+          textColor={
+            textColor
+          }
           fontFamily={
             fontFamily
           }
@@ -346,7 +476,9 @@ function PreviewRenderer({
       {component.type ===
         "Heading" && (
         <HeadingPreview
-          text={component.text}
+          text={
+            component.text
+          }
           fontSize={
             styles?.fontSize ??
             component.fontSize
@@ -376,7 +508,9 @@ function PreviewRenderer({
       {component.type ===
         "Paragraph" && (
         <ParagraphPreview
-          text={component.text}
+          text={
+            component.text
+          }
           fontSize={
             styles?.fontSize ??
             component.fontSize
@@ -406,7 +540,9 @@ function PreviewRenderer({
       {component.type ===
         "Button" && (
         <ButtonPreview
-          text={component.text}
+          text={
+            component.text
+          }
           color={
             styles?.color ??
             component.color

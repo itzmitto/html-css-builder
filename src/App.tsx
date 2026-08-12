@@ -24,19 +24,16 @@ function App() {
       if (component.id === id) {
         return component;
       }
-
       if (component.children?.length) {
         const found = findComponentById(
           component.children,
           id
         );
-
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
 
@@ -52,19 +49,16 @@ function App() {
       ) {
         return component;
       }
-
       if (component.children?.length) {
         const found = findParentById(
           component.children,
           childId
         );
-
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
 
@@ -75,17 +69,14 @@ function App() {
     if (!component.children?.length) {
       return false;
     }
-
     for (const child of component.children) {
       if (child.id === id) {
         return true;
       }
-
       if (isDescendant(child, id)) {
         return true;
       }
     }
-
     return false;
   };
 
@@ -102,6 +93,10 @@ function App() {
       widthUnit: "%",
       height: 300,
       heightUnit: "px",
+      maxWidth: 0,
+      maxWidthUnit: "px",
+      minHeight: 0,
+      minHeightUnit: "px",
       marginTop: 0,
       marginRight: 0,
       marginBottom: 0,
@@ -115,6 +110,8 @@ function App() {
       justifyContent: "flex-start",
       alignItems: "stretch",
       gap: 0,
+      gridColumns: 1,
+      gridGap: 0,
       backgroundColor: "#ffffff",
       color: "#000000",
       fontFamily: "Arial",
@@ -166,7 +163,6 @@ function App() {
       if (component.id === id) {
         return updater(component);
       }
-
       if (component.children?.length) {
         return {
           ...component,
@@ -177,7 +173,6 @@ function App() {
           ),
         };
       }
-
       return component;
     });
   };
@@ -189,13 +184,20 @@ function App() {
     components: BuilderComponent[];
     removed?: BuilderComponent;
   } => {
-    for (let index = 0; index < componentList.length; index++) {
-      const component = componentList[index];
+    for (
+      let index = 0;
+      index < componentList.length;
+      index++
+    ) {
+      const component =
+        componentList[index];
 
       if (component.id === id) {
-        const updated = [...componentList];
-        const [removed] = updated.splice(index, 1);
-
+        const updated = [
+          ...componentList,
+        ];
+        const [removed] =
+          updated.splice(index, 1);
         return {
           components: updated,
           removed,
@@ -203,22 +205,27 @@ function App() {
       }
 
       if (component.children?.length) {
-        const result = removeComponentById(
-          component.children,
-          id
-        );
+        const result =
+          removeComponentById(
+            component.children,
+            id
+          );
 
         if (result.removed) {
-          const updated = [...componentList];
+          const updated = [
+            ...componentList,
+          ];
 
           updated[index] = {
             ...component,
-            children: result.components,
+            children:
+              result.components,
           };
 
           return {
             components: updated,
-            removed: result.removed,
+            removed:
+              result.removed,
           };
         }
       }
@@ -252,13 +259,16 @@ function App() {
     targetId: string,
     componentToInsert: BuilderComponent
   ): BuilderComponent[] => {
-    const targetIndex = componentList.findIndex(
-      (component) =>
-        component.id === targetId
-    );
+    const targetIndex =
+      componentList.findIndex(
+        (component) =>
+          component.id === targetId
+      );
 
     if (targetIndex !== -1) {
-      const updated = [...componentList];
+      const updated = [
+        ...componentList,
+      ];
 
       updated.splice(
         targetIndex,
@@ -269,28 +279,31 @@ function App() {
       return updated;
     }
 
-    return componentList.map((component) => {
-      if (component.children?.length) {
-        const updatedChildren =
-          insertBeforeComponent(
-            component.children,
-            targetId,
-            componentToInsert
-          );
+    return componentList.map(
+      (component) => {
+        if (component.children?.length) {
+          const updatedChildren =
+            insertBeforeComponent(
+              component.children,
+              targetId,
+              componentToInsert
+            );
 
-        if (
-          updatedChildren !==
-          component.children
-        ) {
-          return {
-            ...component,
-            children: updatedChildren,
-          };
+          if (
+            updatedChildren !==
+            component.children
+          ) {
+            return {
+              ...component,
+              children:
+                updatedChildren,
+            };
+          }
         }
-      }
 
-      return component;
-    });
+        return component;
+      }
+    );
   };
 
   const addComponent = (
@@ -356,13 +369,6 @@ function App() {
     }
 
     if (
-      activeComponent.id ===
-      overComponent.id
-    ) {
-      return;
-    }
-
-    if (
       isDescendant(
         activeComponent,
         overId
@@ -389,25 +395,28 @@ function App() {
     const overParentId =
       overParent?.id ?? null;
 
-    // Same parent = normal reorder
     if (
       activeParentId ===
       overParentId
     ) {
-      const currentList = activeParent
-        ? activeParent.children ?? []
-        : components;
+      const currentList =
+        activeParent
+          ? activeParent.children ??
+            []
+          : components;
 
       const oldIndex =
         currentList.findIndex(
           (component) =>
-            component.id === activeId
+            component.id ===
+            activeId
         );
 
       const newIndex =
         currentList.findIndex(
           (component) =>
-            component.id === overId
+            component.id ===
+            overId
         );
 
       if (
@@ -421,11 +430,12 @@ function App() {
         ...currentList,
       ];
 
-      const [movedComponent] =
-        updatedList.splice(
-          oldIndex,
-          1
-        );
+      const [
+        movedComponent,
+      ] = updatedList.splice(
+        oldIndex,
+        1
+      );
 
       updatedList.splice(
         newIndex,
@@ -454,7 +464,6 @@ function App() {
       return;
     }
 
-    // Remove active component first
     const removal =
       removeComponentById(
         components,
@@ -471,7 +480,6 @@ function App() {
     let updatedComponents =
       removal.components;
 
-    // Dropping onto a Container
     if (
       overComponent.type ===
       "Container"
@@ -494,7 +502,6 @@ function App() {
       return;
     }
 
-    // Dropping onto another component
     updatedComponents =
       insertBeforeComponent(
         updatedComponents,
@@ -729,10 +736,12 @@ function App() {
       ? parent.children ?? []
       : components;
 
-    const index = list.findIndex(
-      (component) =>
-        component.id === selectedId
-    );
+    const index =
+      list.findIndex(
+        (component) =>
+          component.id ===
+          selectedId
+      );
 
     if (index <= 0) {
       return;
@@ -784,10 +793,12 @@ function App() {
       ? parent.children ?? []
       : components;
 
-    const index = list.findIndex(
-      (component) =>
-        component.id === selectedId
-    );
+    const index =
+      list.findIndex(
+        (component) =>
+          component.id ===
+          selectedId
+      );
 
     if (
       index === -1 ||
@@ -838,14 +849,15 @@ function App() {
             ...component.styles,
           }
         : undefined,
-      children: component.children
-        ? component.children.map(
-            (child) =>
-              cloneComponentTree(
-                child
-              )
-          )
-        : [],
+      children:
+        component.children
+          ? component.children.map(
+              (child) =>
+                cloneComponentTree(
+                  child
+                )
+            )
+          : [],
     };
   };
 
@@ -882,16 +894,16 @@ function App() {
       const index =
         children.findIndex(
           (child) =>
-            child.id === selectedId
+            child.id ===
+            selectedId
         );
 
       if (index === -1) {
         return;
       }
 
-      const updatedChildren = [
-        ...children,
-      ];
+      const updatedChildren =
+        [...children];
 
       updatedChildren.splice(
         index + 1,
@@ -966,7 +978,8 @@ function App() {
         selectedId || "",
         (component) => ({
           ...component,
-          heroSubtitle: value,
+          heroSubtitle:
+            value,
         })
       )
     );
@@ -1000,16 +1013,22 @@ function App() {
     );
 
     const url =
-      URL.createObjectURL(blob);
+      URL.createObjectURL(
+        blob
+      );
 
     const a =
-      document.createElement("a");
+      document.createElement(
+        "a"
+      );
 
     a.href = url;
     a.download = filename;
     a.click();
 
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(
+      url
+    );
   };
 
   const exportHTML = () => {
@@ -1085,10 +1104,18 @@ function App() {
   return (
     <div className="editor">
       <Sidebar
-        components={components}
-        selectedId={selectedId}
-        addComponent={addComponent}
-        setSelectedId={setSelectedId}
+        components={
+          components
+        }
+        selectedId={
+          selectedId
+        }
+        addComponent={
+          addComponent
+        }
+        setSelectedId={
+          setSelectedId
+        }
         onDragEnd={
           reorderComponents
         }

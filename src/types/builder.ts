@@ -41,6 +41,7 @@ export interface BuilderStyles {
     | "center"
     | "flex-end"
     | "stretch";
+  horizontalAlign?: "left" | "center" | "right";
   gap?: number;
   gridColumns?: number;
   gridGap?: number;

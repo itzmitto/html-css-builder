@@ -145,12 +145,10 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.text || ""
+                selectedComponent.text ?? ""
               }
               onChange={(e) =>
-                updateText(
-                  e.target.value
-                )
+                updateText(e.target.value)
               }
             />
           </div>
@@ -170,13 +168,10 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroTitle ||
-                ""
+                selectedComponent.heroTitle ?? ""
               }
               onChange={(e) =>
-                updateHeroTitle(
-                  e.target.value
-                )
+                updateHeroTitle(e.target.value)
               }
             />
 
@@ -188,8 +183,7 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroSubtitle ||
-                ""
+                selectedComponent.heroSubtitle ?? ""
               }
               onChange={(e) =>
                 updateHeroSubtitle(
@@ -206,8 +200,7 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroButtonText ||
-                ""
+                selectedComponent.heroButtonText ?? ""
               }
               onChange={(e) =>
                 updateHeroButtonText(
@@ -244,23 +237,18 @@ function Properties({
               min="10"
               max="100"
               value={
-                selectedComponent.imageWidth ||
-                100
+                selectedComponent.imageWidth ?? 100
               }
               onChange={(e) =>
                 updateImageWidth(
-                  Number(
-                    e.target.value
-                  )
+                  Number(e.target.value)
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageWidth ||
-                100}
-              %
+              {selectedComponent.imageWidth ?? 100}%
             </div>
 
             <label className="property-label">
@@ -272,23 +260,18 @@ function Properties({
               min="50"
               max="1000"
               value={
-                selectedComponent.imageHeight ||
-                300
+                selectedComponent.imageHeight ?? 300
               }
               onChange={(e) =>
                 updateImageHeight(
-                  Number(
-                    e.target.value
-                  )
+                  Number(e.target.value)
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageHeight ||
-                300}
-              px
+              {selectedComponent.imageHeight ?? 300}px
             </div>
 
             <label className="property-label">
@@ -300,30 +283,23 @@ function Properties({
               min="0"
               max="100"
               value={
-                selectedComponent.imageBorderRadius ||
-                8
+                selectedComponent.imageBorderRadius ?? 8
               }
               onChange={(e) =>
                 updateImageBorderRadius(
-                  Number(
-                    e.target.value
-                  )
+                  Number(e.target.value)
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageBorderRadius ||
-                8}
-              px
+              {selectedComponent.imageBorderRadius ?? 8}px
             </div>
 
             {selectedComponent.imageUrl && (
               <img
-                src={
-                  selectedComponent.imageUrl
-                }
+                src={selectedComponent.imageUrl}
                 alt="Selected"
                 style={{
                   width: "100%",
@@ -345,15 +321,12 @@ function Properties({
             </h3>
 
             <div className="container-info">
-              <strong>
-                Container
-              </strong>
+              <strong>Container</strong>
 
               <span>
-                Nieuwe componenten worden
-                aan deze container
-                toegevoegd wanneer deze
-                geselecteerd is.
+                Nieuwe componenten worden aan
+                deze container toegevoegd wanneer
+                deze geselecteerd is.
               </span>
             </div>
 
@@ -366,19 +339,16 @@ function Properties({
               min="100"
               max="1000"
               value={
-                selectedComponent.minHeight ||
-                styles.height ||
+                selectedComponent.minHeight ??
+                styles.height ??
                 300
               }
               onChange={(e) => {
-                const value =
-                  Number(
-                    e.target.value
-                  );
-
-                updateMinHeight(
-                  value
+                const value = Number(
+                  e.target.value
                 );
+
+                updateMinHeight(value);
 
                 updateStyles({
                   height: value,
@@ -389,28 +359,24 @@ function Properties({
             />
 
             <div className="property-value">
-              {selectedComponent.minHeight ||
-                styles.height ||
-                300}
-              px
+              {selectedComponent.minHeight ??
+                styles.height ??
+                300}px
             </div>
           </div>
         )}
 
-        {selectedComponent.type !== "Heading" &&
-          selectedComponent.type !== "Paragraph" &&
-          selectedComponent.type !== "Button" &&
-          selectedComponent.type !== "Hero" &&
-          selectedComponent.type !== "Image" &&
-          selectedComponent.type !== "Container" && (
-            <div className="empty-tab">
-              <span>
-                Geen content-instellingen
-                beschikbaar voor dit
-                component.
-              </span>
-            </div>
-          )}
+        {(selectedComponent.type === "Navbar" ||
+          selectedComponent.type === "Section" ||
+          selectedComponent.type === "Card" ||
+          selectedComponent.type === "Footer") && (
+          <div className="empty-tab">
+            <span>
+              Dit component gebruikt voornamelijk
+              de Layout, Type en Style instellingen.
+            </span>
+          </div>
+        )}
       </>
     );
   };
@@ -418,6 +384,57 @@ function Properties({
   const renderAdvancedTab = () => {
     return (
       <div>
+        <h3 className="property-section-title">
+          CSS
+        </h3>
+
+        <label className="property-label">
+          Overflow
+        </label>
+
+        <select
+          value={
+            styles.overflow ?? "visible"
+          }
+          onChange={(e) =>
+            updateStyles({
+              overflow:
+                e.target.value as
+                  | "visible"
+                  | "hidden"
+                  | "auto",
+            })
+          }
+          className="property-input"
+        >
+          <option value="visible">
+            Visible
+          </option>
+          <option value="hidden">
+            Hidden
+          </option>
+          <option value="auto">
+            Auto
+          </option>
+        </select>
+
+        <label className="property-label">
+          Z-Index
+        </label>
+
+        <input
+          type="number"
+          value={styles.zIndex ?? 1}
+          onChange={(e) =>
+            updateStyles({
+              zIndex: Number(
+                e.target.value
+              ),
+            })
+          }
+          className="property-input"
+        />
+
         <h3 className="property-section-title">
           Component
         </h3>
@@ -436,6 +453,13 @@ function Properties({
               {selectedComponent?.id}
             </strong>
           </div>
+
+          <div className="meta-row">
+            <span>Children</span>
+            <strong>
+              {selectedComponent?.children?.length ?? 0}
+            </strong>
+          </div>
         </div>
 
         <h3 className="property-section-title">
@@ -443,6 +467,7 @@ function Properties({
         </h3>
 
         <button
+          type="button"
           onClick={moveComponentUp}
           className="property-action-button"
         >
@@ -450,6 +475,7 @@ function Properties({
         </button>
 
         <button
+          type="button"
           onClick={moveComponentDown}
           className="property-action-button"
         >
@@ -457,6 +483,7 @@ function Properties({
         </button>
 
         <button
+          type="button"
           onClick={duplicateComponent}
           className="property-action-button"
         >
@@ -464,6 +491,7 @@ function Properties({
         </button>
 
         <button
+          type="button"
           onClick={deleteComponent}
           className="property-action-button danger"
         >
@@ -488,9 +516,9 @@ function Properties({
           </h3>
 
           <p>
-            Selecteer een component op
-            het canvas of in Layers om
-            de properties te bekijken.
+            Selecteer een component op het
+            canvas of in Layers om de
+            properties te bekijken.
           </p>
         </div>
       </aside>
@@ -537,9 +565,7 @@ function Properties({
         {activeTab === "layout" && (
           <LayoutProperties
             styles={styles}
-            updateStyles={
-              updateStyles
-            }
+            updateStyles={updateStyles}
           />
         )}
 
@@ -547,17 +573,13 @@ function Properties({
           (showTypography ? (
             <TypographyProperties
               styles={styles}
-              updateStyles={
-                updateStyles
-              }
+              updateStyles={updateStyles}
             />
           ) : (
             <div className="empty-tab">
               <span>
-                Typography is beschikbaar
-                voor tekstcomponenten
-                zoals Heading, Paragraph
-                en Button.
+                Typography is beschikbaar voor
+                Heading, Paragraph en Button.
               </span>
             </div>
           ))}
@@ -565,9 +587,7 @@ function Properties({
         {activeTab === "appearance" && (
           <AppearanceProperties
             styles={styles}
-            updateStyles={
-              updateStyles
-            }
+            updateStyles={updateStyles}
           />
         )}
 

@@ -37,6 +37,7 @@ function BoxModel({
     borderRadius: "6px",
     border: "none",
     textAlign: "center" as const,
+    boxSizing: "border-box" as const,
   };
 
   return (
@@ -71,9 +72,7 @@ function BoxModel({
           onChange={(e) =>
             onChange(
               "top",
-              Number(
-                e.target.value
-              )
+              Number(e.target.value)
             )
           }
           placeholder="Top"
@@ -88,9 +87,7 @@ function BoxModel({
           onChange={(e) =>
             onChange(
               "left",
-              Number(
-                e.target.value
-              )
+              Number(e.target.value)
             )
           }
           placeholder="Left"
@@ -101,8 +98,7 @@ function BoxModel({
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent:
-              "center",
+            justifyContent: "center",
             color: "#9ca3af",
             fontSize: "11px",
             border:
@@ -120,9 +116,7 @@ function BoxModel({
           onChange={(e) =>
             onChange(
               "right",
-              Number(
-                e.target.value
-              )
+              Number(e.target.value)
             )
           }
           placeholder="Right"
@@ -137,9 +131,7 @@ function BoxModel({
           onChange={(e) =>
             onChange(
               "bottom",
-              Number(
-                e.target.value
-              )
+              Number(e.target.value)
             )
           }
           placeholder="Bottom"
@@ -198,9 +190,7 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={
-            styles.width ?? 100
-          }
+          value={styles.width ?? 100}
           onChange={(e) =>
             updateStyles({
               width: Number(
@@ -215,9 +205,7 @@ function LayoutProperties({
         />
 
         <select
-          value={
-            styles.widthUnit ?? "%"
-          }
+          value={styles.widthUnit ?? "%"}
           onChange={(e) =>
             updateStyles({
               widthUnit:
@@ -231,12 +219,8 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="%">
-            %
-          </option>
-          <option value="px">
-            px
-          </option>
+          <option value="%">%</option>
+          <option value="px">px</option>
         </select>
       </div>
 
@@ -248,9 +232,7 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={
-            styles.height ?? 300
-          }
+          value={styles.height ?? 300}
           onChange={(e) =>
             updateStyles({
               height: Number(
@@ -265,9 +247,7 @@ function LayoutProperties({
         />
 
         <select
-          value={
-            styles.heightUnit ?? "px"
-          }
+          value={styles.heightUnit ?? "px"}
           onChange={(e) =>
             updateStyles({
               heightUnit:
@@ -281,12 +261,8 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">
-            px
-          </option>
-          <option value="%">
-            %
-          </option>
+          <option value="px">px</option>
+          <option value="%">%</option>
         </select>
       </div>
 
@@ -298,9 +274,7 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={
-            styles.maxWidth ?? 0
-          }
+          value={styles.maxWidth ?? 0}
           onChange={(e) =>
             updateStyles({
               maxWidth: Number(
@@ -316,8 +290,7 @@ function LayoutProperties({
 
         <select
           value={
-            styles.maxWidthUnit ??
-            "px"
+            styles.maxWidthUnit ?? "px"
           }
           onChange={(e) =>
             updateStyles({
@@ -332,12 +305,8 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">
-            px
-          </option>
-          <option value="%">
-            %
-          </option>
+          <option value="px">px</option>
+          <option value="%">%</option>
         </select>
       </div>
 
@@ -349,9 +318,7 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={
-            styles.minHeight ?? 0
-          }
+          value={styles.minHeight ?? 0}
           onChange={(e) =>
             updateStyles({
               minHeight: Number(
@@ -367,8 +334,7 @@ function LayoutProperties({
 
         <select
           value={
-            styles.minHeightUnit ??
-            "px"
+            styles.minHeightUnit ?? "px"
           }
           onChange={(e) =>
             updateStyles({
@@ -383,61 +349,37 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">
-            px
-          </option>
-          <option value="%">
-            %
-          </option>
+          <option value="px">px</option>
+          <option value="%">%</option>
         </select>
       </div>
 
       <BoxModel
         title="Margin"
-        top={
-          styles.marginTop ?? 0
-        }
-        right={
-          styles.marginRight ?? 0
-        }
-        bottom={
-          styles.marginBottom ?? 0
-        }
-        left={
-          styles.marginLeft ?? 0
-        }
-        onChange={(
-          property,
-          value
-        ) => {
-          if (
-            property === "top"
-          ) {
+        top={styles.marginTop ?? 0}
+        right={styles.marginRight ?? 0}
+        bottom={styles.marginBottom ?? 0}
+        left={styles.marginLeft ?? 0}
+        onChange={(property, value) => {
+          if (property === "top") {
             updateStyles({
               marginTop: value,
             });
           }
 
-          if (
-            property === "right"
-          ) {
+          if (property === "right") {
             updateStyles({
               marginRight: value,
             });
           }
 
-          if (
-            property === "bottom"
-          ) {
+          if (property === "bottom") {
             updateStyles({
-              marginBottom:
-                value,
+              marginBottom: value,
             });
           }
 
-          if (
-            property === "left"
-          ) {
+          if (property === "left") {
             updateStyles({
               marginLeft: value,
             });
@@ -447,51 +389,30 @@ function LayoutProperties({
 
       <BoxModel
         title="Padding"
-        top={
-          styles.paddingTop ?? 0
-        }
-        right={
-          styles.paddingRight ?? 0
-        }
-        bottom={
-          styles.paddingBottom ?? 0
-        }
-        left={
-          styles.paddingLeft ?? 0
-        }
-        onChange={(
-          property,
-          value
-        ) => {
-          if (
-            property === "top"
-          ) {
+        top={styles.paddingTop ?? 0}
+        right={styles.paddingRight ?? 0}
+        bottom={styles.paddingBottom ?? 0}
+        left={styles.paddingLeft ?? 0}
+        onChange={(property, value) => {
+          if (property === "top") {
             updateStyles({
               paddingTop: value,
             });
           }
 
-          if (
-            property === "right"
-          ) {
+          if (property === "right") {
             updateStyles({
-              paddingRight:
-                value,
+              paddingRight: value,
             });
           }
 
-          if (
-            property === "bottom"
-          ) {
+          if (property === "bottom") {
             updateStyles({
-              paddingBottom:
-                value,
+              paddingBottom: value,
             });
           }
 
-          if (
-            property === "left"
-          ) {
+          if (property === "left") {
             updateStyles({
               paddingLeft: value,
             });
@@ -524,8 +445,7 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              marginLeft: 0,
-              marginRight: 0,
+              horizontalAlign: "left",
             })
           }
           style={{
@@ -533,8 +453,8 @@ function LayoutProperties({
             border: "none",
             borderRadius: "6px",
             background:
-              styles.marginLeft === 0 &&
-              styles.marginRight === 0
+              (styles.horizontalAlign ??
+                "left") === "left"
                 ? "#2563eb"
                 : "#374151",
             color: "white",
@@ -548,8 +468,7 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              marginLeft: 0,
-              marginRight: 0,
+              horizontalAlign: "center",
             })
           }
           style={{
@@ -557,7 +476,10 @@ function LayoutProperties({
             border: "none",
             borderRadius: "6px",
             background:
-              "#374151",
+              styles.horizontalAlign ===
+              "center"
+                ? "#2563eb"
+                : "#374151",
             color: "white",
             cursor: "pointer",
           }}
@@ -569,8 +491,7 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              marginLeft: 0,
-              marginRight: 0,
+              horizontalAlign: "right",
             })
           }
           style={{
@@ -578,7 +499,10 @@ function LayoutProperties({
             border: "none",
             borderRadius: "6px",
             background:
-              "#374151",
+              styles.horizontalAlign ===
+              "right"
+                ? "#2563eb"
+                : "#374151",
             color: "white",
             cursor: "pointer",
           }}
@@ -596,9 +520,7 @@ function LayoutProperties({
       </p>
 
       <select
-        value={
-          styles.display ?? "block"
-        }
+        value={styles.display ?? "block"}
         onChange={(e) =>
           updateStyles({
             display:
@@ -621,8 +543,7 @@ function LayoutProperties({
         </option>
       </select>
 
-      {styles.display ===
-        "flex" && (
+      {styles.display === "flex" && (
         <>
           <p
             style={{
@@ -645,9 +566,7 @@ function LayoutProperties({
                     | "column",
               })
             }
-            style={
-              selectStyle
-            }
+            style={selectStyle}
           >
             <option value="row">
               Row
@@ -673,8 +592,7 @@ function LayoutProperties({
             onChange={(e) =>
               updateStyles({
                 justifyContent:
-                  e.target
-                    .value as
+                  e.target.value as
                     | "flex-start"
                     | "center"
                     | "flex-end"
@@ -683,9 +601,7 @@ function LayoutProperties({
                     | "space-evenly",
               })
             }
-            style={
-              selectStyle
-            }
+            style={selectStyle}
           >
             <option value="flex-start">
               Start
@@ -723,17 +639,14 @@ function LayoutProperties({
             onChange={(e) =>
               updateStyles({
                 alignItems:
-                  e.target
-                    .value as
+                  e.target.value as
                     | "flex-start"
                     | "center"
                     | "flex-end"
                     | "stretch",
               })
             }
-            style={
-              selectStyle
-            }
+            style={selectStyle}
           >
             <option value="stretch">
               Stretch
@@ -760,9 +673,7 @@ function LayoutProperties({
           <input
             type="number"
             min="0"
-            value={
-              styles.gap ?? 0
-            }
+            value={styles.gap ?? 0}
             onChange={(e) =>
               updateStyles({
                 gap: Number(
@@ -778,8 +689,7 @@ function LayoutProperties({
         </>
       )}
 
-      {styles.display ===
-        "grid" && (
+      {styles.display === "grid" && (
         <>
           <p
             style={{
@@ -794,16 +704,13 @@ function LayoutProperties({
             min="1"
             max="12"
             value={
-              styles.gridColumns ??
-              1
+              styles.gridColumns ?? 1
             }
             onChange={(e) =>
               updateStyles({
-                gridColumns:
-                  Number(
-                    e.target
-                      .value
-                  ),
+                gridColumns: Number(
+                  e.target.value
+                ),
               })
             }
             style={{
