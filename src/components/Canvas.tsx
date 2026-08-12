@@ -25,60 +25,10 @@ interface CanvasProps {
   onDragEnd: (event: DragEndEvent) => void;
 }
 
-interface ComponentTreeProps {
-  component: BuilderComponent;
-  selectedId: string | null;
-  setSelectedId: (id: string) => void;
-}
-
 interface SortableComponentProps {
   component: BuilderComponent;
   selectedId: string | null;
   setSelectedId: (id: string) => void;
-}
-
-function ComponentTree({
-  component,
-  selectedId,
-  setSelectedId,
-}: ComponentTreeProps) {
-  return (
-    <div
-      className={
-        selectedId === component.id
-          ? "builder-component selected"
-          : "builder-component"
-      }
-      onClick={(event) => {
-        event.stopPropagation();
-        setSelectedId(component.id);
-      }}
-    >
-      <PreviewRenderer
-        component={component}
-      />
-
-      {component.children &&
-        component.children.length > 0 && (
-          <div className="nested-components">
-            {component.children.map(
-              (child) => (
-                <ComponentTree
-                  key={child.id}
-                  component={child}
-                  selectedId={
-                    selectedId
-                  }
-                  setSelectedId={
-                    setSelectedId
-                  }
-                />
-              )
-            )}
-          </div>
-        )}
-    </div>
-  );
 }
 
 function SortableComponent({
@@ -98,10 +48,7 @@ function SortableComponent({
   });
 
   const style = {
-    transform:
-      CSS.Transform.toString(
-        transform
-      ),
+    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
@@ -117,9 +64,7 @@ function SortableComponent({
       }
       onClick={(event) => {
         event.stopPropagation();
-        setSelectedId(
-          component.id
-        );
+        setSelectedId(component.id);
       }}
       {...attributes}
     >
@@ -131,29 +76,7 @@ function SortableComponent({
         ⋮⋮
       </div>
 
-      <PreviewRenderer
-        component={component}
-      />
-
-      {component.children &&
-        component.children.length > 0 && (
-          <div className="nested-components">
-            {component.children.map(
-              (child) => (
-                <ComponentTree
-                  key={child.id}
-                  component={child}
-                  selectedId={
-                    selectedId
-                  }
-                  setSelectedId={
-                    setSelectedId
-                  }
-                />
-              )
-            )}
-          </div>
-        )}
+      <PreviewRenderer component={component} />
     </div>
   );
 }
@@ -242,9 +165,7 @@ function Canvas({
           )}
 
           <DndContext
-            collisionDetection={
-              closestCenter
-            }
+            collisionDetection={closestCenter}
             onDragEnd={onDragEnd}
           >
             <SortableContext
@@ -261,9 +182,7 @@ function Canvas({
                   <SortableComponent
                     key={component.id}
                     component={component}
-                    selectedId={
-                      selectedId
-                    }
+                    selectedId={selectedId}
                     setSelectedId={
                       setSelectedId
                     }

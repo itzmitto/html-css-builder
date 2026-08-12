@@ -15,6 +15,10 @@ export interface BuilderStyles {
   widthUnit?: "%" | "px";
   height?: number;
   heightUnit?: "%" | "px";
+  maxWidth?: number;
+  maxWidthUnit?: "%" | "px";
+  minHeight?: number;
+  minHeightUnit?: "%" | "px";
   marginTop?: number;
   marginRight?: number;
   marginBottom?: number;
@@ -38,6 +42,8 @@ export interface BuilderStyles {
     | "flex-end"
     | "stretch";
   gap?: number;
+  gridColumns?: number;
+  gridGap?: number;
   backgroundColor?: string;
   color?: string;
   fontFamily?: string;

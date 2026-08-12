@@ -22,16 +22,28 @@ function AppearanceProperties({
         Appearance
       </h3>
 
+      <h4
+        style={{
+          marginTop: "10px",
+          marginBottom: "10px",
+          color: "#d1d5db",
+        }}
+      >
+        Background
+      </h4>
+
       <p>Background Color</p>
 
       <input
         type="color"
         value={
-          styles.backgroundColor ?? "#ffffff"
+          styles.backgroundColor ??
+          "#ffffff"
         }
         onChange={(e) =>
           updateStyles({
-            backgroundColor: e.target.value,
+            backgroundColor:
+              e.target.value,
           })
         }
         style={{
@@ -44,18 +56,31 @@ function AppearanceProperties({
         }}
       />
 
-      <p style={{ marginTop: "20px" }}>
-        Border Width
-      </p>
+      <h4
+        style={{
+          marginTop: "25px",
+          marginBottom: "10px",
+          color: "#d1d5db",
+        }}
+      >
+        Border
+      </h4>
+
+      <p>Border Width</p>
 
       <input
         type="number"
         min="0"
         max="50"
-        value={styles.borderWidth ?? 0}
+        value={
+          styles.borderWidth ?? 0
+        }
         onChange={(e) =>
           updateStyles({
-            borderWidth: Number(e.target.value),
+            borderWidth:
+              Number(
+                e.target.value
+              ),
           })
         }
         style={{
@@ -73,7 +98,8 @@ function AppearanceProperties({
 
       <select
         value={
-          styles.borderStyle ?? "none"
+          styles.borderStyle ??
+          "none"
         }
         onChange={(e) =>
           updateStyles({
@@ -96,15 +122,12 @@ function AppearanceProperties({
         <option value="none">
           None
         </option>
-
         <option value="solid">
           Solid
         </option>
-
         <option value="dashed">
           Dashed
         </option>
-
         <option value="dotted">
           Dotted
         </option>
@@ -117,11 +140,13 @@ function AppearanceProperties({
       <input
         type="color"
         value={
-          styles.borderColor ?? "#000000"
+          styles.borderColor ??
+          "#000000"
         }
         onChange={(e) =>
           updateStyles({
-            borderColor: e.target.value,
+            borderColor:
+              e.target.value,
           })
         }
         style={{
@@ -142,12 +167,15 @@ function AppearanceProperties({
         type="number"
         min="0"
         max="100"
-        value={styles.borderRadius ?? 0}
+        value={
+          styles.borderRadius ?? 0
+        }
         onChange={(e) =>
           updateStyles({
-            borderRadius: Number(
-              e.target.value
-            ),
+            borderRadius:
+              Number(
+                e.target.value
+              ),
           })
         }
         style={{
@@ -159,16 +187,26 @@ function AppearanceProperties({
         }}
       />
 
-      <p style={{ marginTop: "15px" }}>
-        Opacity
-      </p>
+      <h4
+        style={{
+          marginTop: "25px",
+          marginBottom: "10px",
+          color: "#d1d5db",
+        }}
+      >
+        Effects
+      </h4>
+
+      <p>Opacity</p>
 
       <input
         type="range"
         min="0"
         max="1"
         step="0.01"
-        value={styles.opacity ?? 1}
+        value={
+          styles.opacity ?? 1
+        }
         onChange={(e) =>
           updateStyles({
             opacity: Number(
@@ -182,9 +220,16 @@ function AppearanceProperties({
         }}
       />
 
-      <p style={{ marginTop: "10px" }}>
+      <p
+        style={{
+          marginTop: "8px",
+          color: "#9ca3af",
+          fontSize: "13px",
+        }}
+      >
         {Math.round(
-          (styles.opacity ?? 1) * 100
+          (styles.opacity ?? 1) *
+            100
         )}
         %
       </p>
@@ -195,7 +240,8 @@ function AppearanceProperties({
 
       <select
         value={
-          styles.overflow ?? "visible"
+          styles.overflow ??
+          "visible"
         }
         onChange={(e) =>
           updateStyles({
@@ -217,11 +263,9 @@ function AppearanceProperties({
         <option value="visible">
           Visible
         </option>
-
         <option value="hidden">
           Hidden
         </option>
-
         <option value="auto">
           Auto
         </option>
@@ -233,12 +277,15 @@ function AppearanceProperties({
 
       <input
         type="number"
-        value={styles.zIndex ?? 1}
+        value={
+          styles.zIndex ?? 1
+        }
         onChange={(e) =>
           updateStyles({
-            zIndex: Number(
-              e.target.value
-            ),
+            zIndex:
+              Number(
+                e.target.value
+              ),
           })
         }
         style={{

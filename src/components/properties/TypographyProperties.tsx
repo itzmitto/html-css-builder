@@ -22,13 +22,27 @@ function TypographyProperties({
         Typography
       </h3>
 
+      <h4
+        style={{
+          marginTop: "10px",
+          marginBottom: "10px",
+          color: "#d1d5db",
+        }}
+      >
+        Font
+      </h4>
+
       <p>Font Family</p>
 
       <select
-        value={styles.fontFamily ?? "Arial"}
+        value={
+          styles.fontFamily ??
+          "Arial"
+        }
         onChange={(e) =>
           updateStyles({
-            fontFamily: e.target.value,
+            fontFamily:
+              e.target.value,
           })
         }
         style={{
@@ -37,77 +51,184 @@ function TypographyProperties({
           marginTop: "8px",
           borderRadius: "8px",
           border: "none",
+          fontFamily:
+            styles.fontFamily ??
+            "Arial",
         }}
       >
-        <option value="Arial">
+        <option
+          value="Arial"
+          style={{
+            fontFamily: "Arial",
+          }}
+        >
           Arial
         </option>
 
-        <option value="Helvetica">
+        <option
+          value="Helvetica"
+          style={{
+            fontFamily:
+              "Helvetica",
+          }}
+        >
           Helvetica
         </option>
 
-        <option value="Verdana">
+        <option
+          value="Verdana"
+          style={{
+            fontFamily:
+              "Verdana",
+          }}
+        >
           Verdana
         </option>
 
-        <option value="Tahoma">
+        <option
+          value="Tahoma"
+          style={{
+            fontFamily:
+              "Tahoma",
+          }}
+        >
           Tahoma
         </option>
 
-        <option value="Trebuchet MS">
+        <option
+          value="Trebuchet MS"
+          style={{
+            fontFamily:
+              "Trebuchet MS",
+          }}
+        >
           Trebuchet MS
         </option>
 
-        <option value="Georgia">
+        <option
+          value="Georgia"
+          style={{
+            fontFamily:
+              "Georgia",
+          }}
+        >
           Georgia
         </option>
 
-        <option value="Times New Roman">
+        <option
+          value="Times New Roman"
+          style={{
+            fontFamily:
+              "Times New Roman",
+          }}
+        >
           Times New Roman
         </option>
 
-        <option value="Courier New">
+        <option
+          value="Courier New"
+          style={{
+            fontFamily:
+              "Courier New",
+          }}
+        >
           Courier New
         </option>
 
-        <option value="system-ui">
+        <option
+          value="system-ui"
+          style={{
+            fontFamily:
+              "system-ui",
+          }}
+        >
           System UI
         </option>
       </select>
 
-      <p style={{ marginTop: "15px" }}>
+      <div
+        style={{
+          marginTop: "10px",
+          padding: "10px",
+          background: "#111827",
+          borderRadius: "8px",
+          color: "#e5e7eb",
+          fontFamily:
+            styles.fontFamily ??
+            "Arial",
+          fontSize: "20px",
+        }}
+      >
+        Aa Bb Cc 123
+      </div>
+
+      <p
+        style={{
+          marginTop: "20px",
+        }}
+      >
         Font Size
       </p>
 
-      <input
-        type="number"
-        min="1"
-        max="200"
-        value={styles.fontSize ?? 16}
-        onChange={(e) =>
-          updateStyles({
-            fontSize: Number(e.target.value),
-          })
-        }
+      <div
         style={{
-          width: "100%",
-          padding: "10px",
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
           marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
         }}
-      />
+      >
+        <input
+          type="number"
+          min="1"
+          max="200"
+          value={
+            styles.fontSize ?? 16
+          }
+          onChange={(e) =>
+            updateStyles({
+              fontSize:
+                Number(
+                  e.target.value
+                ),
+            })
+          }
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+          }}
+        />
 
-      <p style={{ marginTop: "15px" }}>
+        <span
+          style={{
+            color: "#9ca3af",
+            fontSize: "13px",
+          }}
+        >
+          px
+        </span>
+      </div>
+
+      <p
+        style={{
+          marginTop: "15px",
+        }}
+      >
         Font Weight
       </p>
 
       <select
-        value={styles.fontWeight ?? 400}
+        value={
+          styles.fontWeight ?? 400
+        }
         onChange={(e) =>
           updateStyles({
-            fontWeight: Number(e.target.value),
+            fontWeight:
+              Number(
+                e.target.value
+              ),
           })
         }
         style={{
@@ -155,88 +276,200 @@ function TypographyProperties({
         </option>
       </select>
 
-      <p style={{ marginTop: "15px" }}>
-        Line Height
-      </p>
-
-      <input
-        type="number"
-        min="0.5"
-        max="5"
-        step="0.1"
-        value={styles.lineHeight ?? 1.5}
-        onChange={(e) =>
-          updateStyles({
-            lineHeight: Number(e.target.value),
-          })
-        }
+      <h4
         style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
+          marginTop: "25px",
+          marginBottom: "10px",
+          color: "#d1d5db",
         }}
-      />
+      >
+        Spacing
+      </h4>
 
-      <p style={{ marginTop: "15px" }}>
+      <p>Line Height</p>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
+          marginTop: "8px",
+        }}
+      >
+        <input
+          type="number"
+          min="0.5"
+          max="5"
+          step="0.1"
+          value={
+            styles.lineHeight ?? 1.5
+          }
+          onChange={(e) =>
+            updateStyles({
+              lineHeight:
+                Number(
+                  e.target.value
+                ),
+            })
+          }
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+          }}
+        />
+
+        <span
+          style={{
+            color: "#9ca3af",
+            fontSize: "13px",
+          }}
+        >
+          unitless
+        </span>
+      </div>
+
+      <p
+        style={{
+          marginTop: "15px",
+        }}
+      >
         Letter Spacing
       </p>
 
-      <input
-        type="number"
-        min="-10"
-        max="50"
-        step="0.5"
-        value={styles.letterSpacing ?? 0}
-        onChange={(e) =>
-          updateStyles({
-            letterSpacing: Number(e.target.value),
-          })
-        }
+      <div
         style={{
-          width: "100%",
-          padding: "10px",
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
           marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
-      />
-
-      <p style={{ marginTop: "15px" }}>
-        Text Align
-      </p>
-
-      <select
-        value={styles.textAlign ?? "left"}
-        onChange={(e) =>
-          updateStyles({
-            textAlign: e.target.value as
-              | "left"
-              | "center"
-              | "right",
-          })
-        }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
         }}
       >
-        <option value="left">
+        <input
+          type="number"
+          min="-10"
+          max="50"
+          step="0.5"
+          value={
+            styles.letterSpacing ?? 0
+          }
+          onChange={(e) =>
+            updateStyles({
+              letterSpacing:
+                Number(
+                  e.target.value
+                ),
+            })
+          }
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+          }}
+        />
+
+        <span
+          style={{
+            color: "#9ca3af",
+            fontSize: "13px",
+          }}
+        >
+          px
+        </span>
+      </div>
+
+      <h4
+        style={{
+          marginTop: "25px",
+          marginBottom: "10px",
+          color: "#d1d5db",
+        }}
+      >
+        Alignment
+      </h4>
+
+      <p>Text Align</p>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(3, 1fr)",
+          gap: "6px",
+          marginTop: "8px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              textAlign: "left",
+            })
+          }
+          style={{
+            padding: "10px 6px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background:
+              styles.textAlign ===
+              "left"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+          }}
+        >
           Left
-        </option>
+        </button>
 
-        <option value="center">
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              textAlign: "center",
+            })
+          }
+          style={{
+            padding: "10px 6px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background:
+              styles.textAlign ===
+              "center"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+          }}
+        >
           Center
-        </option>
+        </button>
 
-        <option value="right">
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              textAlign: "right",
+            })
+          }
+          style={{
+            padding: "10px 6px",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background:
+              styles.textAlign ===
+              "right"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+          }}
+        >
           Right
-        </option>
-      </select>
+        </button>
+      </div>
     </div>
   );
 }

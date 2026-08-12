@@ -74,7 +74,8 @@ function getBuilderStyle(
       styles.gap !== undefined
         ? `${styles.gap}px`
         : undefined,
-    backgroundColor: styles.backgroundColor,
+    backgroundColor:
+      styles.backgroundColor,
     color: styles.color,
     fontFamily: styles.fontFamily,
     fontSize:
@@ -101,15 +102,18 @@ function getBuilderStyle(
     opacity: styles.opacity,
     overflow: styles.overflow,
     zIndex: styles.zIndex,
+    boxSizing: "border-box",
   };
 }
 
 function PreviewRenderer({
   component,
 }: PreviewRendererProps) {
-  const styles = component.styles;
+  const styles =
+    component.styles;
 
-  const builderStyle = getBuilderStyle(styles);
+  const builderStyle =
+    getBuilderStyle(styles);
 
   const backgroundColor =
     styles?.backgroundColor ||
@@ -128,59 +132,145 @@ function PreviewRenderer({
     styles?.textAlign ||
     "left";
 
-  const renderChildren = () => {
-    if (!component.children?.length) {
-      return null;
-    }
+  const children =
+    component.children ?? [];
 
-    return component.children.map(
-      (child) => (
-        <div
-          key={child.id}
-          style={{
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          <PreviewRenderer
-            component={child}
+  const renderChildren =
+    () => {
+      if (
+        children.length === 0
+      ) {
+        return null;
+      }
+
+      return children.map(
+        (child) => (
+          <div
+            key={child.id}
+            style={{
+              width: "100%",
+              boxSizing:
+                "border-box",
+              position:
+                "relative",
+            }}
+          >
+            <PreviewRenderer
+              component={child}
+            />
+          </div>
+        )
+      );
+    };
+
+  if (
+    component.type ===
+    "Container"
+  ) {
+    return (
+      <div
+        style={{
+          ...builderStyle,
+          width:
+            builderStyle.width ??
+            "100%",
+          minHeight:
+            builderStyle.height ??
+            `${component.minHeight ?? 300}px`,
+          backgroundColor:
+            backgroundColor ||
+            "#ffffff",
+          position:
+            "relative",
+          boxSizing:
+            "border-box",
+        }}
+      >
+        {children.length ===
+        0 ? (
+          <ContainerPreview
+            minHeight={
+              component.minHeight ??
+              styles?.height
+            }
           />
-        </div>
-      )
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              minHeight:
+                "100%",
+              display:
+                styles?.display ??
+                "block",
+              flexDirection:
+                styles?.flexDirection,
+              justifyContent:
+                styles?.justifyContent,
+              alignItems:
+                styles?.alignItems,
+              gap:
+                styles?.gap !==
+                undefined
+                  ? `${styles.gap}px`
+                  : undefined,
+              boxSizing:
+                "border-box",
+            }}
+          >
+            {renderChildren()}
+          </div>
+        )}
+      </div>
     );
-  };
+  }
 
   return (
     <div
       style={{
         ...builderStyle,
         position: "relative",
-        boxSizing: "border-box",
+        boxSizing:
+          "border-box",
       }}
     >
-      {component.type === "Navbar" && (
+      {component.type ===
+        "Navbar" && (
         <NavbarPreview
           backgroundColor={
-            backgroundColor || "#ffffff"
+            backgroundColor ||
+            "#ffffff"
           }
           textColor={textColor}
-          fontFamily={fontFamily}
-          textAlign={textAlign}
+          fontFamily={
+            fontFamily
+          }
+          textAlign={
+            textAlign
+          }
         />
       )}
 
-      {component.type === "Hero" && (
+      {component.type ===
+        "Hero" && (
         <HeroPreview
-          title={component.heroTitle}
-          subtitle={component.heroSubtitle}
+          title={
+            component.heroTitle
+          }
+          subtitle={
+            component.heroSubtitle
+          }
           buttonText={
             component.heroButtonText
           }
           backgroundColor={
-            backgroundColor || "#f8fafc"
+            backgroundColor ||
+            "#f8fafc"
           }
           textColor={textColor}
-          fontFamily={fontFamily}
+          fontFamily={
+            fontFamily
+          }
           textAlign={
             textAlign as
               | "left"
@@ -190,13 +280,17 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Section" && (
+      {component.type ===
+        "Section" && (
         <SectionPreview
           backgroundColor={
-            backgroundColor || "#ffffff"
+            backgroundColor ||
+            "#ffffff"
           }
           textColor={textColor}
-          fontFamily={fontFamily}
+          fontFamily={
+            fontFamily
+          }
           textAlign={
             textAlign as
               | "left"
@@ -206,13 +300,17 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Card" && (
+      {component.type ===
+        "Card" && (
         <CardPreview
           backgroundColor={
-            backgroundColor || "#ffffff"
+            backgroundColor ||
+            "#ffffff"
           }
           textColor={textColor}
-          fontFamily={fontFamily}
+          fontFamily={
+            fontFamily
+          }
           textAlign={
             textAlign as
               | "left"
@@ -222,15 +320,20 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Footer" && (
+      {component.type ===
+        "Footer" && (
         <FooterPreview
           backgroundColor={
-            backgroundColor || "#111827"
+            backgroundColor ||
+            "#111827"
           }
           textColor={
-            styles?.color || "#ffffff"
+            styles?.color ||
+            "#ffffff"
           }
-          fontFamily={fontFamily}
+          fontFamily={
+            fontFamily
+          }
           textAlign={
             textAlign as
               | "left"
@@ -240,7 +343,8 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Heading" && (
+      {component.type ===
+        "Heading" && (
         <HeadingPreview
           text={component.text}
           fontSize={
@@ -269,7 +373,8 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Paragraph" && (
+      {component.type ===
+        "Paragraph" && (
         <ParagraphPreview
           text={component.text}
           fontSize={
@@ -298,7 +403,8 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Button" && (
+      {component.type ===
+        "Button" && (
         <ButtonPreview
           text={component.text}
           color={
@@ -326,24 +432,12 @@ function PreviewRenderer({
         />
       )}
 
-      {component.type === "Container" && (
-        <>
-          {!component.children?.length && (
-            <ContainerPreview
-              minHeight={
-                component.minHeight ??
-                styles?.height
-              }
-            />
-          )}
-
-          {renderChildren()}
-        </>
-      )}
-
-      {component.type === "Image" && (
+      {component.type ===
+        "Image" && (
         <ImagePreview
-          imageUrl={component.imageUrl}
+          imageUrl={
+            component.imageUrl
+          }
           width={
             component.imageWidth
           }

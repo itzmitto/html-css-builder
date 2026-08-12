@@ -16,6 +16,7 @@ interface LayerItemProps {
   component: BuilderComponent;
   selectedId: string | null;
   setSelectedId: (id: string) => void;
+  onDragEnd: (activeId: string, overId: string) => void;
   depth?: number;
 }
 
@@ -23,10 +24,11 @@ function LayerItem({
   component,
   selectedId,
   setSelectedId,
+  onDragEnd,
   depth = 0,
 }: LayerItemProps) {
   const hasChildren =
-    !!component.children?.length;
+    Boolean(component.children?.length);
 
   const [expanded, setExpanded] =
     useState(true);
@@ -36,10 +38,47 @@ function LayerItem({
   };
 
   const handleToggle = (
-    event: React.MouseEvent
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setExpanded(!expanded);
+    setExpanded((current) => !current);
+  };
+
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData(
+      "componentId",
+      component.id
+    );
+  };
+
+  const handleDragOver = (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const activeId =
+      event.dataTransfer.getData(
+        "componentId"
+      );
+
+    if (!activeId) return;
+    if (activeId === component.id) return;
+
+    onDragEnd(
+      activeId,
+      component.id
+    );
   };
 
   return (
@@ -54,43 +93,13 @@ function LayerItem({
         style={{
           paddingLeft: `${8 + depth * 16}px`,
         }}
-        onDragStart={(event) => {
-          event.dataTransfer.setData(
-            "componentId",
-            component.id
-          );
-        }}
-        onDragOver={(event) => {
-          event.preventDefault();
-        }}
-        onDrop={(event) => {
-          event.preventDefault();
-
-          const activeId =
-            event.dataTransfer.getData(
-              "componentId"
-            );
-
-          const overId = component.id;
-
-          if (!activeId) return;
-          if (activeId === overId) return;
-
-          window.dispatchEvent(
-            new CustomEvent(
-              "builder-layer-drop",
-              {
-                detail: {
-                  activeId,
-                  overId,
-                },
-              }
-            )
-          );
-        }}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
       >
         {hasChildren ? (
           <button
+            type="button"
             className="layer-toggle"
             onClick={handleToggle}
           >
@@ -101,6 +110,7 @@ function LayerItem({
         )}
 
         <button
+          type="button"
           className="layer-item"
           onClick={handleSelect}
         >
@@ -116,14 +126,13 @@ function LayerItem({
               : component.type ===
                 "Button"
               ? "B"
-              : component.type === "Image"
+              : component.type ===
+                "Image"
               ? "▧"
               : "□"}
           </span>
 
-          <span>
-            {component.type}
-          </span>
+          <span>{component.type}</span>
         </button>
       </div>
 
@@ -135,9 +144,14 @@ function LayerItem({
                 <LayerItem
                   key={child.id}
                   component={child}
-                  selectedId={selectedId}
+                  selectedId={
+                    selectedId
+                  }
                   setSelectedId={
                     setSelectedId
+                  }
+                  onDragEnd={
+                    onDragEnd
                   }
                   depth={depth + 1}
                 />
@@ -154,35 +168,8 @@ function Sidebar({
   selectedId,
   addComponent,
   setSelectedId,
+  onDragEnd,
 }: SidebarProps) {
-  useState(() => {
-    const handleLayerDrop = (
-      event: Event
-    ) => {
-      const customEvent =
-        event as CustomEvent<{
-          activeId: string;
-          overId: string;
-        }>;
-
-      window.dispatchEvent(
-        new CustomEvent(
-          "builder-layer-reorder",
-          {
-            detail: customEvent.detail,
-          }
-        )
-      );
-    };
-
-    return () => {
-      window.removeEventListener(
-        "builder-layer-drop",
-        handleLayerDrop
-      );
-    };
-  });
-
   return (
     <aside className="sidebar">
       <h2>Components</h2>
@@ -293,9 +280,14 @@ function Sidebar({
               <LayerItem
                 key={component.id}
                 component={component}
-                selectedId={selectedId}
+                selectedId={
+                  selectedId
+                }
                 setSelectedId={
                   setSelectedId
+                }
+                onDragEnd={
+                  onDragEnd
                 }
               />
             )

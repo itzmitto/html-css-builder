@@ -68,6 +68,27 @@ function App() {
     return undefined;
   };
 
+  const isDescendant = (
+    component: BuilderComponent,
+    id: string
+  ): boolean => {
+    if (!component.children?.length) {
+      return false;
+    }
+
+    for (const child of component.children) {
+      if (child.id === id) {
+        return true;
+      }
+
+      if (isDescendant(child, id)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const selectedComponent = selectedId
     ? findComponentById(
         components,
@@ -161,6 +182,117 @@ function App() {
     });
   };
 
+  const removeComponentById = (
+    componentList: BuilderComponent[],
+    id: string
+  ): {
+    components: BuilderComponent[];
+    removed?: BuilderComponent;
+  } => {
+    for (let index = 0; index < componentList.length; index++) {
+      const component = componentList[index];
+
+      if (component.id === id) {
+        const updated = [...componentList];
+        const [removed] = updated.splice(index, 1);
+
+        return {
+          components: updated,
+          removed,
+        };
+      }
+
+      if (component.children?.length) {
+        const result = removeComponentById(
+          component.children,
+          id
+        );
+
+        if (result.removed) {
+          const updated = [...componentList];
+
+          updated[index] = {
+            ...component,
+            children: result.components,
+          };
+
+          return {
+            components: updated,
+            removed: result.removed,
+          };
+        }
+      }
+    }
+
+    return {
+      components: componentList,
+    };
+  };
+
+  const addComponentToContainer = (
+    componentList: BuilderComponent[],
+    containerId: string,
+    child: BuilderComponent
+  ): BuilderComponent[] => {
+    return updateComponentById(
+      componentList,
+      containerId,
+      (component) => ({
+        ...component,
+        children: [
+          ...(component.children ?? []),
+          child,
+        ],
+      })
+    );
+  };
+
+  const insertBeforeComponent = (
+    componentList: BuilderComponent[],
+    targetId: string,
+    componentToInsert: BuilderComponent
+  ): BuilderComponent[] => {
+    const targetIndex = componentList.findIndex(
+      (component) =>
+        component.id === targetId
+    );
+
+    if (targetIndex !== -1) {
+      const updated = [...componentList];
+
+      updated.splice(
+        targetIndex,
+        0,
+        componentToInsert
+      );
+
+      return updated;
+    }
+
+    return componentList.map((component) => {
+      if (component.children?.length) {
+        const updatedChildren =
+          insertBeforeComponent(
+            component.children,
+            targetId,
+            componentToInsert
+          );
+
+        if (
+          updatedChildren !==
+          component.children
+        ) {
+          return {
+            ...component,
+            children: updatedChildren,
+          };
+        }
+      }
+
+      return component;
+    });
+  };
+
   const addComponent = (
     type: ComponentType
   ) => {
@@ -172,16 +304,10 @@ function App() {
       "Container"
     ) {
       setComponents(
-        updateComponentById(
+        addComponentToContainer(
           components,
           selectedComponent.id,
-          (component) => ({
-            ...component,
-            children: [
-              ...(component.children ?? []),
-              newComponent,
-            ],
-          })
+          newComponent
         )
       );
 
@@ -210,6 +336,41 @@ function App() {
       return;
     }
 
+    const activeComponent =
+      findComponentById(
+        components,
+        activeId
+      );
+
+    const overComponent =
+      findComponentById(
+        components,
+        overId
+      );
+
+    if (
+      !activeComponent ||
+      !overComponent
+    ) {
+      return;
+    }
+
+    if (
+      activeComponent.id ===
+      overComponent.id
+    ) {
+      return;
+    }
+
+    if (
+      isDescendant(
+        activeComponent,
+        overId
+      )
+    ) {
+      return;
+    }
+
     const activeParent =
       findParentById(
         components,
@@ -228,68 +389,126 @@ function App() {
     const overParentId =
       overParent?.id ?? null;
 
+    // Same parent = normal reorder
     if (
-      activeParentId !==
+      activeParentId ===
       overParentId
     ) {
-      return;
-    }
+      const currentList = activeParent
+        ? activeParent.children ?? []
+        : components;
 
-    const currentList = activeParent
-      ? activeParent.children ?? []
-      : components;
+      const oldIndex =
+        currentList.findIndex(
+          (component) =>
+            component.id === activeId
+        );
 
-    const oldIndex =
-      currentList.findIndex(
-        (component) =>
-          component.id === activeId
-      );
+      const newIndex =
+        currentList.findIndex(
+          (component) =>
+            component.id === overId
+        );
 
-    const newIndex =
-      currentList.findIndex(
-        (component) =>
-          component.id === overId
-      );
+      if (
+        oldIndex === -1 ||
+        newIndex === -1
+      ) {
+        return;
+      }
 
-    if (
-      oldIndex === -1 ||
-      newIndex === -1
-    ) {
-      return;
-    }
+      const updatedList = [
+        ...currentList,
+      ];
 
-    const updatedList = [
-      ...currentList,
-    ];
+      const [movedComponent] =
+        updatedList.splice(
+          oldIndex,
+          1
+        );
 
-    const [movedComponent] =
       updatedList.splice(
-        oldIndex,
-        1
+        newIndex,
+        0,
+        movedComponent
       );
 
-    updatedList.splice(
-      newIndex,
-      0,
-      movedComponent
+      if (activeParent) {
+        setComponents(
+          updateComponentById(
+            components,
+            activeParent.id,
+            (component) => ({
+              ...component,
+              children:
+                updatedList,
+            })
+          )
+        );
+      } else {
+        setComponents(
+          updatedList
+        );
+      }
+
+      return;
+    }
+
+    // Remove active component first
+    const removal =
+      removeComponentById(
+        components,
+        activeId
+      );
+
+    if (!removal.removed) {
+      return;
+    }
+
+    const movedComponent =
+      removal.removed;
+
+    let updatedComponents =
+      removal.components;
+
+    // Dropping onto a Container
+    if (
+      overComponent.type ===
+      "Container"
+    ) {
+      updatedComponents =
+        addComponentToContainer(
+          updatedComponents,
+          overId,
+          movedComponent
+        );
+
+      setComponents(
+        updatedComponents
+      );
+
+      setSelectedId(
+        movedComponent.id
+      );
+
+      return;
+    }
+
+    // Dropping onto another component
+    updatedComponents =
+      insertBeforeComponent(
+        updatedComponents,
+        overId,
+        movedComponent
+      );
+
+    setComponents(
+      updatedComponents
     );
 
-    if (activeParent) {
-      setComponents(
-        updateComponentById(
-          components,
-          activeParent.id,
-          (component) => ({
-            ...component,
-            children: updatedList,
-          })
-        )
-      );
-    } else {
-      setComponents(
-        updatedList
-      );
-    }
+    setSelectedId(
+      movedComponent.id
+    );
   };
 
   const handleCanvasDragEnd = (
@@ -482,28 +701,14 @@ function App() {
       return;
     }
 
-    const removeComponent = (
-      componentList: BuilderComponent[]
-    ): BuilderComponent[] => {
-      return componentList
-        .filter(
-          (component) =>
-            component.id !==
-            selectedId
-        )
-        .map((component) => ({
-          ...component,
-          children:
-            component.children
-              ? removeComponent(
-                  component.children
-                )
-              : [],
-        }));
-    };
+    const result =
+      removeComponentById(
+        components,
+        selectedId
+      );
 
     setComponents(
-      removeComponent(components)
+      result.components
     );
 
     setSelectedId(null);
@@ -880,17 +1085,12 @@ function App() {
   return (
     <div className="editor">
       <Sidebar
-        components={
-          components
-        }
-        selectedId={
-          selectedId
-        }
-        addComponent={
-          addComponent
-        }
-        setSelectedId={
-          setSelectedId
+        components={components}
+        selectedId={selectedId}
+        addComponent={addComponent}
+        setSelectedId={setSelectedId}
+        onDragEnd={
+          reorderComponents
         }
       />
 
