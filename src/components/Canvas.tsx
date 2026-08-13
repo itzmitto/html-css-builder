@@ -50,10 +50,20 @@ function SortableComponent({
 
   const style = {
     transform:
-      CSS.Transform.toString(transform),
+      CSS.Transform.toString(
+        transform
+      ),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging
+      ? 0.45
+      : 1,
   };
+
+  const children =
+    component.children ?? [];
+
+  const hasChildren =
+    children.length > 0;
 
   return (
     <div
@@ -84,6 +94,47 @@ function SortableComponent({
         component={component}
         device={device}
       />
+
+      {hasChildren && (
+        <div className="nested-components">
+          <SortableContext
+            items={children.map(
+              (child) =>
+                child.id
+            )}
+            strategy={
+              verticalListSortingStrategy
+            }
+          >
+            {children.map(
+              (child) => (
+                <SortableComponent
+                  key={child.id}
+                  component={child}
+                  selectedId={
+                    selectedId
+                  }
+                  setSelectedId={
+                    setSelectedId
+                  }
+                  device={device}
+                />
+              )
+            )}
+          </SortableContext>
+        </div>
+      )}
+
+      {component.type ===
+        "Container" &&
+        !hasChildren && (
+          <div className="container-drop-zone empty">
+            <span>
+              Sleep componenten
+              hierheen
+            </span>
+          </div>
+        )}
     </div>
   );
 }
@@ -114,7 +165,9 @@ function Canvas({
               : "device-button"
           }
           onClick={() =>
-            setDevice("desktop")
+            setDevice(
+              "desktop"
+            )
           }
         >
           Desktop
@@ -128,7 +181,9 @@ function Canvas({
               : "device-button"
           }
           onClick={() =>
-            setDevice("tablet")
+            setDevice(
+              "tablet"
+            )
           }
         >
           Tablet
@@ -142,7 +197,9 @@ function Canvas({
               : "device-button"
           }
           onClick={() =>
-            setDevice("mobile")
+            setDevice(
+              "mobile"
+            )
           }
         >
           Mobile
@@ -150,10 +207,14 @@ function Canvas({
 
         <span
           style={{
-            marginLeft: "10px",
-            color: "#6b7280",
-            fontSize: "14px",
-            alignSelf: "center",
+            marginLeft:
+              "10px",
+            color:
+              "#6b7280",
+            fontSize:
+              "14px",
+            alignSelf:
+              "center",
           }}
         >
           {deviceWidth}px
@@ -167,9 +228,12 @@ function Canvas({
             width: `${deviceWidth}px`,
           }}
         >
-          {components.length === 0 && (
+          {components.length ===
+            0 && (
             <div className="empty-state">
-              Voeg componenten toe vanuit de sidebar
+              Voeg componenten
+              toe vanuit de
+              sidebar
             </div>
           )}
 
@@ -177,7 +241,9 @@ function Canvas({
             collisionDetection={
               closestCenter
             }
-            onDragEnd={onDragEnd}
+            onDragEnd={
+              onDragEnd
+            }
           >
             <SortableContext
               items={components.map(
@@ -191,15 +257,21 @@ function Canvas({
               {components.map(
                 (component) => (
                   <SortableComponent
-                    key={component.id}
-                    component={component}
+                    key={
+                      component.id
+                    }
+                    component={
+                      component
+                    }
                     selectedId={
                       selectedId
                     }
                     setSelectedId={
                       setSelectedId
                     }
-                    device={device}
+                    device={
+                      device
+                    }
                   />
                 )
               )}
