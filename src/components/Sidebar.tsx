@@ -59,6 +59,25 @@ function getLayerIcon(
   }
 }
 
+function getLayerLabel(
+  component: BuilderComponent
+) {
+  const childCount =
+    component.children?.length ?? 0;
+
+  if (
+    component.type === "Container" ||
+    component.type === "Row" ||
+    component.type === "Stack"
+  ) {
+    return childCount > 0
+      ? `${component.type} (${childCount})`
+      : component.type;
+  }
+
+  return component.type;
+}
+
 function LayerItem({
   component,
   selectedId,
@@ -193,7 +212,9 @@ function LayerItem({
           </span>
 
           <span>
-            {component.type}
+            {getLayerLabel(
+              component
+            )}
           </span>
         </button>
       </div>
