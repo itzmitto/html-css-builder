@@ -12,7 +12,6 @@ import type {
   BuilderStyles,
   DeviceType,
 } from "./types/builder";
-
 function App() {
   const [components, setComponents] = useState<BuilderComponent[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -116,6 +115,14 @@ function App() {
     type: ComponentType
   ): BuilderStyles => {
     const styles = createDefaultStyles();
+    if (type === "Container") {
+      return {
+        ...styles,
+        height: 300,
+        display: "block",
+        gap: 16,
+      };
+    }
     if (type === "Row") {
       return {
         ...styles,
@@ -138,13 +145,6 @@ function App() {
         gap: 16,
       };
     }
-    if (type === "Container") {
-      return {
-        ...styles,
-        height: 300,
-        display: "block",
-      };
-    }
     return styles;
   };
   const createComponent = (
@@ -158,7 +158,7 @@ function App() {
       heroTitle: "Hero Title",
       heroSubtitle: "Hero Subtitle goes here",
       heroButtonText: "Get Started",
-      minHeight: 300,
+      minHeight: type === "Container" ? 300 : 0,
       fontSize: 32,
       color: "#000000",
       backgroundColor: "#ffffff",
@@ -191,7 +191,11 @@ function App() {
       if (component.children?.length) {
         return {
           ...component,
-          children: updateComponentById(component.children, id, updater),
+          children: updateComponentById(
+            component.children,
+            id,
+            updater
+          ),
         };
       }
       return component;
@@ -282,7 +286,7 @@ function App() {
   };
   const isLayoutParent = (
     type: ComponentType
-  ) => {
+  ): boolean => {
     return (
       type === "Container" ||
       type === "Row" ||
@@ -297,13 +301,12 @@ function App() {
       selectedComponent &&
       isLayoutParent(selectedComponent.type)
     ) {
-      setComponents(
-        addChildToParent(
-          components,
-          selectedComponent.id,
-          newComponent
-        )
+      const updatedComponents = addChildToParent(
+        components,
+        selectedComponent.id,
+        newComponent
       );
+      setComponents(updatedComponents);
       setSelectedId(newComponent.id);
       return;
     }
@@ -358,8 +361,15 @@ function App() {
         return;
       }
       const updatedList = [...currentList];
-      const [movedComponent] = updatedList.splice(oldIndex, 1);
-      updatedList.splice(newIndex, 0, movedComponent);
+      const [movedComponent] = updatedList.splice(
+        oldIndex,
+        1
+      );
+      updatedList.splice(
+        newIndex,
+        0,
+        movedComponent
+      );
       if (activeParent) {
         setComponents(
           updateComponentById(
@@ -374,6 +384,7 @@ function App() {
       } else {
         setComponents(updatedList);
       }
+      setSelectedId(activeId);
       return;
     }
     const removal = removeComponentById(
@@ -385,7 +396,14 @@ function App() {
     }
     const movedComponent = removal.removed;
     let updatedComponents = removal.components;
-    if (isLayoutParent(overComponent.type)) {
+    const targetAfterRemoval = findComponentById(
+      updatedComponents,
+      overId
+    );
+    if (!targetAfterRemoval) {
+      return;
+    }
+    if (isLayoutParent(targetAfterRemoval.type)) {
       updatedComponents = addChildToParent(
         updatedComponents,
         overId,
@@ -415,7 +433,9 @@ function App() {
       String(over.id)
     );
   };
-  const updateText = (value: string) => {
+  const updateText = (
+    value: string
+  ) => {
     setComponents(
       updateComponentById(
         components,
@@ -461,79 +481,132 @@ function App() {
   const updateFontSize = (
     value: number
   ) => {
-    updateStyles({
-      fontSize: value,
-    });
-    if (device === "desktop") {
-      setComponents(
-        updateComponentById(
-          components,
-          selectedId ?? "",
-          (component) => ({
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ?? "",
+        (component) => {
+          if (device === "desktop") {
+            return {
+              ...component,
+              fontSize: value,
+              styles: {
+                ...component.styles,
+                fontSize: value,
+              },
+            };
+          }
+          return {
             ...component,
-            fontSize: value,
-          })
-        )
-      );
-    }
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component.responsive?.[device],
+                fontSize: value,
+              },
+            },
+          };
+        }
+      )
+    );
   };
   const updateColor = (
     value: string
   ) => {
-    updateStyles({
-      color: value,
-    });
-    if (device === "desktop") {
-      setComponents(
-        updateComponentById(
-          components,
-          selectedId ?? "",
-          (component) => ({
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ?? "",
+        (component) => {
+          if (device === "desktop") {
+            return {
+              ...component,
+              color: value,
+              styles: {
+                ...component.styles,
+                color: value,
+              },
+            };
+          }
+          return {
             ...component,
-            color: value,
-          })
-        )
-      );
-    }
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component.responsive?.[device],
+                color: value,
+              },
+            },
+          };
+        }
+      )
+    );
   };
   const updateBackgroundColor = (
     value: string
   ) => {
-    updateStyles({
-      backgroundColor: value,
-    });
-    if (device === "desktop") {
-      setComponents(
-        updateComponentById(
-          components,
-          selectedId ?? "",
-          (component) => ({
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ?? "",
+        (component) => {
+          if (device === "desktop") {
+            return {
+              ...component,
+              backgroundColor: value,
+              styles: {
+                ...component.styles,
+                backgroundColor: value,
+              },
+            };
+          }
+          return {
             ...component,
-            backgroundColor: value,
-          })
-        )
-      );
-    }
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component.responsive?.[device],
+                backgroundColor: value,
+              },
+            },
+          };
+        }
+      )
+    );
   };
   const updateMinHeight = (
     value: number
   ) => {
-    updateStyles({
-      height: value,
-      heightUnit: "px",
-    });
-    if (device === "desktop") {
-      setComponents(
-        updateComponentById(
-          components,
-          selectedId ?? "",
-          (component) => ({
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ?? "",
+        (component) => {
+          if (device === "desktop") {
+            return {
+              ...component,
+              minHeight: value,
+              styles: {
+                ...component.styles,
+                height: value,
+                heightUnit: "px",
+              },
+            };
+          }
+          return {
             ...component,
-            minHeight: value,
-          })
-        )
-      );
-    }
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component.responsive?.[device],
+                height: value,
+                heightUnit: "px",
+              },
+            },
+          };
+        }
+      )
+    );
   };
   const updateImage = (
     value: string
@@ -641,6 +714,7 @@ function App() {
     } else {
       setComponents(updatedList);
     }
+    setSelectedId(selectedId);
   };
   const moveComponentDown = () => {
     if (!selectedId) {
@@ -684,6 +758,7 @@ function App() {
     } else {
       setComponents(updatedList);
     }
+    setSelectedId(selectedId);
   };
   const cloneComponentTree = (
     component: BuilderComponent
@@ -842,7 +917,9 @@ function App() {
     URL.revokeObjectURL(url);
   };
   const exportHTML = () => {
-    const html = generateHTML(components);
+    const html = generateHTML(
+      components
+    );
     downloadFile(
       "index.html",
       html
@@ -858,9 +935,13 @@ function App() {
   const saveProject = () => {
     localStorage.setItem(
       "website-builder-project",
-      JSON.stringify(components)
+      JSON.stringify(
+        components
+      )
     );
-    alert("Project opgeslagen!");
+    alert(
+      "Project opgeslagen!"
+    );
   };
   const loadProject = () => {
     const savedProject =
@@ -875,10 +956,16 @@ function App() {
     }
     try {
       const parsedProject: BuilderComponent[] =
-        JSON.parse(savedProject);
-      setComponents(parsedProject);
+        JSON.parse(
+          savedProject
+        );
+      setComponents(
+        parsedProject
+      );
       setSelectedId(null);
-      alert("Project geladen!");
+      alert(
+        "Project geladen!"
+      );
     } catch {
       alert(
         "Het opgeslagen project is ongeldig."
@@ -896,16 +983,24 @@ function App() {
       />
       <div className="canvas">
         <div className="canvas-header">
-          <button onClick={exportHTML}>
+          <button
+            onClick={exportHTML}
+          >
             Export HTML
           </button>
-          <button onClick={exportCSS}>
+          <button
+            onClick={exportCSS}
+          >
             Export CSS
           </button>
-          <button onClick={saveProject}>
+          <button
+            onClick={saveProject}
+          >
             Save Project
           </button>
-          <button onClick={loadProject}>
+          <button
+            onClick={loadProject}
+          >
             Load Project
           </button>
         </div>
@@ -942,5 +1037,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
