@@ -9,15 +9,54 @@ interface SidebarProps {
   selectedId: string | null;
   addComponent: (type: ComponentType) => void;
   setSelectedId: (id: string) => void;
-  onDragEnd: (activeId: string, overId: string) => void;
+  onDragEnd: (
+    activeId: string,
+    overId: string
+  ) => void;
 }
 
 interface LayerItemProps {
   component: BuilderComponent;
   selectedId: string | null;
   setSelectedId: (id: string) => void;
-  onDragEnd: (activeId: string, overId: string) => void;
+  onDragEnd: (
+    activeId: string,
+    overId: string
+  ) => void;
   depth?: number;
+}
+
+function getLayerIcon(
+  type: ComponentType
+) {
+  switch (type) {
+    case "Container":
+      return "▣";
+    case "Row":
+      return "↔";
+    case "Stack":
+      return "↕";
+    case "Heading":
+      return "H";
+    case "Paragraph":
+      return "P";
+    case "Button":
+      return "B";
+    case "Image":
+      return "▧";
+    case "Navbar":
+      return "N";
+    case "Hero":
+      return "◆";
+    case "Section":
+      return "S";
+    case "Card":
+      return "C";
+    case "Footer":
+      return "F";
+    default:
+      return "□";
+  }
 }
 
 function LayerItem({
@@ -28,26 +67,37 @@ function LayerItem({
   depth = 0,
 }: LayerItemProps) {
   const hasChildren =
-    Boolean(component.children?.length);
+    Boolean(
+      component.children?.length
+    );
 
-  const [expanded, setExpanded] =
-    useState(true);
+  const [
+    expanded,
+    setExpanded,
+  ] = useState(true);
 
   const handleSelect = () => {
-    setSelectedId(component.id);
+    setSelectedId(
+      component.id
+    );
   };
 
   const handleToggle = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setExpanded((current) => !current);
+
+    setExpanded(
+      (current) => !current
+    );
   };
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>
   ) => {
-    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.effectAllowed =
+      "move";
+
     event.dataTransfer.setData(
       "componentId",
       component.id
@@ -58,7 +108,9 @@ function LayerItem({
     event: React.DragEvent<HTMLDivElement>
   ) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+
+    event.dataTransfer.dropEffect =
+      "move";
   };
 
   const handleDrop = (
@@ -72,8 +124,15 @@ function LayerItem({
         "componentId"
       );
 
-    if (!activeId) return;
-    if (activeId === component.id) return;
+    if (!activeId) {
+      return;
+    }
+
+    if (
+      activeId === component.id
+    ) {
+      return;
+    }
 
     onDragEnd(
       activeId,
@@ -86,24 +145,35 @@ function LayerItem({
       <div
         draggable
         className={
-          selectedId === component.id
+          selectedId ===
+          component.id
             ? "layer-row selected-layer"
             : "layer-row"
         }
         style={{
-          paddingLeft: `${8 + depth * 16}px`,
+          paddingLeft: `${
+            8 + depth * 16
+          }px`,
         }}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
+        onDragStart={
+          handleDragStart
+        }
+        onDragOver={
+          handleDragOver
+        }
         onDrop={handleDrop}
       >
         {hasChildren ? (
           <button
             type="button"
             className="layer-toggle"
-            onClick={handleToggle}
+            onClick={
+              handleToggle
+            }
           >
-            {expanded ? "▾" : "▸"}
+            {expanded
+              ? "▾"
+              : "▸"}
           </button>
         ) : (
           <span className="layer-spacer" />
@@ -112,27 +182,19 @@ function LayerItem({
         <button
           type="button"
           className="layer-item"
-          onClick={handleSelect}
+          onClick={
+            handleSelect
+          }
         >
           <span className="layer-icon">
-            {component.type === "Container"
-              ? "▣"
-              : component.type ===
-                "Heading"
-              ? "H"
-              : component.type ===
-                "Paragraph"
-              ? "P"
-              : component.type ===
-                "Button"
-              ? "B"
-              : component.type ===
-                "Image"
-              ? "▧"
-              : "□"}
+            {getLayerIcon(
+              component.type
+            )}
           </span>
 
-          <span>{component.type}</span>
+          <span>
+            {component.type}
+          </span>
         </button>
       </div>
 
@@ -142,8 +204,12 @@ function LayerItem({
             {component.children!.map(
               (child) => (
                 <LayerItem
-                  key={child.id}
-                  component={child}
+                  key={
+                    child.id
+                  }
+                  component={
+                    child
+                  }
                   selectedId={
                     selectedId
                   }
@@ -153,7 +219,9 @@ function LayerItem({
                   onDragEnd={
                     onDragEnd
                   }
-                  depth={depth + 1}
+                  depth={
+                    depth + 1
+                  }
                 />
               )
             )}
@@ -172,44 +240,61 @@ function Sidebar({
 }: SidebarProps) {
   return (
     <aside className="sidebar">
-      <h2>Components</h2>
+      <h2>
+        Components
+      </h2>
 
       <div className="component-group">
         <button
+          type="button"
           onClick={() =>
-            addComponent("Navbar")
+            addComponent(
+              "Navbar"
+            )
           }
         >
           Navbar
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Hero")
+            addComponent(
+              "Hero"
+            )
           }
         >
           Hero
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Section")
+            addComponent(
+              "Section"
+            )
           }
         >
           Section
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Card")
+            addComponent(
+              "Card"
+            )
           }
         >
           Card
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Footer")
+            addComponent(
+              "Footer"
+            )
           }
         >
           Footer
@@ -220,40 +305,44 @@ function Sidebar({
 
       <div className="component-group">
         <button
+          type="button"
           onClick={() =>
-            addComponent("Heading")
+            addComponent(
+              "Heading"
+            )
           }
         >
           Heading
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Paragraph")
+            addComponent(
+              "Paragraph"
+            )
           }
         >
           Paragraph
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Button")
+            addComponent(
+              "Button"
+            )
           }
         >
           Button
         </button>
 
         <button
+          type="button"
           onClick={() =>
-            addComponent("Container")
-          }
-        >
-          Container
-        </button>
-
-        <button
-          onClick={() =>
-            addComponent("Image")
+            addComponent(
+              "Image"
+            )
           }
         >
           Image
@@ -262,14 +351,60 @@ function Sidebar({
 
       <hr />
 
-      <h2>Layers</h2>
+      <h2>
+        Layout
+      </h2>
+
+      <div className="component-group">
+        <button
+          type="button"
+          onClick={() =>
+            addComponent(
+              "Container"
+            )
+          }
+        >
+          Container
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            addComponent(
+              "Row"
+            )
+          }
+        >
+          Row
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            addComponent(
+              "Stack"
+            )
+          }
+        >
+          Stack
+        </button>
+      </div>
+
+      <hr />
+
+      <h2>
+        Layers
+      </h2>
 
       <div className="layers">
-        {components.length === 0 ? (
+        {components.length ===
+        0 ? (
           <p
             style={{
-              color: "#9ca3af",
-              fontSize: "13px",
+              color:
+                "#9ca3af",
+              fontSize:
+                "13px",
             }}
           >
             No components
@@ -278,8 +413,12 @@ function Sidebar({
           components.map(
             (component) => (
               <LayerItem
-                key={component.id}
-                component={component}
+                key={
+                  component.id
+                }
+                component={
+                  component
+                }
                 selectedId={
                   selectedId
                 }
