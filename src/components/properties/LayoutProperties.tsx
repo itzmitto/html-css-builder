@@ -54,10 +54,8 @@ function BoxModel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns:
-            "1fr 1fr 1fr",
-          gridTemplateRows:
-            "1fr 1fr 1fr",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gridTemplateRows: "1fr 1fr 1fr",
           gap: "6px",
           background: "#111827",
           padding: "8px",
@@ -101,8 +99,7 @@ function BoxModel({
             justifyContent: "center",
             color: "#9ca3af",
             fontSize: "11px",
-            border:
-              "1px dashed #4b5563",
+            border: "1px dashed #4b5563",
             borderRadius: "6px",
             minHeight: "36px",
           }}
@@ -166,6 +163,65 @@ function LayoutProperties({
     ...inputStyle,
     background: "white",
     color: "#111827",
+  };
+
+  const setDisplay = (
+    display: "block" | "flex" | "grid"
+  ) => {
+    if (display === "flex") {
+      updateStyles({
+        display: "flex",
+        flexDirection:
+          styles.flexDirection ?? "row",
+        justifyContent:
+          styles.justifyContent ??
+          "flex-start",
+        alignItems:
+          styles.alignItems ?? "stretch",
+        gap:
+          styles.gap ?? 16,
+      });
+
+      return;
+    }
+
+    if (display === "grid") {
+      updateStyles({
+        display: "grid",
+        gridColumns:
+          styles.gridColumns ?? 1,
+        gridGap:
+          styles.gridGap ?? 16,
+        gap:
+          styles.gap ?? 16,
+        flexDirection:
+          undefined,
+        justifyContent:
+          undefined,
+        alignItems:
+          undefined,
+      });
+
+      return;
+    }
+
+    updateStyles({
+      display: "block",
+      flexDirection: undefined,
+      justifyContent: undefined,
+      alignItems: undefined,
+      gridColumns: undefined,
+      gridGap: undefined,
+    });
+  };
+
+  const setFlexDirection = (
+    direction: "row" | "column"
+  ) => {
+    updateStyles({
+      display: "flex",
+      flexDirection: direction,
+    });
   };
 
   return (
@@ -289,9 +345,7 @@ function LayoutProperties({
         />
 
         <select
-          value={
-            styles.maxWidthUnit ?? "px"
-          }
+          value={styles.maxWidthUnit ?? "px"}
           onChange={(e) =>
             updateStyles({
               maxWidthUnit:
@@ -334,7 +388,8 @@ function LayoutProperties({
 
         <select
           value={
-            styles.minHeightUnit ?? "px"
+            styles.minHeightUnit ??
+            "px"
           }
           onChange={(e) =>
             updateStyles({
@@ -358,7 +413,9 @@ function LayoutProperties({
         title="Margin"
         top={styles.marginTop ?? 0}
         right={styles.marginRight ?? 0}
-        bottom={styles.marginBottom ?? 0}
+        bottom={
+          styles.marginBottom ?? 0
+        }
         left={styles.marginLeft ?? 0}
         onChange={(property, value) => {
           if (property === "top") {
@@ -389,10 +446,18 @@ function LayoutProperties({
 
       <BoxModel
         title="Padding"
-        top={styles.paddingTop ?? 0}
-        right={styles.paddingRight ?? 0}
-        bottom={styles.paddingBottom ?? 0}
-        left={styles.paddingLeft ?? 0}
+        top={
+          styles.paddingTop ?? 0
+        }
+        right={
+          styles.paddingRight ?? 0
+        }
+        bottom={
+          styles.paddingBottom ?? 0
+        }
+        left={
+          styles.paddingLeft ?? 0
+        }
         onChange={(property, value) => {
           if (property === "top") {
             updateStyles({
@@ -445,7 +510,8 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              horizontalAlign: "left",
+              horizontalAlign:
+                "left",
             })
           }
           style={{
@@ -454,7 +520,8 @@ function LayoutProperties({
             borderRadius: "6px",
             background:
               (styles.horizontalAlign ??
-                "left") === "left"
+                "left") ===
+              "left"
                 ? "#2563eb"
                 : "#374151",
             color: "white",
@@ -468,7 +535,8 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              horizontalAlign: "center",
+              horizontalAlign:
+                "center",
             })
           }
           style={{
@@ -491,7 +559,8 @@ function LayoutProperties({
           type="button"
           onClick={() =>
             updateStyles({
-              horizontalAlign: "right",
+              horizontalAlign:
+                "right",
             })
           }
           style={{
@@ -511,39 +580,91 @@ function LayoutProperties({
         </button>
       </div>
 
-      <p
+      <h4
         style={{
-          marginTop: "15px",
+          marginTop: "25px",
+          marginBottom: "10px",
+          color: "#d1d5db",
         }}
       >
         Display
-      </p>
+      </h4>
 
-      <select
-        value={styles.display ?? "block"}
-        onChange={(e) =>
-          updateStyles({
-            display:
-              e.target.value as
-                | "block"
-                | "flex"
-                | "grid",
-          })
-        }
-        style={selectStyle}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(3, 1fr)",
+          gap: "6px",
+          marginBottom: "10px",
+        }}
       >
-        <option value="block">
+        <button
+          type="button"
+          onClick={() =>
+            setDisplay("block")
+          }
+          style={{
+            padding: "10px 5px",
+            border: "none",
+            borderRadius: "6px",
+            background:
+              styles.display ===
+              "block"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
           Block
-        </option>
-        <option value="flex">
-          Flex
-        </option>
-        <option value="grid">
-          Grid
-        </option>
-      </select>
+        </button>
 
-      {styles.display === "flex" && (
+        <button
+          type="button"
+          onClick={() =>
+            setDisplay("flex")
+          }
+          style={{
+            padding: "10px 5px",
+            border: "none",
+            borderRadius: "6px",
+            background:
+              styles.display ===
+              "flex"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Flex
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            setDisplay("grid")
+          }
+          style={{
+            padding: "10px 5px",
+            border: "none",
+            borderRadius: "6px",
+            background:
+              styles.display ===
+              "grid"
+                ? "#2563eb"
+                : "#374151",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Grid
+        </button>
+      </div>
+
+      {styles.display ===
+        "flex" && (
         <>
           <p
             style={{
@@ -553,28 +674,61 @@ function LayoutProperties({
             Flex Direction
           </p>
 
-          <select
-            value={
-              styles.flexDirection ??
-              "row"
-            }
-            onChange={(e) =>
-              updateStyles({
-                flexDirection:
-                  e.target.value as
-                    | "row"
-                    | "column",
-              })
-            }
-            style={selectStyle}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "1fr 1fr",
+              gap: "6px",
+              marginTop: "8px",
+            }}
           >
-            <option value="row">
+            <button
+              type="button"
+              onClick={() =>
+                setFlexDirection(
+                  "row"
+                )
+              }
+              style={{
+                padding: "10px",
+                border: "none",
+                borderRadius: "6px",
+                background:
+                  styles.flexDirection ===
+                  "row"
+                    ? "#2563eb"
+                    : "#374151",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
               Row
-            </option>
-            <option value="column">
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFlexDirection(
+                  "column"
+                )
+              }
+              style={{
+                padding: "10px",
+                border: "none",
+                borderRadius: "6px",
+                background:
+                  styles.flexDirection ===
+                  "column"
+                    ? "#2563eb"
+                    : "#374151",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
               Column
-            </option>
-          </select>
+            </button>
+          </div>
 
           <p
             style={{
@@ -673,7 +827,7 @@ function LayoutProperties({
           <input
             type="number"
             min="0"
-            value={styles.gap ?? 0}
+            value={styles.gap ?? 16}
             onChange={(e) =>
               updateStyles({
                 gap: Number(
@@ -689,14 +843,15 @@ function LayoutProperties({
         </>
       )}
 
-      {styles.display === "grid" && (
+      {styles.display ===
+        "grid" && (
         <>
           <p
             style={{
               marginTop: "15px",
             }}
           >
-            Grid Columns
+            Columns
           </p>
 
           <input
@@ -708,9 +863,17 @@ function LayoutProperties({
             }
             onChange={(e) =>
               updateStyles({
-                gridColumns: Number(
-                  e.target.value
-                ),
+                gridColumns:
+                  Math.min(
+                    12,
+                    Math.max(
+                      1,
+                      Number(
+                        e.target
+                          .value
+                      )
+                    )
+                  ),
               })
             }
             style={{
@@ -718,6 +881,50 @@ function LayoutProperties({
               marginTop: "8px",
             }}
           />
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(4, 1fr)",
+              gap: "6px",
+              marginTop: "10px",
+            }}
+          >
+            {[1, 2, 3, 4].map(
+              (columns) => (
+                <button
+                  key={columns}
+                  type="button"
+                  onClick={() =>
+                    updateStyles({
+                      gridColumns:
+                        columns,
+                    })
+                  }
+                  style={{
+                    padding:
+                      "9px 4px",
+                    border:
+                      "none",
+                    borderRadius:
+                      "6px",
+                    background:
+                      styles.gridColumns ===
+                      columns
+                        ? "#2563eb"
+                        : "#374151",
+                    color:
+                      "white",
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  {columns}
+                </button>
+              )
+            )}
+          </div>
 
           <p
             style={{
@@ -731,15 +938,21 @@ function LayoutProperties({
             type="number"
             min="0"
             value={
-              styles.gridGap ?? 0
+              styles.gridGap ?? 16
             }
-            onChange={(e) =>
-              updateStyles({
-                gridGap: Number(
+            onChange={(e) => {
+              const value =
+                Number(
                   e.target.value
-                ),
-              })
-            }
+                );
+
+              updateStyles({
+                gridGap:
+                  value,
+                gap:
+                  value,
+              });
+            }}
             style={{
               ...inputStyle,
               marginTop: "8px",
