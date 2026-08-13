@@ -10,6 +10,11 @@ export type ComponentType =
   | "Container"
   | "Image";
 
+export type DeviceType =
+  | "desktop"
+  | "tablet"
+  | "mobile";
+
 export interface BuilderStyles {
   width?: number;
   widthUnit?: "%" | "px";
@@ -62,6 +67,12 @@ export interface BuilderStyles {
   zIndex?: number;
 }
 
+export interface ResponsiveStyles {
+  desktop?: BuilderStyles;
+  tablet?: Partial<BuilderStyles>;
+  mobile?: Partial<BuilderStyles>;
+}
+
 export interface BuilderComponent {
   id: string;
   type: ComponentType;
@@ -78,5 +89,6 @@ export interface BuilderComponent {
   imageHeight?: number;
   imageBorderRadius?: number;
   styles?: BuilderStyles;
+  responsive?: ResponsiveStyles;
   children?: BuilderComponent[];
 }
