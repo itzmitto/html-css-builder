@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { DragEndEvent } from "@dnd-kit/core";
 import {
   DndContext,
@@ -10,19 +9,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { BuilderComponent } from "../types/builder";
+import type {
+  BuilderComponent,
+  DeviceType,
+} from "../types/builder";
 import PreviewRenderer from "./PreviewRenderer";
-
-type Device =
-  | "desktop"
-  | "tablet"
-  | "mobile";
 
 interface CanvasProps {
   components: BuilderComponent[];
   selectedId: string | null;
   setSelectedId: (id: string) => void;
   onDragEnd: (event: DragEndEvent) => void;
+  device: DeviceType;
+  setDevice: (device: DeviceType) => void;
 }
 
 interface SortableComponentProps {
@@ -46,13 +45,11 @@ function SortableComponent({
   } = useSortable({
     id: component.id,
   });
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
-
   return (
     <div
       ref={setNodeRef}
@@ -75,8 +72,9 @@ function SortableComponent({
       >
         ⋮⋮
       </div>
-
-      <PreviewRenderer component={component} />
+      <PreviewRenderer
+        component={component}
+      />
     </div>
   );
 }
@@ -86,17 +84,15 @@ function Canvas({
   selectedId,
   setSelectedId,
   onDragEnd,
+  device,
+  setDevice,
 }: CanvasProps) {
-  const [device, setDevice] =
-    useState<Device>("desktop");
-
   const deviceWidth =
     device === "desktop"
       ? 1440
       : device === "tablet"
       ? 768
       : 375;
-
   return (
     <main className="canvas">
       <div className="device-switcher">
@@ -112,7 +108,6 @@ function Canvas({
         >
           Desktop
         </button>
-
         <button
           className={
             device === "tablet"
@@ -125,7 +120,6 @@ function Canvas({
         >
           Tablet
         </button>
-
         <button
           className={
             device === "mobile"
@@ -138,7 +132,6 @@ function Canvas({
         >
           Mobile
         </button>
-
         <span
           style={{
             marginLeft: "10px",
@@ -150,7 +143,6 @@ function Canvas({
           {deviceWidth}px
         </span>
       </div>
-
       <div className="preview-wrapper">
         <div
           className={`desktop-preview device-${device}`}
@@ -163,7 +155,6 @@ function Canvas({
               Voeg componenten toe vanuit de sidebar
             </div>
           )}
-
           <DndContext
             collisionDetection={closestCenter}
             onDragEnd={onDragEnd}

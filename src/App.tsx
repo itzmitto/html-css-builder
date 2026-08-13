@@ -10,11 +10,18 @@ import type {
   BuilderComponent,
   ComponentType,
   BuilderStyles,
+  DeviceType,
 } from "./types/builder";
 
 function App() {
-  const [components, setComponents] = useState<BuilderComponent[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [components, setComponents] =
+    useState<BuilderComponent[]>([]);
+
+  const [selectedId, setSelectedId] =
+    useState<string | null>(null);
+
+  const [device, setDevice] =
+    useState<DeviceType>("desktop");
 
   const findComponentById = (
     componentList: BuilderComponent[],
@@ -24,16 +31,19 @@ function App() {
       if (component.id === id) {
         return component;
       }
+
       if (component.children?.length) {
         const found = findComponentById(
           component.children,
           id
         );
+
         if (found) {
           return found;
         }
       }
     }
+
     return undefined;
   };
 
@@ -44,21 +54,25 @@ function App() {
     for (const component of componentList) {
       if (
         component.children?.some(
-          (child) => child.id === childId
+          (child) =>
+            child.id === childId
         )
       ) {
         return component;
       }
+
       if (component.children?.length) {
         const found = findParentById(
           component.children,
           childId
         );
+
         if (found) {
           return found;
         }
       }
     }
+
     return undefined;
   };
 
@@ -69,23 +83,32 @@ function App() {
     if (!component.children?.length) {
       return false;
     }
+
     for (const child of component.children) {
       if (child.id === id) {
         return true;
       }
-      if (isDescendant(child, id)) {
+
+      if (
+        isDescendant(
+          child,
+          id
+        )
+      ) {
         return true;
       }
     }
+
     return false;
   };
 
-  const selectedComponent = selectedId
-    ? findComponentById(
-        components,
-        selectedId
-      )
-    : undefined;
+  const selectedComponent =
+    selectedId
+      ? findComponentById(
+          components,
+          selectedId
+        )
+      : undefined;
 
   const createDefaultStyles =
     (): BuilderStyles => ({
@@ -109,10 +132,12 @@ function App() {
       flexDirection: "row",
       justifyContent: "flex-start",
       alignItems: "stretch",
+      horizontalAlign: "left",
       gap: 0,
       gridColumns: 1,
       gridGap: 0,
-      backgroundColor: "#ffffff",
+      backgroundColor:
+        "#ffffff",
       color: "#000000",
       fontFamily: "Arial",
       fontSize: 16,
@@ -122,7 +147,8 @@ function App() {
       textAlign: "left",
       borderWidth: 0,
       borderStyle: "none",
-      borderColor: "#000000",
+      borderColor:
+        "#000000",
       borderRadius: 0,
       opacity: 1,
       overflow: "visible",
@@ -136,18 +162,29 @@ function App() {
       id: crypto.randomUUID(),
       type,
       text: type,
-      heroTitle: "Hero Title",
-      heroSubtitle: "Hero Subtitle goes here",
-      heroButtonText: "Get Started",
+      heroTitle:
+        "Hero Title",
+      heroSubtitle:
+        "Hero Subtitle goes here",
+      heroButtonText:
+        "Get Started",
       minHeight: 300,
       fontSize: 32,
       color: "#000000",
-      backgroundColor: "#ffffff",
+      backgroundColor:
+        "#ffffff",
       imageUrl: "",
       imageWidth: 100,
       imageHeight: 300,
       imageBorderRadius: 8,
-      styles: createDefaultStyles(),
+      styles:
+        createDefaultStyles(),
+      responsive: {
+        desktop:
+          createDefaultStyles(),
+        tablet: {},
+        mobile: {},
+      },
       children: [],
     };
   };
@@ -159,22 +196,33 @@ function App() {
       component: BuilderComponent
     ) => BuilderComponent
   ): BuilderComponent[] => {
-    return componentList.map((component) => {
-      if (component.id === id) {
-        return updater(component);
+    return componentList.map(
+      (component) => {
+        if (
+          component.id === id
+        ) {
+          return updater(
+            component
+          );
+        }
+
+        if (
+          component.children?.length
+        ) {
+          return {
+            ...component,
+            children:
+              updateComponentById(
+                component.children,
+                id,
+                updater
+              ),
+          };
+        }
+
+        return component;
       }
-      if (component.children?.length) {
-        return {
-          ...component,
-          children: updateComponentById(
-            component.children,
-            id,
-            updater
-          ),
-        };
-      }
-      return component;
-    });
+    );
   };
 
   const removeComponentById = (
@@ -186,32 +234,45 @@ function App() {
   } => {
     for (
       let index = 0;
-      index < componentList.length;
+      index <
+      componentList.length;
       index++
     ) {
       const component =
         componentList[index];
 
-      if (component.id === id) {
+      if (
+        component.id === id
+      ) {
         const updated = [
           ...componentList,
         ];
+
         const [removed] =
-          updated.splice(index, 1);
+          updated.splice(
+            index,
+            1
+          );
+
         return {
-          components: updated,
+          components:
+            updated,
           removed,
         };
       }
 
-      if (component.children?.length) {
+      if (
+        component.children?.length
+      ) {
         const result =
           removeComponentById(
             component.children,
             id
           );
 
-        if (result.removed) {
+        if (
+          result.removed
+        ) {
           const updated = [
             ...componentList,
           ];
@@ -223,7 +284,8 @@ function App() {
           };
 
           return {
-            components: updated,
+            components:
+              updated,
             removed:
               result.removed,
           };
@@ -232,7 +294,8 @@ function App() {
     }
 
     return {
-      components: componentList,
+      components:
+        componentList,
     };
   };
 
@@ -247,7 +310,8 @@ function App() {
       (component) => ({
         ...component,
         children: [
-          ...(component.children ?? []),
+          ...(component.children ??
+            []),
           child,
         ],
       })
@@ -262,10 +326,13 @@ function App() {
     const targetIndex =
       componentList.findIndex(
         (component) =>
-          component.id === targetId
+          component.id ===
+          targetId
       );
 
-    if (targetIndex !== -1) {
+    if (
+      targetIndex !== -1
+    ) {
       const updated = [
         ...componentList,
       ];
@@ -281,7 +348,9 @@ function App() {
 
     return componentList.map(
       (component) => {
-        if (component.children?.length) {
+        if (
+          component.children?.length
+        ) {
           const updatedChildren =
             insertBeforeComponent(
               component.children,
@@ -345,7 +414,9 @@ function App() {
     activeId: string,
     overId: string
   ) => {
-    if (activeId === overId) {
+    if (
+      activeId === overId
+    ) {
       return;
     }
 
@@ -390,10 +461,12 @@ function App() {
       );
 
     const activeParentId =
-      activeParent?.id ?? null;
+      activeParent?.id ??
+      null;
 
     const overParentId =
-      overParent?.id ?? null;
+      overParent?.id ??
+      null;
 
     if (
       activeParentId ===
@@ -432,10 +505,11 @@ function App() {
 
       const [
         movedComponent,
-      ] = updatedList.splice(
-        oldIndex,
-        1
-      );
+      ] =
+        updatedList.splice(
+          oldIndex,
+          1
+        );
 
       updatedList.splice(
         newIndex,
@@ -443,7 +517,9 @@ function App() {
         movedComponent
       );
 
-      if (activeParent) {
+      if (
+        activeParent
+      ) {
         setComponents(
           updateComponentById(
             components,
@@ -470,7 +546,9 @@ function App() {
         activeId
       );
 
-    if (!removal.removed) {
+    if (
+      !removal.removed
+    ) {
       return;
     }
 
@@ -521,7 +599,10 @@ function App() {
   const handleCanvasDragEnd = (
     event: DragEndEvent
   ) => {
-    const { active, over } = event;
+    const {
+      active,
+      over,
+    } = event;
 
     if (!over) {
       return;
@@ -539,7 +620,7 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
           text: value,
@@ -551,78 +632,106 @@ function App() {
   const updateFontSize = (
     value: number
   ) => {
-    setComponents(
-      updateComponentById(
-        components,
-        selectedId || "",
-        (component) => ({
-          ...component,
-          fontSize: value,
-          styles: {
-            ...component.styles,
-            fontSize: value,
-          },
-        })
-      )
-    );
+    updateStyles({
+      fontSize:
+        value,
+    });
+
+    if (
+      device ===
+      "desktop"
+    ) {
+      setComponents(
+        updateComponentById(
+          components,
+          selectedId ?? "",
+          (component) => ({
+            ...component,
+            fontSize:
+              value,
+          })
+        )
+      );
+    }
   };
 
   const updateColor = (
     value: string
   ) => {
-    setComponents(
-      updateComponentById(
-        components,
-        selectedId || "",
-        (component) => ({
-          ...component,
-          color: value,
-          styles: {
-            ...component.styles,
-            color: value,
-          },
-        })
-      )
-    );
+    updateStyles({
+      color: value,
+    });
+
+    if (
+      device ===
+      "desktop"
+    ) {
+      setComponents(
+        updateComponentById(
+          components,
+          selectedId ?? "",
+          (component) => ({
+            ...component,
+            color:
+              value,
+          })
+        )
+      );
+    }
   };
 
   const updateBackgroundColor = (
     value: string
   ) => {
-    setComponents(
-      updateComponentById(
-        components,
-        selectedId || "",
-        (component) => ({
-          ...component,
-          backgroundColor: value,
-          styles: {
-            ...component.styles,
-            backgroundColor: value,
-          },
-        })
-      )
-    );
+    updateStyles({
+      backgroundColor:
+        value,
+    });
+
+    if (
+      device ===
+      "desktop"
+    ) {
+      setComponents(
+        updateComponentById(
+          components,
+          selectedId ?? "",
+          (component) => ({
+            ...component,
+            backgroundColor:
+              value,
+          })
+        )
+      );
+    }
   };
 
   const updateMinHeight = (
     value: number
   ) => {
-    setComponents(
-      updateComponentById(
-        components,
-        selectedId || "",
-        (component) => ({
-          ...component,
-          minHeight: value,
-          styles: {
-            ...component.styles,
-            height: value,
-            heightUnit: "px",
-          },
-        })
-      )
-    );
+    updateStyles({
+      height:
+        value,
+      heightUnit:
+        "px",
+    });
+
+    if (
+      device ===
+      "desktop"
+    ) {
+      setComponents(
+        updateComponentById(
+          components,
+          selectedId ?? "",
+          (component) => ({
+            ...component,
+            minHeight:
+              value,
+          })
+        )
+      );
+    }
   };
 
   const updateImage = (
@@ -631,10 +740,11 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
-          imageUrl: value,
+          imageUrl:
+            value,
         })
       )
     );
@@ -646,10 +756,11 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
-          imageWidth: value,
+          imageWidth:
+            value,
         })
       )
     );
@@ -661,10 +772,11 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
-          imageHeight: value,
+          imageHeight:
+            value,
         })
       )
     );
@@ -676,10 +788,11 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
-          imageBorderRadius: value,
+          imageBorderRadius:
+            value,
         })
       )
     );
@@ -691,14 +804,35 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
-        (component) => ({
-          ...component,
-          styles: {
-            ...component.styles,
-            ...updates,
-          },
-        })
+        selectedId ?? "",
+        (component) => {
+          if (
+            device ===
+            "desktop"
+          ) {
+            return {
+              ...component,
+              styles: {
+                ...component.styles,
+                ...updates,
+              },
+            };
+          }
+
+          return {
+            ...component,
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component
+                  .responsive?.[
+                    device
+                  ],
+                ...updates,
+              },
+            },
+          };
+        }
       )
     );
   };
@@ -733,7 +867,8 @@ function App() {
       );
 
     const list = parent
-      ? parent.children ?? []
+      ? parent.children ??
+        []
       : components;
 
     const index =
@@ -790,7 +925,8 @@ function App() {
       );
 
     const list = parent
-      ? parent.children ?? []
+      ? parent.children ??
+        []
       : components;
 
     const index =
@@ -802,7 +938,8 @@ function App() {
 
     if (
       index === -1 ||
-      index === list.length - 1
+      index ===
+        list.length - 1
     ) {
       return;
     }
@@ -844,11 +981,44 @@ function App() {
     return {
       ...component,
       id: crypto.randomUUID(),
-      styles: component.styles
-        ? {
-            ...component.styles,
-          }
-        : undefined,
+      styles:
+        component.styles
+          ? {
+              ...component.styles,
+            }
+          : undefined,
+      responsive:
+        component.responsive
+          ? {
+              desktop:
+                component.responsive
+                  .desktop
+                  ? {
+                      ...component
+                        .responsive
+                        .desktop,
+                    }
+                  : undefined,
+              tablet:
+                component.responsive
+                  .tablet
+                  ? {
+                      ...component
+                        .responsive
+                        .tablet,
+                    }
+                  : undefined,
+              mobile:
+                component.responsive
+                  .mobile
+                  ? {
+                      ...component
+                        .responsive
+                        .mobile,
+                    }
+                  : undefined,
+            }
+          : undefined,
       children:
         component.children
           ? component.children.map(
@@ -889,7 +1059,8 @@ function App() {
 
     if (parent) {
       const children =
-        parent.children ?? [];
+        parent.children ??
+        [];
 
       const index =
         children.findIndex(
@@ -898,12 +1069,15 @@ function App() {
             selectedId
         );
 
-      if (index === -1) {
+      if (
+        index === -1
+      ) {
         return;
       }
 
-      const updatedChildren =
-        [...children];
+      const updatedChildren = [
+        ...children,
+      ];
 
       updatedChildren.splice(
         index + 1,
@@ -930,7 +1104,9 @@ function App() {
             selectedId
         );
 
-      if (index === -1) {
+      if (
+        index === -1
+      ) {
         return;
       }
 
@@ -960,10 +1136,11 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
-          heroTitle: value,
+          heroTitle:
+            value,
         })
       )
     );
@@ -975,7 +1152,7 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
           heroSubtitle:
@@ -991,7 +1168,7 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId || "",
+        selectedId ?? "",
         (component) => ({
           ...component,
           heroButtonText:
@@ -1005,12 +1182,14 @@ function App() {
     filename: string,
     content: string
   ) => {
-    const blob = new Blob(
-      [content],
-      {
-        type: "text/plain",
-      }
-    );
+    const blob =
+      new Blob(
+        [content],
+        {
+          type:
+            "text/plain",
+        }
+      );
 
     const url =
       URL.createObjectURL(
@@ -1023,7 +1202,8 @@ function App() {
       );
 
     a.href = url;
-    a.download = filename;
+    a.download =
+      filename;
     a.click();
 
     URL.revokeObjectURL(
@@ -1080,7 +1260,8 @@ function App() {
     }
 
     try {
-      const parsedProject: BuilderComponent[] =
+      const parsedProject:
+      BuilderComponent[] =
         JSON.parse(
           savedProject
         );
@@ -1089,7 +1270,9 @@ function App() {
         parsedProject
       );
 
-      setSelectedId(null);
+      setSelectedId(
+        null
+      );
 
       alert(
         "Project geladen!"
@@ -1168,6 +1351,12 @@ function App() {
           }
           onDragEnd={
             handleCanvasDragEnd
+          }
+          device={
+            device
+          }
+          setDevice={
+            setDevice
           }
         />
       </div>
