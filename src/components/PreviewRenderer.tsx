@@ -26,15 +26,11 @@ function getResponsiveStyles(
 ): BuilderStyles {
   const baseStyles =
     component.styles ?? {};
-
   if (device === "desktop") {
     return baseStyles;
   }
-
   const deviceStyles =
-    component.responsive?.[device] ??
-    {};
-
+    component.responsive?.[device] ?? {};
   return {
     ...baseStyles,
     ...deviceStyles,
@@ -47,23 +43,18 @@ function getBuilderStyle(
   if (!styles) {
     return {};
   }
-
   const maxWidth =
     styles.maxWidth !== undefined &&
     styles.maxWidth > 0
       ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
       : undefined;
-
   const minHeight =
     styles.minHeight !== undefined &&
     styles.minHeight > 0
       ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
       : undefined;
-
   const horizontalAlign =
-    styles.horizontalAlign ??
-    "left";
-
+    styles.horizontalAlign ?? "left";
   const horizontalAlignmentStyles: CSSProperties =
     horizontalAlign === "center"
       ? {
@@ -74,24 +65,20 @@ function getBuilderStyle(
       ? {
           marginLeft: "auto",
           marginRight:
-            styles.marginRight !==
-            undefined
+            styles.marginRight !== undefined
               ? `${styles.marginRight}px`
               : "0",
         }
       : {
           marginLeft:
-            styles.marginLeft !==
-            undefined
+            styles.marginLeft !== undefined
               ? `${styles.marginLeft}px`
               : "0",
           marginRight:
-            styles.marginRight !==
-            undefined
+            styles.marginRight !== undefined
               ? `${styles.marginRight}px`
               : "0",
         };
-
   return {
     width:
       styles.width !== undefined
@@ -207,48 +194,38 @@ function PreviewRenderer({
       component,
       device
     );
-
   const builderStyle =
     getBuilderStyle(styles);
-
   const backgroundColor =
     styles.backgroundColor ||
     component.backgroundColor ||
     "#ffffff";
-
   const textColor =
     styles.color ||
     component.color ||
     "#000000";
-
   const fontFamily =
     styles.fontFamily ||
     "Arial";
-
   const textAlign =
     styles.textAlign ||
     "left";
-
   const children =
     component.children ?? [];
 
   const renderChildren = () => {
-    if (
-      children.length === 0
-    ) {
+    if (children.length === 0) {
       return null;
     }
-
     return children.map(
       (child) => (
         <div
           key={child.id}
           style={{
             width: "100%",
-            boxSizing:
-              "border-box",
-            position:
-              "relative",
+            minWidth: 0,
+            boxSizing: "border-box",
+            position: "relative",
           }}
         >
           <PreviewRenderer
@@ -260,111 +237,167 @@ function PreviewRenderer({
     );
   };
 
-  if (
-    component.type ===
-    "Container"
-  ) {
-    const containerStyle: CSSProperties =
-      {
-        ...builderStyle,
-        width:
-          styles.width !==
-          undefined
-            ? `${styles.width}${styles.widthUnit ?? "%"}`
-            : "100%",
-        height:
-          styles.height !==
-          undefined
-            ? `${styles.height}${styles.heightUnit ?? "px"}`
-            : undefined,
-        minHeight:
-          styles.minHeight !==
-            undefined &&
-          styles.minHeight > 0
-            ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
-            : styles.height !==
-              undefined
-            ? undefined
-            : `${component.minHeight ?? 300}px`,
-        maxWidth:
-          styles.maxWidth !==
-            undefined &&
-          styles.maxWidth > 0
-            ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
-            : undefined,
-        backgroundColor,
-        position:
-          "relative",
-        boxSizing:
-          "border-box",
+  const getLayoutDefaults = () => {
+    if (component.type === "Row") {
+      return {
+        display: "flex" as const,
+        flexDirection: "row" as const,
+        gap: 16,
       };
+    }
+    if (component.type === "Stack") {
+      return {
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 16,
+      };
+    }
+    return {
+      display:
+        styles.display ?? "block",
+      flexDirection:
+        styles.flexDirection,
+      gap:
+        styles.gap,
+    };
+  };
 
-    const containerContentStyle: CSSProperties =
-      {
-        width:
-          "100%",
-        minHeight:
-          "100%",
-        display:
-          styles.display ??
-          "block",
-        flexDirection:
-          styles.display ===
-          "flex"
-            ? styles.flexDirection
-            : undefined,
-        justifyContent:
-          styles.display ===
-          "flex"
-            ? styles.justifyContent
-            : undefined,
-        alignItems:
-          styles.display ===
-          "flex"
-            ? styles.alignItems
-            : undefined,
-        gap:
-          styles.gap !==
-          undefined
-            ? `${styles.gap}px`
-            : undefined,
-        gridTemplateColumns:
-          styles.display ===
-            "grid" &&
-          styles.gridColumns !==
-            undefined
-            ? `repeat(${styles.gridColumns}, minmax(0, 1fr))`
-            : undefined,
-        gridGap:
-          styles.display ===
-            "grid" &&
-          styles.gridGap !==
-            undefined
-            ? `${styles.gridGap}px`
-            : undefined,
-        boxSizing:
-          "border-box",
-      };
+  if (
+    component.type === "Container" ||
+    component.type === "Row" ||
+    component.type === "Stack"
+  ) {
+    const layoutDefaults =
+      getLayoutDefaults();
+
+    const layoutStyle: CSSProperties = {
+      ...builderStyle,
+      display:
+        styles.display ??
+        layoutDefaults.display,
+      flexDirection:
+        styles.display === "flex"
+          ? styles.flexDirection ??
+            layoutDefaults.flexDirection
+          : layoutDefaults.flexDirection,
+      gap:
+        styles.gap !== undefined
+          ? `${styles.gap}px`
+          : `${layoutDefaults.gap ?? 0}px`,
+      justifyContent:
+        styles.display === "flex" ||
+        component.type === "Row" ||
+        component.type === "Stack"
+          ? styles.justifyContent
+          : undefined,
+      alignItems:
+        styles.display === "flex" ||
+        component.type === "Row" ||
+        component.type === "Stack"
+          ? styles.alignItems
+          : undefined,
+      backgroundColor,
+      position: "relative",
+      boxSizing: "border-box",
+      minWidth: 0,
+    };
+
+    if (component.type === "Container") {
+      layoutStyle.width =
+        styles.width !== undefined
+          ? `${styles.width}${styles.widthUnit ?? "%"}`
+          : "100%";
+    }
+
+    if (
+      component.type === "Row" ||
+      component.type === "Stack"
+    ) {
+      layoutStyle.width =
+        styles.width !== undefined
+          ? `${styles.width}${styles.widthUnit ?? "%"}`
+          : "100%";
+    }
+
+    const hasChildren =
+      children.length > 0;
 
     return (
-      <div
-        style={
-          containerStyle
-        }
-      >
-        {children.length ===
-        0 ? (
-          <ContainerPreview
-            minHeight={
-              component.minHeight ??
-              styles.height
-            }
-          />
-        ) : (
+      <div style={layoutStyle}>
+        {!hasChildren &&
+          component.type ===
+            "Container" && (
+            <ContainerPreview
+              minHeight={
+                component.minHeight ??
+                styles.height
+              }
+            />
+          )}
+
+        {!hasChildren &&
+          (component.type ===
+            "Row" ||
+            component.type ===
+              "Stack") && (
+            <div
+              style={{
+                width: "100%",
+                minHeight:
+                  component.type ===
+                  "Row"
+                    ? 100
+                    : 150,
+                display:
+                  "flex",
+                alignItems:
+                  "center",
+                justifyContent:
+                  "center",
+                border:
+                  "2px dashed #cbd5e1",
+                borderRadius:
+                  "8px",
+                color:
+                  "#64748b",
+                fontSize:
+                  "13px",
+                boxSizing:
+                  "border-box",
+              }}
+            >
+              {component.type ===
+              "Row"
+                ? "Drop components into this Row"
+                : "Drop components into this Stack"}
+            </div>
+          )}
+
+        {hasChildren && (
           <div
-            style={
-              containerContentStyle
-            }
+            style={{
+              width: "100%",
+              minWidth: 0,
+              boxSizing:
+                "border-box",
+              display:
+                layoutStyle.display,
+              flexDirection:
+                layoutStyle.flexDirection,
+              justifyContent:
+                layoutStyle.justifyContent,
+              alignItems:
+                layoutStyle.alignItems,
+              gap:
+                layoutStyle.gap,
+              gridTemplateColumns:
+                styles.display ===
+                  "grid" &&
+                styles.gridColumns !==
+                  undefined
+                  ? `repeat(${styles.gridColumns}, minmax(0, 1fr))`
+                  : undefined,
+            }}
           >
             {renderChildren()}
           </div>
@@ -381,6 +414,7 @@ function PreviewRenderer({
           "relative",
         boxSizing:
           "border-box",
+        minWidth: 0,
       }}
     >
       {component.type ===
@@ -610,20 +644,17 @@ function PreviewRenderer({
         />
       )}
 
-      {children.length > 0 &&
-        component.type !==
-          "Container" && (
-          <div
-            style={{
-              width:
-                "100%",
-              marginTop:
-                "8px",
-            }}
-          >
-            {renderChildren()}
-          </div>
-        )}
+      {children.length > 0 && (
+        <div
+          style={{
+            width: "100%",
+            marginTop: "8px",
+            minWidth: 0,
+          }}
+        >
+          {renderChildren()}
+        </div>
+      )}
     </div>
   );
 }
