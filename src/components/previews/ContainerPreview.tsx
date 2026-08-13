@@ -3,13 +3,13 @@ interface ContainerPreviewProps {
 }
 
 function ContainerPreview({
-  minHeight,
+  minHeight = 300,
 }: ContainerPreviewProps) {
   return (
     <div
       className="container-preview"
       style={{
-        minHeight: `${minHeight || 300}px`,
+        minHeight: `${minHeight}px`,
         width: "100%",
         boxSizing: "border-box",
         position: "relative",

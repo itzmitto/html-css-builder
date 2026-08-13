@@ -15,9 +15,14 @@ function NavbarPreview({
     <nav
       className="navbar-preview"
       style={{
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
         backgroundColor,
         color: textColor,
         fontFamily,
+        overflow: "hidden",
       }}
     >
       <div
@@ -25,6 +30,7 @@ function NavbarPreview({
         style={{
           color: textColor,
           fontFamily,
+          minWidth: 0,
         }}
       >
         Logo
@@ -33,6 +39,8 @@ function NavbarPreview({
       <div
         className="nav-links"
         style={{
+          minWidth: 0,
+          maxWidth: "100%",
           justifyContent:
             textAlign === "center"
               ? "center"

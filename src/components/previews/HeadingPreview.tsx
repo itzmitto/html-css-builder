@@ -10,26 +10,28 @@ interface HeadingPreviewProps {
 }
 
 function HeadingPreview({
-  text,
-  fontSize,
-  color,
-  fontFamily,
-  fontWeight,
-  lineHeight,
-  letterSpacing,
-  textAlign,
+  text = "Heading",
+  fontSize = 32,
+  color = "#000000",
+  fontFamily = "Arial",
+  fontWeight = 700,
+  lineHeight = 1.2,
+  letterSpacing = 0,
+  textAlign = "left",
 }: HeadingPreviewProps) {
   return (
     <h1
       className="heading-preview"
       style={{
-        fontSize: `${fontSize || 32}px`,
-        color: color || "#000000",
-        fontFamily: fontFamily || "Arial",
-        fontWeight: fontWeight || 700,
-        lineHeight: lineHeight || 1.2,
-        letterSpacing: `${letterSpacing || 0}px`,
-        textAlign: textAlign || "left",
+        width: "100%",
+        boxSizing: "border-box",
+        fontSize: `${fontSize}px`,
+        color,
+        fontFamily,
+        fontWeight,
+        lineHeight,
+        letterSpacing: `${letterSpacing}px`,
+        textAlign,
       }}
     >
       {text}

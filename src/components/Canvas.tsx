@@ -49,21 +49,10 @@ function SortableComponent({
   });
 
   const style = {
-    transform:
-      CSS.Transform.toString(
-        transform
-      ),
+    transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging
-      ? 0.45
-      : 1,
+    opacity: isDragging ? 0.45 : 1,
   };
-
-  const children =
-    component.children ?? [];
-
-  const hasChildren =
-    children.length > 0;
 
   return (
     <div
@@ -76,9 +65,7 @@ function SortableComponent({
       }
       onClick={(event) => {
         event.stopPropagation();
-        setSelectedId(
-          component.id
-        );
+        setSelectedId(component.id);
       }}
       {...attributes}
     >
@@ -94,47 +81,6 @@ function SortableComponent({
         component={component}
         device={device}
       />
-
-      {hasChildren && (
-        <div className="nested-components">
-          <SortableContext
-            items={children.map(
-              (child) =>
-                child.id
-            )}
-            strategy={
-              verticalListSortingStrategy
-            }
-          >
-            {children.map(
-              (child) => (
-                <SortableComponent
-                  key={child.id}
-                  component={child}
-                  selectedId={
-                    selectedId
-                  }
-                  setSelectedId={
-                    setSelectedId
-                  }
-                  device={device}
-                />
-              )
-            )}
-          </SortableContext>
-        </div>
-      )}
-
-      {component.type ===
-        "Container" &&
-        !hasChildren && (
-          <div className="container-drop-zone empty">
-            <span>
-              Sleep componenten
-              hierheen
-            </span>
-          </div>
-        )}
     </div>
   );
 }
@@ -164,11 +110,7 @@ function Canvas({
               ? "device-button active"
               : "device-button"
           }
-          onClick={() =>
-            setDevice(
-              "desktop"
-            )
-          }
+          onClick={() => setDevice("desktop")}
         >
           Desktop
         </button>
@@ -180,11 +122,7 @@ function Canvas({
               ? "device-button active"
               : "device-button"
           }
-          onClick={() =>
-            setDevice(
-              "tablet"
-            )
-          }
+          onClick={() => setDevice("tablet")}
         >
           Tablet
         </button>
@@ -196,25 +134,17 @@ function Canvas({
               ? "device-button active"
               : "device-button"
           }
-          onClick={() =>
-            setDevice(
-              "mobile"
-            )
-          }
+          onClick={() => setDevice("mobile")}
         >
           Mobile
         </button>
 
         <span
           style={{
-            marginLeft:
-              "10px",
-            color:
-              "#6b7280",
-            fontSize:
-              "14px",
-            alignSelf:
-              "center",
+            marginLeft: "10px",
+            color: "#6b7280",
+            fontSize: "14px",
+            alignSelf: "center",
           }}
         >
           {deviceWidth}px
@@ -228,53 +158,31 @@ function Canvas({
             width: `${deviceWidth}px`,
           }}
         >
-          {components.length ===
-            0 && (
+          {components.length === 0 && (
             <div className="empty-state">
-              Voeg componenten
-              toe vanuit de
-              sidebar
+              Voeg componenten toe vanuit de sidebar
             </div>
           )}
 
           <DndContext
-            collisionDetection={
-              closestCenter
-            }
-            onDragEnd={
-              onDragEnd
-            }
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
           >
             <SortableContext
               items={components.map(
-                (component) =>
-                  component.id
+                (component) => component.id
               )}
-              strategy={
-                verticalListSortingStrategy
-              }
+              strategy={verticalListSortingStrategy}
             >
-              {components.map(
-                (component) => (
-                  <SortableComponent
-                    key={
-                      component.id
-                    }
-                    component={
-                      component
-                    }
-                    selectedId={
-                      selectedId
-                    }
-                    setSelectedId={
-                      setSelectedId
-                    }
-                    device={
-                      device
-                    }
-                  />
-                )
-              )}
+              {components.map((component) => (
+                <SortableComponent
+                  key={component.id}
+                  component={component}
+                  selectedId={selectedId}
+                  setSelectedId={setSelectedId}
+                  device={device}
+                />
+              ))}
             </SortableContext>
           </DndContext>
         </div>

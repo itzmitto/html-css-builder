@@ -16,6 +16,10 @@ function ImagePreview({
       className="image-preview"
       style={{
         width: `${width}%`,
+        maxWidth: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       {imageUrl ? (
@@ -25,10 +29,12 @@ function ImagePreview({
           className="image"
           style={{
             width: "100%",
+            maxWidth: "100%",
             height: `${height}px`,
             objectFit: "cover",
             borderRadius: `${borderRadius}px`,
             display: "block",
+            boxSizing: "border-box",
           }}
         />
       ) : (
@@ -36,8 +42,10 @@ function ImagePreview({
           className="image-placeholder"
           style={{
             width: "100%",
+            maxWidth: "100%",
             height: `${height}px`,
             borderRadius: `${borderRadius}px`,
+            boxSizing: "border-box",
           }}
         >
           <span>Image</span>

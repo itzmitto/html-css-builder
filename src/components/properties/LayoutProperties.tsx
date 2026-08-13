@@ -1,7 +1,11 @@
-import type { BuilderStyles } from "../../types/builder";
+import type {
+  BuilderStyles,
+  DeviceType,
+} from "../../types/builder";
 
 interface LayoutPropertiesProps {
   styles: BuilderStyles;
+  device: DeviceType;
   updateStyles: (
     styles: Partial<BuilderStyles>
   ) => void;
@@ -54,8 +58,10 @@ function BoxModel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gridTemplateRows: "1fr 1fr 1fr",
+          gridTemplateColumns:
+            "1fr 1fr 1fr",
+          gridTemplateRows:
+            "1fr 1fr 1fr",
           gap: "6px",
           background: "#111827",
           padding: "8px",
@@ -99,7 +105,8 @@ function BoxModel({
             justifyContent: "center",
             color: "#9ca3af",
             fontSize: "11px",
-            border: "1px dashed #4b5563",
+            border:
+              "1px dashed #4b5563",
             borderRadius: "6px",
             minHeight: "36px",
           }}
@@ -141,8 +148,23 @@ function BoxModel({
   );
 }
 
+function getDeviceLabel(
+  device: DeviceType
+) {
+  if (device === "desktop") {
+    return "Desktop";
+  }
+
+  if (device === "tablet") {
+    return "Tablet";
+  }
+
+  return "Mobile";
+}
+
 function LayoutProperties({
   styles,
+  device,
   updateStyles,
 }: LayoutPropertiesProps) {
   const inputStyle = {
@@ -166,18 +188,23 @@ function LayoutProperties({
   };
 
   const setDisplay = (
-    display: "block" | "flex" | "grid"
+    display:
+      | "block"
+      | "flex"
+      | "grid"
   ) => {
     if (display === "flex") {
       updateStyles({
         display: "flex",
         flexDirection:
-          styles.flexDirection ?? "row",
+          styles.flexDirection ??
+          "row",
         justifyContent:
           styles.justifyContent ??
           "flex-start",
         alignItems:
-          styles.alignItems ?? "stretch",
+          styles.alignItems ??
+          "stretch",
         gap:
           styles.gap ?? 16,
       });
@@ -207,22 +234,87 @@ function LayoutProperties({
 
     updateStyles({
       display: "block",
-      flexDirection: undefined,
-      justifyContent: undefined,
-      alignItems: undefined,
-      gridColumns: undefined,
-      gridGap: undefined,
+      flexDirection:
+        undefined,
+      justifyContent:
+        undefined,
+      alignItems:
+        undefined,
+      gridColumns:
+        undefined,
+      gridGap:
+        undefined,
     });
   };
 
   const setFlexDirection = (
-    direction: "row" | "column"
+    direction:
+      | "row"
+      | "column"
   ) => {
     updateStyles({
       display: "flex",
-      flexDirection: direction,
+      flexDirection:
+        direction,
     });
   };
+
+  const setGridColumns = (
+    columns: number
+  ) => {
+    const safeColumns =
+      Math.min(
+        12,
+        Math.max(1, columns)
+      );
+
+    updateStyles({
+      display: "grid",
+      gridColumns:
+        safeColumns,
+      gridGap:
+        styles.gridGap ?? 16,
+      gap:
+        styles.gridGap ??
+        styles.gap ??
+        16,
+      flexDirection:
+        undefined,
+      justifyContent:
+        undefined,
+      alignItems:
+        undefined,
+    });
+  };
+
+  const applyResponsivePreset = (
+    columns: number
+  ) => {
+    updateStyles({
+      display: "grid",
+      gridColumns:
+        columns,
+      gridGap:
+        styles.gridGap ?? 16,
+      gap:
+        styles.gridGap ??
+        styles.gap ??
+        16,
+    });
+  };
+
+  const getRecommendedColumns =
+    () => {
+      if (device === "desktop") {
+        return 3;
+      }
+
+      if (device === "tablet") {
+        return 2;
+      }
+
+      return 1;
+    };
 
   return (
     <div>
@@ -230,9 +322,31 @@ function LayoutProperties({
         Layout
       </h3>
 
-      <h4
+      <div
         style={{
           marginTop: "10px",
+          padding: "10px 12px",
+          background: "#111827",
+          border:
+            "1px solid #374151",
+          borderRadius: "8px",
+          color: "#d1d5db",
+          fontSize: "12px",
+        }}
+      >
+        Editing:{" "}
+        <strong
+          style={{
+            color: "#ffffff",
+          }}
+        >
+          {getDeviceLabel(device)}
+        </strong>
+      </div>
+
+      <h4
+        style={{
+          marginTop: "20px",
           marginBottom: "10px",
           color: "#d1d5db",
         }}
@@ -261,7 +375,9 @@ function LayoutProperties({
         />
 
         <select
-          value={styles.widthUnit ?? "%"}
+          value={
+            styles.widthUnit ?? "%"
+          }
           onChange={(e) =>
             updateStyles({
               widthUnit:
@@ -275,12 +391,20 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="%">%</option>
-          <option value="px">px</option>
+          <option value="%">
+            %
+          </option>
+          <option value="px">
+            px
+          </option>
         </select>
       </div>
 
-      <p style={{ marginTop: "15px" }}>
+      <p
+        style={{
+          marginTop: "15px",
+        }}
+      >
         Height
       </p>
 
@@ -288,7 +412,9 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={styles.height ?? 300}
+          value={
+            styles.height ?? 300
+          }
           onChange={(e) =>
             updateStyles({
               height: Number(
@@ -303,7 +429,10 @@ function LayoutProperties({
         />
 
         <select
-          value={styles.heightUnit ?? "px"}
+          value={
+            styles.heightUnit ??
+            "px"
+          }
           onChange={(e) =>
             updateStyles({
               heightUnit:
@@ -317,12 +446,20 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">px</option>
-          <option value="%">%</option>
+          <option value="px">
+            px
+          </option>
+          <option value="%">
+            %
+          </option>
         </select>
       </div>
 
-      <p style={{ marginTop: "15px" }}>
+      <p
+        style={{
+          marginTop: "15px",
+        }}
+      >
         Max Width
       </p>
 
@@ -330,7 +467,9 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={styles.maxWidth ?? 0}
+          value={
+            styles.maxWidth ?? 0
+          }
           onChange={(e) =>
             updateStyles({
               maxWidth: Number(
@@ -345,7 +484,10 @@ function LayoutProperties({
         />
 
         <select
-          value={styles.maxWidthUnit ?? "px"}
+          value={
+            styles.maxWidthUnit ??
+            "px"
+          }
           onChange={(e) =>
             updateStyles({
               maxWidthUnit:
@@ -359,12 +501,20 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">px</option>
-          <option value="%">%</option>
+          <option value="px">
+            px
+          </option>
+          <option value="%">
+            %
+          </option>
         </select>
       </div>
 
-      <p style={{ marginTop: "15px" }}>
+      <p
+        style={{
+          marginTop: "15px",
+        }}
+      >
         Min Height
       </p>
 
@@ -372,7 +522,9 @@ function LayoutProperties({
         <input
           type="number"
           min="0"
-          value={styles.minHeight ?? 0}
+          value={
+            styles.minHeight ?? 0
+          }
           onChange={(e) =>
             updateStyles({
               minHeight: Number(
@@ -404,41 +556,67 @@ function LayoutProperties({
             width: "75px",
           }}
         >
-          <option value="px">px</option>
-          <option value="%">%</option>
+          <option value="px">
+            px
+          </option>
+          <option value="%">
+            %
+          </option>
         </select>
       </div>
 
       <BoxModel
         title="Margin"
-        top={styles.marginTop ?? 0}
-        right={styles.marginRight ?? 0}
+        top={
+          styles.marginTop ?? 0
+        }
+        right={
+          styles.marginRight ?? 0
+        }
         bottom={
           styles.marginBottom ?? 0
         }
-        left={styles.marginLeft ?? 0}
-        onChange={(property, value) => {
-          if (property === "top") {
+        left={
+          styles.marginLeft ?? 0
+        }
+        onChange={(
+          property,
+          value
+        ) => {
+          if (
+            property === "top"
+          ) {
             updateStyles({
-              marginTop: value,
+              marginTop:
+                value,
             });
           }
 
-          if (property === "right") {
+          if (
+            property === "right"
+          ) {
             updateStyles({
-              marginRight: value,
+              marginRight:
+                value,
             });
           }
 
-          if (property === "bottom") {
+          if (
+            property ===
+            "bottom"
+          ) {
             updateStyles({
-              marginBottom: value,
+              marginBottom:
+                value,
             });
           }
 
-          if (property === "left") {
+          if (
+            property === "left"
+          ) {
             updateStyles({
-              marginLeft: value,
+              marginLeft:
+                value,
             });
           }
         }}
@@ -458,28 +636,44 @@ function LayoutProperties({
         left={
           styles.paddingLeft ?? 0
         }
-        onChange={(property, value) => {
-          if (property === "top") {
+        onChange={(
+          property,
+          value
+        ) => {
+          if (
+            property === "top"
+          ) {
             updateStyles({
-              paddingTop: value,
+              paddingTop:
+                value,
             });
           }
 
-          if (property === "right") {
+          if (
+            property === "right"
+          ) {
             updateStyles({
-              paddingRight: value,
+              paddingRight:
+                value,
             });
           }
 
-          if (property === "bottom") {
+          if (
+            property ===
+            "bottom"
+          ) {
             updateStyles({
-              paddingBottom: value,
+              paddingBottom:
+                value,
             });
           }
 
-          if (property === "left") {
+          if (
+            property === "left"
+          ) {
             updateStyles({
-              paddingLeft: value,
+              paddingLeft:
+                value,
             });
           }
         }}
@@ -495,7 +689,9 @@ function LayoutProperties({
         Positioning
       </h4>
 
-      <p>Horizontal Alignment</p>
+      <p>
+        Horizontal Alignment
+      </p>
 
       <div
         style={{
@@ -506,78 +702,52 @@ function LayoutProperties({
           marginTop: "8px",
         }}
       >
-        <button
-          type="button"
-          onClick={() =>
-            updateStyles({
-              horizontalAlign:
-                "left",
-            })
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              (styles.horizontalAlign ??
-                "left") ===
-              "left"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Left
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            updateStyles({
-              horizontalAlign:
-                "center",
-            })
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              styles.horizontalAlign ===
-              "center"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Center
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            updateStyles({
-              horizontalAlign:
-                "right",
-            })
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              styles.horizontalAlign ===
-              "right"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Right
-        </button>
+        {(
+          [
+            "left",
+            "center",
+            "right",
+          ] as const
+        ).map(
+          (alignment) => (
+            <button
+              key={
+                alignment
+              }
+              type="button"
+              onClick={() =>
+                updateStyles({
+                  horizontalAlign:
+                    alignment,
+                })
+              }
+              style={{
+                padding:
+                  "10px 5px",
+                border: "none",
+                borderRadius:
+                  "6px",
+                background:
+                  (styles.horizontalAlign ??
+                    "left") ===
+                  alignment
+                    ? "#2563eb"
+                    : "#374151",
+                color:
+                  "white",
+                cursor:
+                  "pointer",
+              }}
+            >
+              {alignment
+                .charAt(0)
+                .toUpperCase() +
+                alignment.slice(
+                  1
+                )}
+            </button>
+          )
+        )}
       </div>
 
       <h4
@@ -596,71 +766,54 @@ function LayoutProperties({
           gridTemplateColumns:
             "repeat(3, 1fr)",
           gap: "6px",
-          marginBottom: "10px",
+          marginBottom:
+            "10px",
         }}
       >
-        <button
-          type="button"
-          onClick={() =>
-            setDisplay("block")
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              styles.display ===
-              "block"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Block
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            setDisplay("flex")
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              styles.display ===
-              "flex"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Flex
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            setDisplay("grid")
-          }
-          style={{
-            padding: "10px 5px",
-            border: "none",
-            borderRadius: "6px",
-            background:
-              styles.display ===
-              "grid"
-                ? "#2563eb"
-                : "#374151",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          Grid
-        </button>
+        {(
+          [
+            "block",
+            "flex",
+            "grid",
+          ] as const
+        ).map(
+          (display) => (
+            <button
+              key={
+                display
+              }
+              type="button"
+              onClick={() =>
+                setDisplay(
+                  display
+                )
+              }
+              style={{
+                padding:
+                  "10px 5px",
+                border: "none",
+                borderRadius:
+                  "6px",
+                background:
+                  styles.display ===
+                  display
+                    ? "#2563eb"
+                    : "#374151",
+                color:
+                  "white",
+                cursor:
+                  "pointer",
+              }}
+            >
+              {display
+                .charAt(0)
+                .toUpperCase() +
+                display.slice(
+                  1
+                )}
+            </button>
+          )
+        )}
       </div>
 
       {styles.display ===
@@ -668,7 +821,8 @@ function LayoutProperties({
         <>
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Flex Direction
@@ -676,63 +830,63 @@ function LayoutProperties({
 
           <div
             style={{
-              display: "grid",
+              display:
+                "grid",
               gridTemplateColumns:
                 "1fr 1fr",
               gap: "6px",
-              marginTop: "8px",
+              marginTop:
+                "8px",
             }}
           >
-            <button
-              type="button"
-              onClick={() =>
-                setFlexDirection(
+            {(
+              [
+                "row",
+                "column",
+              ] as const
+            ).map(
+              (direction) => (
+                <button
+                  key={
+                    direction
+                  }
+                  type="button"
+                  onClick={() =>
+                    setFlexDirection(
+                      direction
+                    )
+                  }
+                  style={{
+                    padding:
+                      "10px",
+                    border:
+                      "none",
+                    borderRadius:
+                      "6px",
+                    background:
+                      styles.flexDirection ===
+                      direction
+                        ? "#2563eb"
+                        : "#374151",
+                    color:
+                      "white",
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  {direction ===
                   "row"
-                )
-              }
-              style={{
-                padding: "10px",
-                border: "none",
-                borderRadius: "6px",
-                background:
-                  styles.flexDirection ===
-                  "row"
-                    ? "#2563eb"
-                    : "#374151",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Row
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setFlexDirection(
-                  "column"
-                )
-              }
-              style={{
-                padding: "10px",
-                border: "none",
-                borderRadius: "6px",
-                background:
-                  styles.flexDirection ===
-                  "column"
-                    ? "#2563eb"
-                    : "#374151",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Column
-            </button>
+                    ? "Row"
+                    : "Column"}
+                </button>
+              )
+            )}
           </div>
 
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Justify Content
@@ -746,7 +900,8 @@ function LayoutProperties({
             onChange={(e) =>
               updateStyles({
                 justifyContent:
-                  e.target.value as
+                  e.target
+                    .value as
                     | "flex-start"
                     | "center"
                     | "flex-end"
@@ -755,7 +910,9 @@ function LayoutProperties({
                     | "space-evenly",
               })
             }
-            style={selectStyle}
+            style={
+              selectStyle
+            }
           >
             <option value="flex-start">
               Start
@@ -779,7 +936,8 @@ function LayoutProperties({
 
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Align Items
@@ -793,14 +951,17 @@ function LayoutProperties({
             onChange={(e) =>
               updateStyles({
                 alignItems:
-                  e.target.value as
+                  e.target
+                    .value as
                     | "flex-start"
                     | "center"
                     | "flex-end"
                     | "stretch",
               })
             }
-            style={selectStyle}
+            style={
+              selectStyle
+            }
           >
             <option value="stretch">
               Stretch
@@ -818,7 +979,8 @@ function LayoutProperties({
 
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Gap
@@ -827,7 +989,9 @@ function LayoutProperties({
           <input
             type="number"
             min="0"
-            value={styles.gap ?? 16}
+            value={
+              styles.gap ?? 16
+            }
             onChange={(e) =>
               updateStyles({
                 gap: Number(
@@ -837,7 +1001,8 @@ function LayoutProperties({
             }
             style={{
               ...inputStyle,
-              marginTop: "8px",
+              marginTop:
+                "8px",
             }}
           />
         </>
@@ -848,7 +1013,8 @@ function LayoutProperties({
         <>
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Columns
@@ -859,48 +1025,46 @@ function LayoutProperties({
             min="1"
             max="12"
             value={
-              styles.gridColumns ?? 1
+              styles.gridColumns ??
+              1
             }
             onChange={(e) =>
-              updateStyles({
-                gridColumns:
-                  Math.min(
-                    12,
-                    Math.max(
-                      1,
-                      Number(
-                        e.target
-                          .value
-                      )
-                    )
-                  ),
-              })
+              setGridColumns(
+                Number(
+                  e.target
+                    .value
+                )
+              )
             }
             style={{
               ...inputStyle,
-              marginTop: "8px",
+              marginTop:
+                "8px",
             }}
           />
 
           <div
             style={{
-              display: "grid",
+              display:
+                "grid",
               gridTemplateColumns:
                 "repeat(4, 1fr)",
               gap: "6px",
-              marginTop: "10px",
+              marginTop:
+                "10px",
             }}
           >
             {[1, 2, 3, 4].map(
               (columns) => (
                 <button
-                  key={columns}
+                  key={
+                    columns
+                  }
                   type="button"
                   onClick={() =>
-                    updateStyles({
-                      gridColumns:
-                        columns,
-                    })
+                    setGridColumns(
+                      columns
+                    )
                   }
                   style={{
                     padding:
@@ -928,7 +1092,8 @@ function LayoutProperties({
 
           <p
             style={{
-              marginTop: "15px",
+              marginTop:
+                "15px",
             }}
           >
             Grid Gap
@@ -938,7 +1103,8 @@ function LayoutProperties({
             type="number"
             min="0"
             value={
-              styles.gridGap ?? 16
+              styles.gridGap ??
+              16
             }
             onChange={(e) => {
               const value =
@@ -955,9 +1121,118 @@ function LayoutProperties({
             }}
             style={{
               ...inputStyle,
-              marginTop: "8px",
+              marginTop:
+                "8px",
             }}
           />
+
+          <h4
+            style={{
+              marginTop:
+                "25px",
+              marginBottom:
+                "10px",
+              color:
+                "#d1d5db",
+            }}
+          >
+            Responsive Preset
+          </h4>
+
+          <div
+            style={{
+              padding:
+                "12px",
+              background:
+                "#111827",
+              border:
+                "1px solid #374151",
+              borderRadius:
+                "8px",
+            }}
+          >
+            <div
+              style={{
+                color:
+                  "#9ca3af",
+                fontSize:
+                  "12px",
+                lineHeight:
+                  1.5,
+                marginBottom:
+                  "10px",
+              }}
+            >
+              Recommended
+              columns
+              for{" "}
+              <strong
+                style={{
+                  color:
+                    "#ffffff",
+                }}
+              >
+                {getDeviceLabel(
+                  device
+                )}
+              </strong>
+              :{" "}
+              <strong
+                style={{
+                  color:
+                    "#60a5fa",
+                }}
+              >
+                {getRecommendedColumns()}
+              </strong>{" "}
+              column
+              {getRecommendedColumns() !==
+              1
+                ? "s"
+                : ""}
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                applyResponsivePreset(
+                  getRecommendedColumns()
+                )
+              }
+              style={{
+                width:
+                  "100%",
+                padding:
+                  "10px",
+                border:
+                  "none",
+                borderRadius:
+                  "6px",
+                background:
+                  "#2563eb",
+                color:
+                  "white",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  600,
+              }}
+            >
+              Use{" "}
+              {
+                getRecommendedColumns()
+              }{" "}
+              Column
+              {getRecommendedColumns() !==
+              1
+                ? "s"
+                : ""}{" "}
+              on{" "}
+              {getDeviceLabel(
+                device
+              )}
+            </button>
+          </div>
         </>
       )}
     </div>

@@ -21,16 +21,23 @@ function HeroPreview({
     <div
       className="hero-preview"
       style={{
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
         backgroundColor,
         color: textColor,
         fontFamily,
         textAlign,
+        overflow: "hidden",
       }}
     >
       <h1
         style={{
           color: textColor,
           fontFamily,
+          maxWidth: "100%",
+          overflowWrap: "break-word",
         }}
       >
         {title}
@@ -40,13 +47,18 @@ function HeroPreview({
         style={{
           color: textColor,
           fontFamily,
+          maxWidth: "100%",
+          overflowWrap: "break-word",
         }}
       >
         {subtitle}
       </p>
 
       <button
+        type="button"
         style={{
+          maxWidth: "100%",
+          boxSizing: "border-box",
           fontFamily,
         }}
       >
