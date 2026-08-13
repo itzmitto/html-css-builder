@@ -8,6 +8,8 @@ export type ComponentType =
   | "Paragraph"
   | "Button"
   | "Container"
+  | "Row"
+  | "Stack"
   | "Image";
 
 export type DeviceType =
