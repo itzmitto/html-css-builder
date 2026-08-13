@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type {
   BuilderComponent,
   BuilderStyles,
+  DeviceType,
 } from "../types/builder";
 import NavbarPreview from "./previews/NavbarPreview";
 import HeroPreview from "./previews/HeroPreview";
@@ -16,6 +17,28 @@ import ImagePreview from "./previews/ImagePreview";
 
 interface PreviewRendererProps {
   component: BuilderComponent;
+  device?: DeviceType;
+}
+
+function getResponsiveStyles(
+  component: BuilderComponent,
+  device: DeviceType
+): BuilderStyles {
+  const baseStyles =
+    component.styles ?? {};
+
+  if (device === "desktop") {
+    return baseStyles;
+  }
+
+  const deviceStyles =
+    component.responsive?.[device] ??
+    {};
+
+  return {
+    ...baseStyles,
+    ...deviceStyles,
+  };
 }
 
 function getBuilderStyle(
@@ -134,7 +157,8 @@ function getBuilderStyle(
         : undefined,
     backgroundColor:
       styles.backgroundColor,
-    color: styles.color,
+    color:
+      styles.color,
     fontFamily:
       styles.fontFamily,
     fontSize:
@@ -176,28 +200,33 @@ function getBuilderStyle(
 
 function PreviewRenderer({
   component,
+  device = "desktop",
 }: PreviewRendererProps) {
   const styles =
-    component.styles;
+    getResponsiveStyles(
+      component,
+      device
+    );
 
   const builderStyle =
     getBuilderStyle(styles);
 
   const backgroundColor =
-    styles?.backgroundColor ||
-    component.backgroundColor;
+    styles.backgroundColor ||
+    component.backgroundColor ||
+    "#ffffff";
 
   const textColor =
-    styles?.color ||
+    styles.color ||
     component.color ||
     "#000000";
 
   const fontFamily =
-    styles?.fontFamily ||
+    styles.fontFamily ||
     "Arial";
 
   const textAlign =
-    styles?.textAlign ||
+    styles.textAlign ||
     "left";
 
   const children =
@@ -215,8 +244,7 @@ function PreviewRenderer({
         <div
           key={child.id}
           style={{
-            width:
-              "100%",
+            width: "100%",
             boxSizing:
               "border-box",
             position:
@@ -225,6 +253,7 @@ function PreviewRenderer({
         >
           <PreviewRenderer
             component={child}
+            device={device}
           />
         </div>
       )
@@ -239,33 +268,31 @@ function PreviewRenderer({
       {
         ...builderStyle,
         width:
-          styles?.width !==
+          styles.width !==
           undefined
             ? `${styles.width}${styles.widthUnit ?? "%"}`
             : "100%",
         height:
-          styles?.height !==
+          styles.height !==
           undefined
             ? `${styles.height}${styles.heightUnit ?? "px"}`
             : undefined,
         minHeight:
-          styles?.minHeight !==
+          styles.minHeight !==
             undefined &&
           styles.minHeight > 0
             ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
-            : styles?.height !==
+            : styles.height !==
               undefined
             ? undefined
             : `${component.minHeight ?? 300}px`,
         maxWidth:
-          styles?.maxWidth !==
+          styles.maxWidth !==
             undefined &&
           styles.maxWidth > 0
             ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
             : undefined,
-        backgroundColor:
-          backgroundColor ||
-          "#ffffff",
+        backgroundColor,
         position:
           "relative",
         boxSizing:
@@ -279,37 +306,37 @@ function PreviewRenderer({
         minHeight:
           "100%",
         display:
-          styles?.display ??
+          styles.display ??
           "block",
         flexDirection:
-          styles?.display ===
+          styles.display ===
           "flex"
             ? styles.flexDirection
             : undefined,
         justifyContent:
-          styles?.display ===
+          styles.display ===
           "flex"
             ? styles.justifyContent
             : undefined,
         alignItems:
-          styles?.display ===
+          styles.display ===
           "flex"
             ? styles.alignItems
             : undefined,
         gap:
-          styles?.gap !==
+          styles.gap !==
           undefined
             ? `${styles.gap}px`
             : undefined,
         gridTemplateColumns:
-          styles?.display ===
+          styles.display ===
             "grid" &&
           styles.gridColumns !==
             undefined
             ? `repeat(${styles.gridColumns}, minmax(0, 1fr))`
             : undefined,
         gridGap:
-          styles?.display ===
+          styles.display ===
             "grid" &&
           styles.gridGap !==
             undefined
@@ -330,7 +357,7 @@ function PreviewRenderer({
           <ContainerPreview
             minHeight={
               component.minHeight ??
-              styles?.height
+              styles.height
             }
           />
         ) : (
@@ -360,8 +387,7 @@ function PreviewRenderer({
         "Navbar" && (
         <NavbarPreview
           backgroundColor={
-            backgroundColor ||
-            "#ffffff"
+            backgroundColor
           }
           textColor={
             textColor
@@ -410,8 +436,7 @@ function PreviewRenderer({
         "Section" && (
         <SectionPreview
           backgroundColor={
-            backgroundColor ||
-            "#ffffff"
+            backgroundColor
           }
           textColor={
             textColor
@@ -432,8 +457,7 @@ function PreviewRenderer({
         "Card" && (
         <CardPreview
           backgroundColor={
-            backgroundColor ||
-            "#ffffff"
+            backgroundColor
           }
           textColor={
             textColor
@@ -458,7 +482,7 @@ function PreviewRenderer({
             "#111827"
           }
           textColor={
-            styles?.color ||
+            styles.color ||
             "#ffffff"
           }
           fontFamily={
@@ -480,27 +504,27 @@ function PreviewRenderer({
             component.text
           }
           fontSize={
-            styles?.fontSize ??
+            styles.fontSize ??
             component.fontSize
           }
           color={
-            styles?.color ??
+            styles.color ??
             component.color
           }
           fontFamily={
-            styles?.fontFamily
+            styles.fontFamily
           }
           fontWeight={
-            styles?.fontWeight
+            styles.fontWeight
           }
           lineHeight={
-            styles?.lineHeight
+            styles.lineHeight
           }
           letterSpacing={
-            styles?.letterSpacing
+            styles.letterSpacing
           }
           textAlign={
-            styles?.textAlign
+            styles.textAlign
           }
         />
       )}
@@ -512,27 +536,27 @@ function PreviewRenderer({
             component.text
           }
           fontSize={
-            styles?.fontSize ??
+            styles.fontSize ??
             component.fontSize
           }
           color={
-            styles?.color ??
+            styles.color ??
             component.color
           }
           fontFamily={
-            styles?.fontFamily
+            styles.fontFamily
           }
           fontWeight={
-            styles?.fontWeight
+            styles.fontWeight
           }
           lineHeight={
-            styles?.lineHeight
+            styles.lineHeight
           }
           letterSpacing={
-            styles?.letterSpacing
+            styles.letterSpacing
           }
           textAlign={
-            styles?.textAlign
+            styles.textAlign
           }
         />
       )}
@@ -544,26 +568,26 @@ function PreviewRenderer({
             component.text
           }
           color={
-            styles?.color ??
+            styles.color ??
             component.color
           }
           fontSize={
-            styles?.fontSize
+            styles.fontSize
           }
           fontFamily={
-            styles?.fontFamily
+            styles.fontFamily
           }
           fontWeight={
-            styles?.fontWeight
+            styles.fontWeight
           }
           lineHeight={
-            styles?.lineHeight
+            styles.lineHeight
           }
           letterSpacing={
-            styles?.letterSpacing
+            styles.letterSpacing
           }
           textAlign={
-            styles?.textAlign
+            styles.textAlign
           }
         />
       )}
@@ -585,6 +609,21 @@ function PreviewRenderer({
           }
         />
       )}
+
+      {children.length > 0 &&
+        component.type !==
+          "Container" && (
+          <div
+            style={{
+              width:
+                "100%",
+              marginTop:
+                "8px",
+            }}
+          >
+            {renderChildren()}
+          </div>
+        )}
     </div>
   );
 }

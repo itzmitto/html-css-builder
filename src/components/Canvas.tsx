@@ -28,12 +28,14 @@ interface SortableComponentProps {
   component: BuilderComponent;
   selectedId: string | null;
   setSelectedId: (id: string) => void;
+  device: DeviceType;
 }
 
 function SortableComponent({
   component,
   selectedId,
   setSelectedId,
+  device,
 }: SortableComponentProps) {
   const {
     attributes,
@@ -45,11 +47,14 @@ function SortableComponent({
   } = useSortable({
     id: component.id,
   });
+
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform:
+      CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
   return (
     <div
       ref={setNodeRef}
@@ -61,7 +66,9 @@ function SortableComponent({
       }
       onClick={(event) => {
         event.stopPropagation();
-        setSelectedId(component.id);
+        setSelectedId(
+          component.id
+        );
       }}
       {...attributes}
     >
@@ -72,8 +79,10 @@ function SortableComponent({
       >
         ⋮⋮
       </div>
+
       <PreviewRenderer
         component={component}
+        device={device}
       />
     </div>
   );
@@ -93,10 +102,12 @@ function Canvas({
       : device === "tablet"
       ? 768
       : 375;
+
   return (
     <main className="canvas">
       <div className="device-switcher">
         <button
+          type="button"
           className={
             device === "desktop"
               ? "device-button active"
@@ -108,7 +119,9 @@ function Canvas({
         >
           Desktop
         </button>
+
         <button
+          type="button"
           className={
             device === "tablet"
               ? "device-button active"
@@ -120,7 +133,9 @@ function Canvas({
         >
           Tablet
         </button>
+
         <button
+          type="button"
           className={
             device === "mobile"
               ? "device-button active"
@@ -132,6 +147,7 @@ function Canvas({
         >
           Mobile
         </button>
+
         <span
           style={{
             marginLeft: "10px",
@@ -143,6 +159,7 @@ function Canvas({
           {deviceWidth}px
         </span>
       </div>
+
       <div className="preview-wrapper">
         <div
           className={`desktop-preview device-${device}`}
@@ -155,8 +172,11 @@ function Canvas({
               Voeg componenten toe vanuit de sidebar
             </div>
           )}
+
           <DndContext
-            collisionDetection={closestCenter}
+            collisionDetection={
+              closestCenter
+            }
             onDragEnd={onDragEnd}
           >
             <SortableContext
@@ -173,10 +193,13 @@ function Canvas({
                   <SortableComponent
                     key={component.id}
                     component={component}
-                    selectedId={selectedId}
+                    selectedId={
+                      selectedId
+                    }
                     setSelectedId={
                       setSelectedId
                     }
+                    device={device}
                   />
                 )
               )}
