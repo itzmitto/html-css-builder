@@ -109,7 +109,8 @@ function Properties({
     selectedComponent?.styles ?? {};
 
   const responsiveStyles =
-    selectedComponent?.responsive?.[device] ?? {};
+    selectedComponent?.responsive?.[device] ??
+    {};
 
   const styles: BuilderStyles = {
     ...baseStyles,
@@ -147,6 +148,97 @@ function Properties({
     },
   ];
 
+  const applyContainerLayout = (
+    layout:
+      | "vertical"
+      | "horizontal"
+      | "2-columns"
+      | "3-columns"
+      | "4-columns"
+  ) => {
+    if (layout === "vertical") {
+      updateStyles({
+        display: "flex",
+        flexDirection: "column",
+        gridColumns: undefined,
+        gap: 16,
+      });
+
+      return;
+    }
+
+    if (layout === "horizontal") {
+      updateStyles({
+        display: "flex",
+        flexDirection: "row",
+        gridColumns: undefined,
+        gap: 16,
+      });
+
+      return;
+    }
+
+    const columns =
+      layout === "2-columns"
+        ? 2
+        : layout === "3-columns"
+        ? 3
+        : 4;
+
+    updateStyles({
+      display: "grid",
+      gridColumns: columns,
+      gridGap: 16,
+      gap: 16,
+      flexDirection: undefined,
+      justifyContent: undefined,
+      alignItems: undefined,
+    });
+  };
+
+  const getCurrentContainerLayout = () => {
+    if (
+      selectedComponent?.type !==
+      "Container"
+    ) {
+      return "vertical";
+    }
+
+    if (
+      styles.display === "grid"
+    ) {
+      if (
+        styles.gridColumns === 2
+      ) {
+        return "2-columns";
+      }
+
+      if (
+        styles.gridColumns === 3
+      ) {
+        return "3-columns";
+      }
+
+      if (
+        styles.gridColumns === 4
+      ) {
+        return "4-columns";
+      }
+
+      return "3-columns";
+    }
+
+    if (
+      styles.display === "flex" &&
+      styles.flexDirection ===
+        "row"
+    ) {
+      return "horizontal";
+    }
+
+    return "vertical";
+  };
+
   const renderDeviceInfo = () => {
     return (
       <div className="responsive-device-info">
@@ -168,6 +260,123 @@ function Properties({
     );
   };
 
+  const renderContainerLayout = () => {
+    if (
+      selectedComponent?.type !==
+      "Container"
+    ) {
+      return null;
+    }
+
+    const currentLayout =
+      getCurrentContainerLayout();
+
+    return (
+      <div className="container-layout-section">
+        <h3 className="property-section-title">
+          Container Layout
+        </h3>
+
+        <div className="container-layout-grid">
+          <button
+            type="button"
+            className={
+              currentLayout === "vertical"
+                ? "container-layout-button active"
+                : "container-layout-button"
+            }
+            onClick={() =>
+              applyContainerLayout(
+                "vertical"
+              )
+            }
+          >
+            <span className="container-layout-icon">
+              ☷
+            </span>
+            <span>Vertical</span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              currentLayout === "horizontal"
+                ? "container-layout-button active"
+                : "container-layout-button"
+            }
+            onClick={() =>
+              applyContainerLayout(
+                "horizontal"
+              )
+            }
+          >
+            <span className="container-layout-icon">
+              ☰
+            </span>
+            <span>Horizontal</span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              currentLayout === "2-columns"
+                ? "container-layout-button active"
+                : "container-layout-button"
+            }
+            onClick={() =>
+              applyContainerLayout(
+                "2-columns"
+              )
+            }
+          >
+            <span className="container-layout-icon">
+              ▦
+            </span>
+            <span>2 Columns</span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              currentLayout === "3-columns"
+                ? "container-layout-button active"
+                : "container-layout-button"
+            }
+            onClick={() =>
+              applyContainerLayout(
+                "3-columns"
+              )
+            }
+          >
+            <span className="container-layout-icon">
+              ▦
+            </span>
+            <span>3 Columns</span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              currentLayout === "4-columns"
+                ? "container-layout-button active"
+                : "container-layout-button"
+            }
+            onClick={() =>
+              applyContainerLayout(
+                "4-columns"
+              )
+            }
+          >
+            <span className="container-layout-icon">
+              ▦
+            </span>
+            <span>4 Columns</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const renderContentTab = () => {
     if (!selectedComponent) {
       return null;
@@ -175,9 +384,14 @@ function Properties({
 
     return (
       <>
-        {(selectedComponent.type === "Heading" ||
-          selectedComponent.type === "Paragraph" ||
-          selectedComponent.type === "Button") && (
+        {renderContainerLayout()}
+
+        {(selectedComponent.type ===
+          "Heading" ||
+          selectedComponent.type ===
+            "Paragraph" ||
+          selectedComponent.type ===
+            "Button") && (
           <div>
             <h3 className="property-section-title">
               Content
@@ -191,16 +405,20 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.text ?? ""
+                selectedComponent.text ??
+                ""
               }
               onChange={(e) =>
-                updateText(e.target.value)
+                updateText(
+                  e.target.value
+                )
               }
             />
           </div>
         )}
 
-        {selectedComponent.type === "Hero" && (
+        {selectedComponent.type ===
+          "Hero" && (
           <div>
             <h3 className="property-section-title">
               Hero Content
@@ -214,10 +432,13 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroTitle ?? ""
+                selectedComponent.heroTitle ??
+                ""
               }
               onChange={(e) =>
-                updateHeroTitle(e.target.value)
+                updateHeroTitle(
+                  e.target.value
+                )
               }
             />
 
@@ -229,7 +450,8 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroSubtitle ?? ""
+                selectedComponent.heroSubtitle ??
+                ""
               }
               onChange={(e) =>
                 updateHeroSubtitle(
@@ -246,7 +468,8 @@ function Properties({
               className="property-input"
               type="text"
               value={
-                selectedComponent.heroButtonText ?? ""
+                selectedComponent.heroButtonText ??
+                ""
               }
               onChange={(e) =>
                 updateHeroButtonText(
@@ -257,7 +480,8 @@ function Properties({
           </div>
         )}
 
-        {selectedComponent.type === "Image" && (
+        {selectedComponent.type ===
+          "Image" && (
           <div>
             <h3 className="property-section-title">
               Image
@@ -270,7 +494,9 @@ function Properties({
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageUpload}
+              onChange={
+                handleImageUpload
+              }
               className="property-file"
             />
 
@@ -283,18 +509,23 @@ function Properties({
               min="10"
               max="100"
               value={
-                selectedComponent.imageWidth ?? 100
+                selectedComponent.imageWidth ??
+                100
               }
               onChange={(e) =>
                 updateImageWidth(
-                  Number(e.target.value)
+                  Number(
+                    e.target.value
+                  )
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageWidth ?? 100}%
+              {selectedComponent.imageWidth ??
+                100}
+              %
             </div>
 
             <label className="property-label">
@@ -306,18 +537,23 @@ function Properties({
               min="50"
               max="1000"
               value={
-                selectedComponent.imageHeight ?? 300
+                selectedComponent.imageHeight ??
+                300
               }
               onChange={(e) =>
                 updateImageHeight(
-                  Number(e.target.value)
+                  Number(
+                    e.target.value
+                  )
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageHeight ?? 300}px
+              {selectedComponent.imageHeight ??
+                300}
+              px
             </div>
 
             <label className="property-label">
@@ -329,23 +565,30 @@ function Properties({
               min="0"
               max="100"
               value={
-                selectedComponent.imageBorderRadius ?? 8
+                selectedComponent.imageBorderRadius ??
+                8
               }
               onChange={(e) =>
                 updateImageBorderRadius(
-                  Number(e.target.value)
+                  Number(
+                    e.target.value
+                  )
                 )
               }
               className="property-range"
             />
 
             <div className="property-value">
-              {selectedComponent.imageBorderRadius ?? 8}px
+              {selectedComponent.imageBorderRadius ??
+                8}
+              px
             </div>
 
             {selectedComponent.imageUrl && (
               <img
-                src={selectedComponent.imageUrl}
+                src={
+                  selectedComponent.imageUrl
+                }
                 alt="Selected"
                 style={{
                   width: "100%",
@@ -353,26 +596,31 @@ function Properties({
                   objectFit: "cover",
                   marginTop: "15px",
                   borderRadius: "8px",
-                  display: "block",
+                  display:
+                    "block",
                 }}
               />
             )}
           </div>
         )}
 
-        {selectedComponent.type === "Container" && (
+        {selectedComponent.type ===
+          "Container" && (
           <div>
             <h3 className="property-section-title">
               Container
             </h3>
 
             <div className="container-info">
-              <strong>Container</strong>
+              <strong>
+                Container
+              </strong>
 
               <span>
-                Nieuwe componenten worden aan
-                deze container toegevoegd wanneer
-                deze geselecteerd is.
+                Nieuwe componenten worden
+                aan deze container
+                toegevoegd wanneer deze
+                geselecteerd is.
               </span>
             </div>
 
@@ -390,14 +638,20 @@ function Properties({
                 300
               }
               onChange={(e) => {
-                const value = Number(
-                  e.target.value
+                const value =
+                  Number(
+                    e.target.value
+                  );
+
+                updateMinHeight(
+                  value
                 );
 
-                updateMinHeight(value);
                 updateStyles({
-                  height: value,
-                  heightUnit: "px",
+                  height:
+                    value,
+                  heightUnit:
+                    "px",
                 });
               }}
               className="property-range"
@@ -406,19 +660,43 @@ function Properties({
             <div className="property-value">
               {styles.height ??
                 selectedComponent.minHeight ??
-                300}px
+                300}
+              px
+            </div>
+
+            <div className="container-children-info">
+              <span className="container-children-count">
+                {selectedComponent.children?.length ??
+                  0}
+              </span>
+
+              <div>
+                <strong>
+                  Children
+                </strong>
+
+                <span>
+                  Components inside this
+                  container
+                </span>
+              </div>
             </div>
           </div>
         )}
 
-        {(selectedComponent.type === "Navbar" ||
-          selectedComponent.type === "Section" ||
-          selectedComponent.type === "Card" ||
-          selectedComponent.type === "Footer") && (
+        {(selectedComponent.type ===
+          "Navbar" ||
+          selectedComponent.type ===
+            "Section" ||
+          selectedComponent.type ===
+            "Card" ||
+          selectedComponent.type ===
+            "Footer") && (
           <div className="empty-tab">
             <span>
-              Dit component gebruikt voornamelijk
-              de Layout, Type en Style instellingen.
+              Dit component gebruikt
+              voornamelijk de Layout,
+              Type en Style instellingen.
             </span>
           </div>
         )}
@@ -439,7 +717,8 @@ function Properties({
 
         <select
           value={
-            styles.overflow ?? "visible"
+            styles.overflow ??
+            "visible"
           }
           onChange={(e) =>
             updateStyles({
@@ -455,9 +734,11 @@ function Properties({
           <option value="visible">
             Visible
           </option>
+
           <option value="hidden">
             Hidden
           </option>
+
           <option value="auto">
             Auto
           </option>
@@ -469,7 +750,9 @@ function Properties({
 
         <input
           type="number"
-          value={styles.zIndex ?? 1}
+          value={
+            styles.zIndex ?? 1
+          }
           onChange={(e) =>
             updateStyles({
               zIndex: Number(
@@ -486,34 +769,49 @@ function Properties({
 
         <div className="component-meta">
           <div className="meta-row">
-            <span>Type</span>
+            <span>
+              Type
+            </span>
 
             <strong>
-              {selectedComponent?.type}
+              {
+                selectedComponent?.type
+              }
             </strong>
           </div>
 
           <div className="meta-row">
-            <span>Device</span>
+            <span>
+              Device
+            </span>
 
             <strong>
-              {getDeviceLabel(device)}
+              {getDeviceLabel(
+                device
+              )}
             </strong>
           </div>
 
           <div className="meta-row">
-            <span>ID</span>
+            <span>
+              ID
+            </span>
 
             <strong className="component-id">
-              {selectedComponent?.id}
+              {
+                selectedComponent?.id
+              }
             </strong>
           </div>
 
           <div className="meta-row">
-            <span>Children</span>
+            <span>
+              Children
+            </span>
 
             <strong>
-              {selectedComponent?.children?.length ?? 0}
+              {selectedComponent?.children?.length ??
+                0}
             </strong>
           </div>
         </div>
@@ -524,7 +822,9 @@ function Properties({
 
         <button
           type="button"
-          onClick={moveComponentUp}
+          onClick={
+            moveComponentUp
+          }
           className="property-action-button"
         >
           Move Up
@@ -532,7 +832,9 @@ function Properties({
 
         <button
           type="button"
-          onClick={moveComponentDown}
+          onClick={
+            moveComponentDown
+          }
           className="property-action-button"
         >
           Move Down
@@ -540,7 +842,9 @@ function Properties({
 
         <button
           type="button"
-          onClick={duplicateComponent}
+          onClick={
+            duplicateComponent
+          }
           className="property-action-button"
         >
           Duplicate Component
@@ -548,7 +852,9 @@ function Properties({
 
         <button
           type="button"
-          onClick={deleteComponent}
+          onClick={
+            deleteComponent
+          }
           className="property-action-button danger"
         >
           Delete Component
@@ -557,10 +863,14 @@ function Properties({
     );
   };
 
-  if (!selectedComponent) {
+  if (
+    !selectedComponent
+  ) {
     return (
       <aside className="properties">
-        <h2>Properties</h2>
+        <h2>
+          Properties
+        </h2>
 
         <div className="no-selection">
           <div className="no-selection-icon">
@@ -568,13 +878,16 @@ function Properties({
           </div>
 
           <h3>
-            Geen component geselecteerd
+            Geen component
+            geselecteerd
           </h3>
 
           <p>
-            Selecteer een component op het
-            canvas of in Layers om de
-            properties te bekijken.
+            Selecteer een
+            component op het
+            canvas of in Layers
+            om de properties te
+            bekijken.
           </p>
         </div>
       </aside>
@@ -590,7 +903,9 @@ function Properties({
           </span>
 
           <h2>
-            {selectedComponent.type}
+            {
+              selectedComponent.type
+            }
           </h2>
         </div>
       </div>
@@ -598,58 +913,83 @@ function Properties({
       {renderDeviceInfo()}
 
       <div className="properties-tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={
-              activeTab === tab.id
-                ? "property-tab active"
-                : "property-tab"
-            }
-            onClick={() =>
-              setActiveTab(tab.id)
-            }
-          >
-            {tab.label}
-          </button>
-        ))}
+        {tabs.map(
+          (tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={
+                activeTab ===
+                tab.id
+                  ? "property-tab active"
+                  : "property-tab"
+              }
+              onClick={() =>
+                setActiveTab(
+                  tab.id
+                )
+              }
+            >
+              {tab.label}
+            </button>
+          )
+        )}
       </div>
 
       <div className="properties-content">
-        {activeTab === "content" &&
+        {activeTab ===
+          "content" &&
           renderContentTab()}
 
-        {activeTab === "layout" && (
+        {activeTab ===
+          "layout" && (
           <LayoutProperties
-            styles={styles}
-            updateStyles={updateStyles}
+            styles={
+              styles
+            }
+            updateStyles={
+              updateStyles
+            }
           />
         )}
 
-        {activeTab === "typography" &&
+        {activeTab ===
+          "typography" &&
           (showTypography ? (
             <TypographyProperties
-              styles={styles}
-              updateStyles={updateStyles}
+              styles={
+                styles
+              }
+              updateStyles={
+                updateStyles
+              }
             />
           ) : (
             <div className="empty-tab">
               <span>
-                Typography is beschikbaar voor
-                Heading, Paragraph en Button.
+                Typography is
+                beschikbaar
+                voor Heading,
+                Paragraph en
+                Button.
               </span>
             </div>
           ))}
 
-        {activeTab === "appearance" && (
+        {activeTab ===
+          "appearance" && (
           <AppearanceProperties
-            styles={styles}
-            updateStyles={updateStyles}
+            styles={
+              styles
+            }
+            updateStyles={
+              updateStyles
+            }
           />
         )}
 
-        {activeTab === "advanced" &&
+        {activeTab ===
+          "advanced" &&
           renderAdvancedTab()}
       </div>
     </aside>
