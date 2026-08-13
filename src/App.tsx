@@ -14,15 +14,9 @@ import type {
 } from "./types/builder";
 
 function App() {
-  const [components, setComponents] =
-    useState<BuilderComponent[]>([]);
-
-  const [selectedId, setSelectedId] =
-    useState<string | null>(null);
-
-  const [device, setDevice] =
-    useState<DeviceType>("desktop");
-
+  const [components, setComponents] = useState<BuilderComponent[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [device, setDevice] = useState<DeviceType>("desktop");
   const findComponentById = (
     componentList: BuilderComponent[],
     id: string
@@ -31,51 +25,32 @@ function App() {
       if (component.id === id) {
         return component;
       }
-
       if (component.children?.length) {
-        const found = findComponentById(
-          component.children,
-          id
-        );
-
+        const found = findComponentById(component.children, id);
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
-
   const findParentById = (
     componentList: BuilderComponent[],
     childId: string
   ): BuilderComponent | undefined => {
     for (const component of componentList) {
-      if (
-        component.children?.some(
-          (child) =>
-            child.id === childId
-        )
-      ) {
+      if (component.children?.some((child) => child.id === childId)) {
         return component;
       }
-
       if (component.children?.length) {
-        const found = findParentById(
-          component.children,
-          childId
-        );
-
+        const found = findParentById(component.children, childId);
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
-
   const isDescendant = (
     component: BuilderComponent,
     id: string
@@ -83,112 +58,125 @@ function App() {
     if (!component.children?.length) {
       return false;
     }
-
     for (const child of component.children) {
       if (child.id === id) {
         return true;
       }
-
-      if (
-        isDescendant(
-          child,
-          id
-        )
-      ) {
+      if (isDescendant(child, id)) {
         return true;
       }
     }
-
     return false;
   };
-
-  const selectedComponent =
-    selectedId
-      ? findComponentById(
-          components,
-          selectedId
-        )
-      : undefined;
-
-  const createDefaultStyles =
-    (): BuilderStyles => ({
-      width: 100,
-      widthUnit: "%",
-      height: 300,
-      heightUnit: "px",
-      maxWidth: 0,
-      maxWidthUnit: "px",
-      minHeight: 0,
-      minHeightUnit: "px",
-      marginTop: 0,
-      marginRight: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      paddingTop: 0,
-      paddingRight: 0,
-      paddingBottom: 0,
-      paddingLeft: 0,
-      display: "block",
-      flexDirection: "row",
-      justifyContent: "flex-start",
-      alignItems: "stretch",
-      horizontalAlign: "left",
-      gap: 0,
-      gridColumns: 1,
-      gridGap: 0,
-      backgroundColor:
-        "#ffffff",
-      color: "#000000",
-      fontFamily: "Arial",
-      fontSize: 16,
-      fontWeight: 400,
-      lineHeight: 1.5,
-      letterSpacing: 0,
-      textAlign: "left",
-      borderWidth: 0,
-      borderStyle: "none",
-      borderColor:
-        "#000000",
-      borderRadius: 0,
-      opacity: 1,
-      overflow: "visible",
-      zIndex: 1,
-    });
-
+  const selectedComponent = selectedId
+    ? findComponentById(components, selectedId)
+    : undefined;
+  const createDefaultStyles = (): BuilderStyles => ({
+    width: 100,
+    widthUnit: "%",
+    height: 300,
+    heightUnit: "px",
+    maxWidth: 0,
+    maxWidthUnit: "px",
+    minHeight: 0,
+    minHeightUnit: "px",
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    display: "block",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    horizontalAlign: "left",
+    gap: 0,
+    gridColumns: 1,
+    gridGap: 0,
+    backgroundColor: "#ffffff",
+    color: "#000000",
+    fontFamily: "Arial",
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+    textAlign: "left",
+    borderWidth: 0,
+    borderStyle: "none",
+    borderColor: "#000000",
+    borderRadius: 0,
+    opacity: 1,
+    overflow: "visible",
+    zIndex: 1,
+  });
+  const createComponentStyles = (
+    type: ComponentType
+  ): BuilderStyles => {
+    const styles = createDefaultStyles();
+    if (type === "Row") {
+      return {
+        ...styles,
+        height: 200,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        gap: 16,
+      };
+    }
+    if (type === "Stack") {
+      return {
+        ...styles,
+        height: 300,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        gap: 16,
+      };
+    }
+    if (type === "Container") {
+      return {
+        ...styles,
+        height: 300,
+        display: "block",
+      };
+    }
+    return styles;
+  };
   const createComponent = (
     type: ComponentType
   ): BuilderComponent => {
+    const styles = createComponentStyles(type);
     return {
       id: crypto.randomUUID(),
       type,
       text: type,
-      heroTitle:
-        "Hero Title",
-      heroSubtitle:
-        "Hero Subtitle goes here",
-      heroButtonText:
-        "Get Started",
+      heroTitle: "Hero Title",
+      heroSubtitle: "Hero Subtitle goes here",
+      heroButtonText: "Get Started",
       minHeight: 300,
       fontSize: 32,
       color: "#000000",
-      backgroundColor:
-        "#ffffff",
+      backgroundColor: "#ffffff",
       imageUrl: "",
       imageWidth: 100,
       imageHeight: 300,
       imageBorderRadius: 8,
-      styles:
-        createDefaultStyles(),
+      styles,
       responsive: {
-        desktop:
-          createDefaultStyles(),
+        desktop: {
+          ...styles,
+        },
         tablet: {},
         mobile: {},
       },
       children: [],
     };
   };
-
   const updateComponentById = (
     componentList: BuilderComponent[],
     id: string,
@@ -196,35 +184,19 @@ function App() {
       component: BuilderComponent
     ) => BuilderComponent
   ): BuilderComponent[] => {
-    return componentList.map(
-      (component) => {
-        if (
-          component.id === id
-        ) {
-          return updater(
-            component
-          );
-        }
-
-        if (
-          component.children?.length
-        ) {
-          return {
-            ...component,
-            children:
-              updateComponentById(
-                component.children,
-                id,
-                updater
-              ),
-          };
-        }
-
-        return component;
+    return componentList.map((component) => {
+      if (component.id === id) {
+        return updater(component);
       }
-    );
+      if (component.children?.length) {
+        return {
+          ...component,
+          children: updateComponentById(component.children, id, updater),
+        };
+      }
+      return component;
+    });
   };
-
   const removeComponentById = (
     componentList: BuilderComponent[],
     id: string
@@ -232,391 +204,218 @@ function App() {
     components: BuilderComponent[];
     removed?: BuilderComponent;
   } => {
-    for (
-      let index = 0;
-      index <
-      componentList.length;
-      index++
-    ) {
-      const component =
-        componentList[index];
-
-      if (
-        component.id === id
-      ) {
-        const updated = [
-          ...componentList,
-        ];
-
-        const [removed] =
-          updated.splice(
-            index,
-            1
-          );
-
+    for (let index = 0; index < componentList.length; index++) {
+      const component = componentList[index];
+      if (component.id === id) {
+        const updated = [...componentList];
+        const [removed] = updated.splice(index, 1);
         return {
-          components:
-            updated,
+          components: updated,
           removed,
         };
       }
-
-      if (
-        component.children?.length
-      ) {
-        const result =
-          removeComponentById(
-            component.children,
-            id
-          );
-
-        if (
-          result.removed
-        ) {
-          const updated = [
-            ...componentList,
-          ];
-
+      if (component.children?.length) {
+        const result = removeComponentById(component.children, id);
+        if (result.removed) {
+          const updated = [...componentList];
           updated[index] = {
             ...component,
-            children:
-              result.components,
+            children: result.components,
           };
-
           return {
-            components:
-              updated,
-            removed:
-              result.removed,
+            components: updated,
+            removed: result.removed,
           };
         }
       }
     }
-
     return {
-      components:
-        componentList,
+      components: componentList,
     };
   };
-
-  const addComponentToContainer = (
+  const addChildToParent = (
     componentList: BuilderComponent[],
-    containerId: string,
+    parentId: string,
     child: BuilderComponent
   ): BuilderComponent[] => {
     return updateComponentById(
       componentList,
-      containerId,
+      parentId,
       (component) => ({
         ...component,
         children: [
-          ...(component.children ??
-            []),
+          ...(component.children ?? []),
           child,
         ],
       })
     );
   };
-
   const insertBeforeComponent = (
     componentList: BuilderComponent[],
     targetId: string,
     componentToInsert: BuilderComponent
   ): BuilderComponent[] => {
-    const targetIndex =
-      componentList.findIndex(
-        (component) =>
-          component.id ===
-          targetId
-      );
-
-    if (
-      targetIndex !== -1
-    ) {
-      const updated = [
-        ...componentList,
-      ];
-
-      updated.splice(
-        targetIndex,
-        0,
-        componentToInsert
-      );
-
+    const targetIndex = componentList.findIndex(
+      (component) => component.id === targetId
+    );
+    if (targetIndex !== -1) {
+      const updated = [...componentList];
+      updated.splice(targetIndex, 0, componentToInsert);
       return updated;
     }
-
-    return componentList.map(
-      (component) => {
-        if (
-          component.children?.length
-        ) {
-          const updatedChildren =
-            insertBeforeComponent(
-              component.children,
-              targetId,
-              componentToInsert
-            );
-
-          if (
-            updatedChildren !==
-            component.children
-          ) {
-            return {
-              ...component,
-              children:
-                updatedChildren,
-            };
-          }
+    return componentList.map((component) => {
+      if (component.children?.length) {
+        const updatedChildren = insertBeforeComponent(
+          component.children,
+          targetId,
+          componentToInsert
+        );
+        if (updatedChildren !== component.children) {
+          return {
+            ...component,
+            children: updatedChildren,
+          };
         }
-
-        return component;
       }
+      return component;
+    });
+  };
+  const isLayoutParent = (
+    type: ComponentType
+  ) => {
+    return (
+      type === "Container" ||
+      type === "Row" ||
+      type === "Stack"
     );
   };
-
   const addComponent = (
     type: ComponentType
   ) => {
-    const newComponent =
-      createComponent(type);
-
+    const newComponent = createComponent(type);
     if (
-      selectedComponent?.type ===
-      "Container"
+      selectedComponent &&
+      isLayoutParent(selectedComponent.type)
     ) {
       setComponents(
-        addComponentToContainer(
+        addChildToParent(
           components,
           selectedComponent.id,
           newComponent
         )
       );
-
-      setSelectedId(
-        newComponent.id
-      );
-
+      setSelectedId(newComponent.id);
       return;
     }
-
     setComponents([
       ...components,
       newComponent,
     ]);
-
-    setSelectedId(
-      newComponent.id
-    );
+    setSelectedId(newComponent.id);
   };
-
   const reorderComponents = (
     activeId: string,
     overId: string
   ) => {
-    if (
-      activeId === overId
-    ) {
+    if (activeId === overId) {
       return;
     }
-
-    const activeComponent =
-      findComponentById(
-        components,
-        activeId
-      );
-
-    const overComponent =
-      findComponentById(
-        components,
-        overId
-      );
-
-    if (
-      !activeComponent ||
-      !overComponent
-    ) {
+    const activeComponent = findComponentById(
+      components,
+      activeId
+    );
+    const overComponent = findComponentById(
+      components,
+      overId
+    );
+    if (!activeComponent || !overComponent) {
       return;
     }
-
-    if (
-      isDescendant(
-        activeComponent,
-        overId
-      )
-    ) {
+    if (isDescendant(activeComponent, overId)) {
       return;
     }
-
-    const activeParent =
-      findParentById(
-        components,
-        activeId
+    const activeParent = findParentById(
+      components,
+      activeId
+    );
+    const overParent = findParentById(
+      components,
+      overId
+    );
+    const activeParentId = activeParent?.id ?? null;
+    const overParentId = overParent?.id ?? null;
+    if (activeParentId === overParentId) {
+      const currentList = activeParent
+        ? activeParent.children ?? []
+        : components;
+      const oldIndex = currentList.findIndex(
+        (component) => component.id === activeId
       );
-
-    const overParent =
-      findParentById(
-        components,
-        overId
+      const newIndex = currentList.findIndex(
+        (component) => component.id === overId
       );
-
-    const activeParentId =
-      activeParent?.id ??
-      null;
-
-    const overParentId =
-      overParent?.id ??
-      null;
-
-    if (
-      activeParentId ===
-      overParentId
-    ) {
-      const currentList =
-        activeParent
-          ? activeParent.children ??
-            []
-          : components;
-
-      const oldIndex =
-        currentList.findIndex(
-          (component) =>
-            component.id ===
-            activeId
-        );
-
-      const newIndex =
-        currentList.findIndex(
-          (component) =>
-            component.id ===
-            overId
-        );
-
-      if (
-        oldIndex === -1 ||
-        newIndex === -1
-      ) {
+      if (oldIndex === -1 || newIndex === -1) {
         return;
       }
-
-      const updatedList = [
-        ...currentList,
-      ];
-
-      const [
-        movedComponent,
-      ] =
-        updatedList.splice(
-          oldIndex,
-          1
-        );
-
-      updatedList.splice(
-        newIndex,
-        0,
-        movedComponent
-      );
-
-      if (
-        activeParent
-      ) {
+      const updatedList = [...currentList];
+      const [movedComponent] = updatedList.splice(oldIndex, 1);
+      updatedList.splice(newIndex, 0, movedComponent);
+      if (activeParent) {
         setComponents(
           updateComponentById(
             components,
             activeParent.id,
             (component) => ({
               ...component,
-              children:
-                updatedList,
+              children: updatedList,
             })
           )
         );
       } else {
-        setComponents(
-          updatedList
-        );
+        setComponents(updatedList);
       }
-
       return;
     }
-
-    const removal =
-      removeComponentById(
-        components,
-        activeId
-      );
-
-    if (
-      !removal.removed
-    ) {
+    const removal = removeComponentById(
+      components,
+      activeId
+    );
+    if (!removal.removed) {
       return;
     }
-
-    const movedComponent =
-      removal.removed;
-
-    let updatedComponents =
-      removal.components;
-
-    if (
-      overComponent.type ===
-      "Container"
-    ) {
-      updatedComponents =
-        addComponentToContainer(
-          updatedComponents,
-          overId,
-          movedComponent
-        );
-
-      setComponents(
-        updatedComponents
-      );
-
-      setSelectedId(
-        movedComponent.id
-      );
-
-      return;
-    }
-
-    updatedComponents =
-      insertBeforeComponent(
+    const movedComponent = removal.removed;
+    let updatedComponents = removal.components;
+    if (isLayoutParent(overComponent.type)) {
+      updatedComponents = addChildToParent(
         updatedComponents,
         overId,
         movedComponent
       );
-
-    setComponents(
-      updatedComponents
+      setComponents(updatedComponents);
+      setSelectedId(movedComponent.id);
+      return;
+    }
+    updatedComponents = insertBeforeComponent(
+      updatedComponents,
+      overId,
+      movedComponent
     );
-
-    setSelectedId(
-      movedComponent.id
-    );
+    setComponents(updatedComponents);
+    setSelectedId(movedComponent.id);
   };
-
   const handleCanvasDragEnd = (
     event: DragEndEvent
   ) => {
-    const {
-      active,
-      over,
-    } = event;
-
+    const { active, over } = event;
     if (!over) {
       return;
     }
-
     reorderComponents(
       String(active.id),
       String(over.id)
     );
   };
-
-  const updateText = (
-    value: string
-  ) => {
+  const updateText = (value: string) => {
     setComponents(
       updateComponentById(
         components,
@@ -628,112 +427,114 @@ function App() {
       )
     );
   };
-
+  const updateStyles = (
+    updates: Partial<BuilderStyles>
+  ) => {
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ?? "",
+        (component) => {
+          if (device === "desktop") {
+            return {
+              ...component,
+              styles: {
+                ...component.styles,
+                ...updates,
+              },
+            };
+          }
+          return {
+            ...component,
+            responsive: {
+              ...component.responsive,
+              [device]: {
+                ...component.responsive?.[device],
+                ...updates,
+              },
+            },
+          };
+        }
+      )
+    );
+  };
   const updateFontSize = (
     value: number
   ) => {
     updateStyles({
-      fontSize:
-        value,
+      fontSize: value,
     });
-
-    if (
-      device ===
-      "desktop"
-    ) {
+    if (device === "desktop") {
       setComponents(
         updateComponentById(
           components,
           selectedId ?? "",
           (component) => ({
             ...component,
-            fontSize:
-              value,
+            fontSize: value,
           })
         )
       );
     }
   };
-
   const updateColor = (
     value: string
   ) => {
     updateStyles({
       color: value,
     });
-
-    if (
-      device ===
-      "desktop"
-    ) {
+    if (device === "desktop") {
       setComponents(
         updateComponentById(
           components,
           selectedId ?? "",
           (component) => ({
             ...component,
-            color:
-              value,
+            color: value,
           })
         )
       );
     }
   };
-
   const updateBackgroundColor = (
     value: string
   ) => {
     updateStyles({
-      backgroundColor:
-        value,
+      backgroundColor: value,
     });
-
-    if (
-      device ===
-      "desktop"
-    ) {
+    if (device === "desktop") {
       setComponents(
         updateComponentById(
           components,
           selectedId ?? "",
           (component) => ({
             ...component,
-            backgroundColor:
-              value,
+            backgroundColor: value,
           })
         )
       );
     }
   };
-
   const updateMinHeight = (
     value: number
   ) => {
     updateStyles({
-      height:
-        value,
-      heightUnit:
-        "px",
+      height: value,
+      heightUnit: "px",
     });
-
-    if (
-      device ===
-      "desktop"
-    ) {
+    if (device === "desktop") {
       setComponents(
         updateComponentById(
           components,
           selectedId ?? "",
           (component) => ({
             ...component,
-            minHeight:
-              value,
+            minHeight: value,
           })
         )
       );
     }
   };
-
   const updateImage = (
     value: string
   ) => {
@@ -743,13 +544,11 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          imageUrl:
-            value,
+          imageUrl: value,
         })
       )
     );
   };
-
   const updateImageWidth = (
     value: number
   ) => {
@@ -759,13 +558,11 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          imageWidth:
-            value,
+          imageWidth: value,
         })
       )
     );
   };
-
   const updateImageHeight = (
     value: number
   ) => {
@@ -775,13 +572,11 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          imageHeight:
-            value,
+          imageHeight: value,
         })
       )
     );
   };
-
   const updateImageBorderRadius = (
     value: number
   ) => {
@@ -791,101 +586,40 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          imageBorderRadius:
-            value,
+          imageBorderRadius: value,
         })
       )
     );
   };
-
-  const updateStyles = (
-    updates: Partial<BuilderStyles>
-  ) => {
-    setComponents(
-      updateComponentById(
-        components,
-        selectedId ?? "",
-        (component) => {
-          if (
-            device ===
-            "desktop"
-          ) {
-            return {
-              ...component,
-              styles: {
-                ...component.styles,
-                ...updates,
-              },
-            };
-          }
-
-          return {
-            ...component,
-            responsive: {
-              ...component.responsive,
-              [device]: {
-                ...component
-                  .responsive?.[
-                    device
-                  ],
-                ...updates,
-              },
-            },
-          };
-        }
-      )
-    );
-  };
-
   const deleteComponent = () => {
     if (!selectedId) {
       return;
     }
-
-    const result =
-      removeComponentById(
-        components,
-        selectedId
-      );
-
-    setComponents(
-      result.components
+    const result = removeComponentById(
+      components,
+      selectedId
     );
-
+    setComponents(result.components);
     setSelectedId(null);
   };
-
   const moveComponentUp = () => {
     if (!selectedId) {
       return;
     }
-
-    const parent =
-      findParentById(
-        components,
-        selectedId
-      );
-
+    const parent = findParentById(
+      components,
+      selectedId
+    );
     const list = parent
-      ? parent.children ??
-        []
+      ? parent.children ?? []
       : components;
-
-    const index =
-      list.findIndex(
-        (component) =>
-          component.id ===
-          selectedId
-      );
-
+    const index = list.findIndex(
+      (component) => component.id === selectedId
+    );
     if (index <= 0) {
       return;
     }
-
-    const updatedList = [
-      ...list,
-    ];
-
+    const updatedList = [...list];
     [
       updatedList[index - 1],
       updatedList[index],
@@ -893,7 +627,6 @@ function App() {
       updatedList[index],
       updatedList[index - 1],
     ];
-
     if (parent) {
       setComponents(
         updateComponentById(
@@ -901,53 +634,35 @@ function App() {
           parent.id,
           (component) => ({
             ...component,
-            children:
-              updatedList,
+            children: updatedList,
           })
         )
       );
     } else {
-      setComponents(
-        updatedList
-      );
+      setComponents(updatedList);
     }
   };
-
   const moveComponentDown = () => {
     if (!selectedId) {
       return;
     }
-
-    const parent =
-      findParentById(
-        components,
-        selectedId
-      );
-
+    const parent = findParentById(
+      components,
+      selectedId
+    );
     const list = parent
-      ? parent.children ??
-        []
+      ? parent.children ?? []
       : components;
-
-    const index =
-      list.findIndex(
-        (component) =>
-          component.id ===
-          selectedId
-      );
-
+    const index = list.findIndex(
+      (component) => component.id === selectedId
+    );
     if (
       index === -1 ||
-      index ===
-        list.length - 1
+      index === list.length - 1
     ) {
       return;
     }
-
-    const updatedList = [
-      ...list,
-    ];
-
+    const updatedList = [...list];
     [
       updatedList[index + 1],
       updatedList[index],
@@ -955,7 +670,6 @@ function App() {
       updatedList[index],
       updatedList[index + 1],
     ];
-
     if (parent) {
       setComponents(
         updateComponentById(
@@ -963,173 +677,111 @@ function App() {
           parent.id,
           (component) => ({
             ...component,
-            children:
-              updatedList,
+            children: updatedList,
           })
         )
       );
     } else {
-      setComponents(
-        updatedList
-      );
+      setComponents(updatedList);
     }
   };
-
   const cloneComponentTree = (
     component: BuilderComponent
   ): BuilderComponent => {
     return {
       ...component,
       id: crypto.randomUUID(),
-      styles:
-        component.styles
-          ? {
-              ...component.styles,
-            }
-          : undefined,
-      responsive:
-        component.responsive
-          ? {
-              desktop:
-                component.responsive
-                  .desktop
-                  ? {
-                      ...component
-                        .responsive
-                        .desktop,
-                    }
-                  : undefined,
-              tablet:
-                component.responsive
-                  .tablet
-                  ? {
-                      ...component
-                        .responsive
-                        .tablet,
-                    }
-                  : undefined,
-              mobile:
-                component.responsive
-                  .mobile
-                  ? {
-                      ...component
-                        .responsive
-                        .mobile,
-                    }
-                  : undefined,
-            }
-          : undefined,
-      children:
-        component.children
-          ? component.children.map(
-              (child) =>
-                cloneComponentTree(
-                  child
-                )
-            )
-          : [],
+      styles: component.styles
+        ? {
+            ...component.styles,
+          }
+        : undefined,
+      responsive: component.responsive
+        ? {
+            desktop: component.responsive.desktop
+              ? {
+                  ...component.responsive.desktop,
+                }
+              : undefined,
+            tablet: component.responsive.tablet
+              ? {
+                  ...component.responsive.tablet,
+                }
+              : undefined,
+            mobile: component.responsive.mobile
+              ? {
+                  ...component.responsive.mobile,
+                }
+              : undefined,
+          }
+        : undefined,
+      children: component.children
+        ? component.children.map((child) =>
+            cloneComponentTree(child)
+          )
+        : [],
     };
   };
-
   const duplicateComponent = () => {
     if (!selectedId) {
       return;
     }
-
-    const component =
-      findComponentById(
-        components,
-        selectedId
-      );
-
+    const component = findComponentById(
+      components,
+      selectedId
+    );
     if (!component) {
       return;
     }
-
     const duplicatedComponent =
-      cloneComponentTree(
-        component
-      );
-
-    const parent =
-      findParentById(
-        components,
-        selectedId
-      );
-
+      cloneComponentTree(component);
+    const parent = findParentById(
+      components,
+      selectedId
+    );
     if (parent) {
-      const children =
-        parent.children ??
-        [];
-
-      const index =
-        children.findIndex(
-          (child) =>
-            child.id ===
-            selectedId
-        );
-
-      if (
-        index === -1
-      ) {
+      const children = parent.children ?? [];
+      const index = children.findIndex(
+        (child) => child.id === selectedId
+      );
+      if (index === -1) {
         return;
       }
-
-      const updatedChildren = [
-        ...children,
-      ];
-
+      const updatedChildren = [...children];
       updatedChildren.splice(
         index + 1,
         0,
         duplicatedComponent
       );
-
       setComponents(
         updateComponentById(
           components,
           parent.id,
           (component) => ({
             ...component,
-            children:
-              updatedChildren,
+            children: updatedChildren,
           })
         )
       );
     } else {
-      const index =
-        components.findIndex(
-          (component) =>
-            component.id ===
-            selectedId
-        );
-
-      if (
-        index === -1
-      ) {
+      const index = components.findIndex(
+        (component) => component.id === selectedId
+      );
+      if (index === -1) {
         return;
       }
-
-      const updated = [
-        ...components,
-      ];
-
+      const updated = [...components];
       updated.splice(
         index + 1,
         0,
         duplicatedComponent
       );
-
-      setComponents(
-        updated
-      );
+      setComponents(updated);
     }
-
     setSelectedId(
       duplicatedComponent.id
     );
   };
-
   const updateHeroTitle = (
     value: string
   ) => {
@@ -1139,13 +791,11 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          heroTitle:
-            value,
+          heroTitle: value,
         })
       )
     );
   };
-
   const updateHeroSubtitle = (
     value: string
   ) => {
@@ -1155,13 +805,11 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          heroSubtitle:
-            value,
+          heroSubtitle: value,
         })
       )
     );
   };
-
   const updateHeroButtonText = (
     value: string
   ) => {
@@ -1171,251 +819,125 @@ function App() {
         selectedId ?? "",
         (component) => ({
           ...component,
-          heroButtonText:
-            value,
+          heroButtonText: value,
         })
       )
     );
   };
-
   const downloadFile = (
     filename: string,
     content: string
   ) => {
-    const blob =
-      new Blob(
-        [content],
-        {
-          type:
-            "text/plain",
-        }
-      );
-
-    const url =
-      URL.createObjectURL(
-        blob
-      );
-
-    const a =
-      document.createElement(
-        "a"
-      );
-
-    a.href = url;
-    a.download =
-      filename;
-    a.click();
-
-    URL.revokeObjectURL(
-      url
+    const blob = new Blob(
+      [content],
+      {
+        type: "text/plain",
+      }
     );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
-
   const exportHTML = () => {
-    const html =
-      generateHTML(
-        components
-      );
-
+    const html = generateHTML(components);
     downloadFile(
       "index.html",
       html
     );
   };
-
   const exportCSS = () => {
-    const css =
-      generateCSS();
-
+    const css = generateCSS();
     downloadFile(
       "style.css",
       css
     );
   };
-
   const saveProject = () => {
     localStorage.setItem(
       "website-builder-project",
-      JSON.stringify(
-        components
-      )
+      JSON.stringify(components)
     );
-
-    alert(
-      "Project opgeslagen!"
-    );
+    alert("Project opgeslagen!");
   };
-
   const loadProject = () => {
     const savedProject =
       localStorage.getItem(
         "website-builder-project"
       );
-
     if (!savedProject) {
       alert(
         "Geen opgeslagen project gevonden"
       );
       return;
     }
-
     try {
-      const parsedProject:
-      BuilderComponent[] =
-        JSON.parse(
-          savedProject
-        );
-
-      setComponents(
-        parsedProject
-      );
-
-      setSelectedId(
-        null
-      );
-
-      alert(
-        "Project geladen!"
-      );
+      const parsedProject: BuilderComponent[] =
+        JSON.parse(savedProject);
+      setComponents(parsedProject);
+      setSelectedId(null);
+      alert("Project geladen!");
     } catch {
       alert(
         "Het opgeslagen project is ongeldig."
       );
     }
   };
-
   return (
     <div className="editor">
       <Sidebar
-        components={
-          components
-        }
-        selectedId={
-          selectedId
-        }
-        addComponent={
-          addComponent
-        }
-        setSelectedId={
-          setSelectedId
-        }
-        onDragEnd={
-          reorderComponents
-        }
+        components={components}
+        selectedId={selectedId}
+        addComponent={addComponent}
+        setSelectedId={setSelectedId}
+        onDragEnd={reorderComponents}
       />
-
       <div className="canvas">
         <div className="canvas-header">
-          <button
-            onClick={
-              exportHTML
-            }
-          >
+          <button onClick={exportHTML}>
             Export HTML
           </button>
-
-          <button
-            onClick={
-              exportCSS
-            }
-          >
+          <button onClick={exportCSS}>
             Export CSS
           </button>
-
-          <button
-            onClick={
-              saveProject
-            }
-          >
+          <button onClick={saveProject}>
             Save Project
           </button>
-
-          <button
-            onClick={
-              loadProject
-            }
-          >
+          <button onClick={loadProject}>
             Load Project
           </button>
         </div>
-
         <Canvas
-          components={
-            components
-          }
-          selectedId={
-            selectedId
-          }
-          setSelectedId={
-            setSelectedId
-          }
-          onDragEnd={
-            handleCanvasDragEnd
-          }
-          device={
-            device
-          }
-          setDevice={
-            setDevice
-          }
+          components={components}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          onDragEnd={handleCanvasDragEnd}
+          device={device}
+          setDevice={setDevice}
         />
       </div>
-
       <Properties
-        selectedComponent={
-          selectedComponent
-        }
-        updateText={
-          updateText
-        }
-        updateFontSize={
-          updateFontSize
-        }
-        updateColor={
-          updateColor
-        }
-        updateBackgroundColor={
-          updateBackgroundColor
-        }
-        updateMinHeight={
-          updateMinHeight
-        }
-        updateHeroTitle={
-          updateHeroTitle
-        }
-        updateHeroSubtitle={
-          updateHeroSubtitle
-        }
-        updateHeroButtonText={
-          updateHeroButtonText
-        }
-        updateImage={
-          updateImage
-        }
-        updateImageWidth={
-          updateImageWidth
-        }
-        updateImageHeight={
-          updateImageHeight
-        }
-        updateImageBorderRadius={
-          updateImageBorderRadius
-        }
-        updateStyles={
-          updateStyles
-        }
-        moveComponentUp={
-          moveComponentUp
-        }
-        moveComponentDown={
-          moveComponentDown
-        }
-        duplicateComponent={
-          duplicateComponent
-        }
-        deleteComponent={
-          deleteComponent
-        }
+        selectedComponent={selectedComponent}
+        device={device}
+        updateText={updateText}
+        updateFontSize={updateFontSize}
+        updateColor={updateColor}
+        updateBackgroundColor={updateBackgroundColor}
+        updateMinHeight={updateMinHeight}
+        updateHeroTitle={updateHeroTitle}
+        updateHeroSubtitle={updateHeroSubtitle}
+        updateHeroButtonText={updateHeroButtonText}
+        updateImage={updateImage}
+        updateImageWidth={updateImageWidth}
+        updateImageHeight={updateImageHeight}
+        updateImageBorderRadius={updateImageBorderRadius}
+        updateStyles={updateStyles}
+        moveComponentUp={moveComponentUp}
+        moveComponentDown={moveComponentDown}
+        duplicateComponent={duplicateComponent}
+        deleteComponent={deleteComponent}
       />
     </div>
   );
