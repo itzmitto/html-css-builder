@@ -5,6 +5,7 @@ import {
 import type {
   BuilderComponent,
   BuilderStyles,
+  DeviceType,
 } from "../types/builder";
 import LayoutProperties from "./properties/LayoutProperties";
 import TypographyProperties from "./properties/TypographyProperties";
@@ -12,6 +13,7 @@ import AppearanceProperties from "./properties/AppearanceProperties";
 
 interface PropertiesProps {
   selectedComponent?: BuilderComponent;
+  device: DeviceType;
   updateText: (value: string) => void;
   updateFontSize: (value: number) => void;
   updateColor: (value: string) => void;
@@ -40,8 +42,23 @@ type PropertyTab =
   | "appearance"
   | "advanced";
 
+function getDeviceLabel(
+  device: DeviceType
+) {
+  if (device === "desktop") {
+    return "Desktop";
+  }
+
+  if (device === "tablet") {
+    return "Tablet";
+  }
+
+  return "Mobile";
+}
+
 function Properties({
   selectedComponent,
+  device,
   updateText,
   updateFontSize,
   updateColor,
@@ -88,8 +105,16 @@ function Properties({
     reader.readAsDataURL(file);
   };
 
-  const styles: BuilderStyles =
+  const baseStyles: BuilderStyles =
     selectedComponent?.styles ?? {};
+
+  const responsiveStyles =
+    selectedComponent?.responsive?.[device] ?? {};
+
+  const styles: BuilderStyles = {
+    ...baseStyles,
+    ...responsiveStyles,
+  };
 
   const showTypography =
     selectedComponent?.type === "Heading" ||
@@ -121,6 +146,27 @@ function Properties({
       label: "Advanced",
     },
   ];
+
+  const renderDeviceInfo = () => {
+    return (
+      <div className="responsive-device-info">
+        <span className="responsive-device-label">
+          Responsive
+        </span>
+
+        <strong>
+          {getDeviceLabel(device)}
+        </strong>
+
+        {device !== "desktop" && (
+          <span className="responsive-device-description">
+            Wijzigingen gelden alleen voor{" "}
+            {getDeviceLabel(device)}.
+          </span>
+        )}
+      </div>
+    );
+  };
 
   const renderContentTab = () => {
     if (!selectedComponent) {
@@ -339,8 +385,8 @@ function Properties({
               min="100"
               max="1000"
               value={
-                selectedComponent.minHeight ??
                 styles.height ??
+                selectedComponent.minHeight ??
                 300
               }
               onChange={(e) => {
@@ -349,7 +395,6 @@ function Properties({
                 );
 
                 updateMinHeight(value);
-
                 updateStyles({
                   height: value,
                   heightUnit: "px",
@@ -359,8 +404,8 @@ function Properties({
             />
 
             <div className="property-value">
-              {selectedComponent.minHeight ??
-                styles.height ??
+              {styles.height ??
+                selectedComponent.minHeight ??
                 300}px
             </div>
           </div>
@@ -442,13 +487,23 @@ function Properties({
         <div className="component-meta">
           <div className="meta-row">
             <span>Type</span>
+
             <strong>
               {selectedComponent?.type}
             </strong>
           </div>
 
           <div className="meta-row">
+            <span>Device</span>
+
+            <strong>
+              {getDeviceLabel(device)}
+            </strong>
+          </div>
+
+          <div className="meta-row">
             <span>ID</span>
+
             <strong className="component-id">
               {selectedComponent?.id}
             </strong>
@@ -456,6 +511,7 @@ function Properties({
 
           <div className="meta-row">
             <span>Children</span>
+
             <strong>
               {selectedComponent?.children?.length ?? 0}
             </strong>
@@ -538,6 +594,8 @@ function Properties({
           </h2>
         </div>
       </div>
+
+      {renderDeviceInfo()}
 
       <div className="properties-tabs">
         {tabs.map((tab) => (
