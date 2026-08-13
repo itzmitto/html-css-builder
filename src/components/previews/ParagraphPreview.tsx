@@ -19,19 +19,43 @@ function ParagraphPreview({
   letterSpacing = 0,
   textAlign = "left",
 }: ParagraphPreviewProps) {
+  const resolvedFontSize = Math.max(
+    12,
+    Math.min(
+      fontSize,
+      36
+    )
+  );
+
+  const resolvedLineHeight =
+    Math.max(
+      1,
+      Math.min(
+        lineHeight,
+        3
+      )
+    );
+
   return (
     <p
       className="paragraph-preview"
       style={{
         width: "100%",
+        maxWidth: "760px",
+        minWidth: 0,
         boxSizing: "border-box",
-        fontSize: `${fontSize}px`,
+        margin: 0,
+        padding: 0,
+        fontSize: `${resolvedFontSize}px`,
         color,
         fontFamily,
         fontWeight,
-        lineHeight,
+        lineHeight: resolvedLineHeight,
         letterSpacing: `${letterSpacing}px`,
         textAlign,
+        overflowWrap: "break-word",
+        wordBreak: "break-word",
+        textWrap: "pretty",
       }}
     >
       {text}

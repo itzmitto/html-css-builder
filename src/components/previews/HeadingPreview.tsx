@@ -19,19 +19,34 @@ function HeadingPreview({
   letterSpacing = 0,
   textAlign = "left",
 }: HeadingPreviewProps) {
+  const responsiveFontSize = Math.max(
+    20,
+    Math.min(
+      fontSize,
+      72
+    )
+  );
+
   return (
     <h1
       className="heading-preview"
       style={{
         width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
         boxSizing: "border-box",
-        fontSize: `${fontSize}px`,
+        margin: 0,
+        padding: 0,
         color,
         fontFamily,
+        fontSize: `${responsiveFontSize}px`,
         fontWeight,
         lineHeight,
         letterSpacing: `${letterSpacing}px`,
         textAlign,
+        overflowWrap: "break-word",
+        wordBreak: "break-word",
+        textWrap: "balance",
       }}
     >
       {text}

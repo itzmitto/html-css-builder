@@ -11,6 +11,7 @@ import type {
   ComponentType,
   BuilderStyles,
   DeviceType,
+  NavbarSettings,
 } from "./types/builder";
 
 function App() {
@@ -29,20 +30,17 @@ function App() {
       if (component.id === id) {
         return component;
       }
-
       if (component.children?.length) {
         const found =
           findComponentById(
             component.children,
             id
           );
-
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
 
@@ -59,20 +57,17 @@ function App() {
       ) {
         return component;
       }
-
       if (component.children?.length) {
         const found =
           findParentById(
             component.children,
             childId
           );
-
         if (found) {
           return found;
         }
       }
     }
-
     return undefined;
   };
 
@@ -83,12 +78,10 @@ function App() {
     if (!component.children?.length) {
       return false;
     }
-
     for (const child of component.children) {
       if (child.id === id) {
         return true;
       }
-
       if (
         isDescendant(
           child,
@@ -98,7 +91,6 @@ function App() {
         return true;
       }
     }
-
     return false;
   };
 
@@ -140,26 +132,35 @@ function App() {
       paddingLeft: 0,
       display: "block",
       flexDirection: "row",
-      justifyContent: "flex-start",
-      alignItems: "stretch",
-      horizontalAlign: "left",
+      justifyContent:
+        "flex-start",
+      alignItems:
+        "stretch",
+      horizontalAlign:
+        "left",
       gap: 0,
       gridColumns: 1,
       gridGap: 16,
-      backgroundColor: "#ffffff",
-      color: "#000000",
-      fontFamily: "Arial",
+      backgroundColor:
+        "#ffffff",
+      color:
+        "#000000",
+      fontFamily:
+        "Arial",
       fontSize: 16,
       fontWeight: 400,
       lineHeight: 1.5,
       letterSpacing: 0,
       textAlign: "left",
       borderWidth: 0,
-      borderStyle: "none",
-      borderColor: "#000000",
+      borderStyle:
+        "none",
+      borderColor:
+        "#000000",
       borderRadius: 0,
       opacity: 1,
-      overflow: "visible",
+      overflow:
+        "visible",
       zIndex: 1,
     });
 
@@ -169,23 +170,32 @@ function App() {
     const styles =
       createDefaultStyles();
 
-    if (type === "Container") {
+    if (
+      type ===
+      "Container"
+    ) {
       return {
         ...styles,
         height: 300,
-        display: "block",
+        display:
+          "block",
         gap: 16,
         gridColumns: 1,
         gridGap: 16,
       };
     }
 
-    if (type === "Row") {
+    if (
+      type ===
+      "Row"
+    ) {
       return {
         ...styles,
         height: 200,
-        display: "flex",
-        flexDirection: "row",
+        display:
+          "flex",
+        flexDirection:
+          "row",
         justifyContent:
           "flex-start",
         alignItems:
@@ -194,12 +204,17 @@ function App() {
       };
     }
 
-    if (type === "Stack") {
+    if (
+      type ===
+      "Stack"
+    ) {
       return {
         ...styles,
         height: 300,
-        display: "flex",
-        flexDirection: "column",
+        display:
+          "flex",
+        flexDirection:
+          "column",
         justifyContent:
           "flex-start",
         alignItems:
@@ -208,20 +223,87 @@ function App() {
       };
     }
 
-    if (type === "Card") {
+    if (
+      type ===
+      "Card"
+    ) {
       return {
         ...styles,
         height: 250,
-        display: "block",
+        display:
+          "block",
         width: 100,
-        widthUnit: "%",
+        widthUnit:
+          "%",
         backgroundColor:
           "#ffffff",
       };
     }
 
+    if (
+      type ===
+      "Navbar"
+    ) {
+      return {
+        ...styles,
+        width: 100,
+        widthUnit:
+          "%",
+        height: 72,
+        heightUnit:
+          "px",
+        paddingTop: 0,
+        paddingRight: 20,
+        paddingBottom: 0,
+        paddingLeft: 20,
+        display:
+          "flex",
+        flexDirection:
+          "row",
+        justifyContent:
+          "space-between",
+        alignItems:
+          "center",
+        gap: 24,
+        backgroundColor:
+          "#ffffff",
+        color:
+          "#172033",
+        borderWidth: 1,
+        borderStyle:
+          "solid",
+        borderColor:
+          "#e4e7ef",
+        borderRadius:
+          10,
+      };
+    }
+
     return styles;
   };
+
+  const createDefaultNavbarLinks = () => [
+    {
+      id: crypto.randomUUID(),
+      label: "Home",
+      url: "#",
+    },
+    {
+      id: crypto.randomUUID(),
+      label: "About",
+      url: "#",
+    },
+    {
+      id: crypto.randomUUID(),
+      label: "Services",
+      url: "#",
+    },
+    {
+      id: crypto.randomUUID(),
+      label: "Contact",
+      url: "#",
+    },
+  ];
 
   const createComponent = (
     type: ComponentType
@@ -229,10 +311,42 @@ function App() {
     const styles =
       createComponentStyles(type);
 
+    const navbarSettings: NavbarSettings | undefined =
+      type === "Navbar"
+        ? {
+            logoText:
+              "Logo",
+            logoSize:
+              20,
+            navGap:
+              24,
+            height:
+              72,
+            padding:
+              20,
+            borderRadius:
+              10,
+            borderColor:
+              "#e4e7ef",
+            borderWidth:
+              1,
+            boxShadow:
+              "0 4px 16px rgba(15, 23, 42, 0.06)",
+            sticky:
+              false,
+            links:
+              createDefaultNavbarLinks(),
+          }
+        : undefined;
+
     return {
       id: crypto.randomUUID(),
       type,
-      text: type,
+      text:
+        type ===
+        "Navbar"
+          ? "Logo"
+          : type,
       heroTitle:
         "Hero Title",
       heroSubtitle:
@@ -240,17 +354,32 @@ function App() {
       heroButtonText:
         "Get Started",
       minHeight:
-        type === "Container"
+        type ===
+        "Container"
           ? 300
           : 0,
-      fontSize: 32,
-      color: "#000000",
+      fontSize:
+        type ===
+        "Navbar"
+          ? 16
+          : 32,
+      color:
+        type ===
+        "Navbar"
+          ? "#172033"
+          : "#000000",
       backgroundColor:
         "#ffffff",
-      imageUrl: "",
-      imageWidth: 100,
-      imageHeight: 300,
-      imageBorderRadius: 8,
+      imageUrl:
+        "",
+      imageWidth:
+        100,
+      imageHeight:
+        300,
+      imageBorderRadius:
+        8,
+      navbar:
+        navbarSettings,
       styles,
       responsive: {
         desktop: {
@@ -273,7 +402,8 @@ function App() {
     return componentList.map(
       (component) => {
         if (
-          component.id === id
+          component.id ===
+          id
         ) {
           return updater(
             component
@@ -316,7 +446,8 @@ function App() {
         componentList[index];
 
       if (
-        component.id === id
+        component.id ===
+        id
       ) {
         const updated = [
           ...componentList,
@@ -405,7 +536,8 @@ function App() {
       );
 
     if (
-      targetIndex !== -1
+      targetIndex !==
+      -1
     ) {
       const updated = [
         ...componentList,
@@ -494,7 +626,8 @@ function App() {
     overId: string
   ) => {
     if (
-      activeId === overId
+      activeId ===
+      overId
     ) {
       return;
     }
@@ -572,8 +705,10 @@ function App() {
         );
 
       if (
-        oldIndex === -1 ||
-        newIndex === -1
+        oldIndex ===
+          -1 ||
+        newIndex ===
+          -1
       ) {
         return;
       }
@@ -713,10 +848,26 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
-          text: value,
+          text:
+            value,
+          navbar:
+            component.type ===
+            "Navbar"
+              ? {
+                  ...component.navbar,
+                  logoText:
+                    value,
+                  links:
+                    component
+                      .navbar
+                      ?.links ??
+                    createDefaultNavbarLinks(),
+                }
+              : component.navbar,
         })
       )
     );
@@ -728,7 +879,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => {
           if (
             device ===
@@ -740,6 +892,42 @@ function App() {
                 ...component.styles,
                 ...updates,
               },
+              navbar:
+                component.type ===
+                "Navbar"
+                  ? {
+                      ...component.navbar,
+                      height:
+                        updates.height ??
+                        component.navbar
+                          ?.height,
+                      padding:
+                        updates.paddingLeft ??
+                        component.navbar
+                          ?.padding,
+                      navGap:
+                        updates.gap ??
+                        component.navbar
+                          ?.navGap,
+                      borderRadius:
+                        updates.borderRadius ??
+                        component.navbar
+                          ?.borderRadius,
+                      borderColor:
+                        updates.borderColor ??
+                        component.navbar
+                          ?.borderColor,
+                      borderWidth:
+                        updates.borderWidth ??
+                        component.navbar
+                          ?.borderWidth,
+                      links:
+                        component
+                          .navbar
+                          ?.links ??
+                        createDefaultNavbarLinks(),
+                    }
+                  : component.navbar,
             };
           }
 
@@ -761,13 +949,38 @@ function App() {
     );
   };
 
+  const updateNavbar = (
+    updates: Partial<NavbarSettings>
+  ) => {
+    setComponents(
+      updateComponentById(
+        components,
+        selectedId ??
+          "",
+        (component) => ({
+          ...component,
+          navbar: {
+            ...component.navbar,
+            links:
+              component
+                .navbar
+                ?.links ??
+              createDefaultNavbarLinks(),
+            ...updates,
+          },
+        })
+      )
+    );
+  };
+
   const updateFontSize = (
     value: number
   ) => {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => {
           if (
             device ===
@@ -775,7 +988,8 @@ function App() {
           ) {
             return {
               ...component,
-              fontSize: value,
+              fontSize:
+                value,
               styles: {
                 ...component.styles,
                 fontSize:
@@ -809,7 +1023,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => {
           if (
             device ===
@@ -817,10 +1032,12 @@ function App() {
           ) {
             return {
               ...component,
-              color: value,
+              color:
+                value,
               styles: {
                 ...component.styles,
-                color: value,
+                color:
+                  value,
               },
             };
           }
@@ -834,7 +1051,8 @@ function App() {
                   .responsive?.[
                     device
                   ],
-                color: value,
+                color:
+                  value,
               },
             },
           };
@@ -849,7 +1067,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => {
           if (
             device ===
@@ -892,7 +1111,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => {
           if (
             device ===
@@ -939,7 +1159,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           imageUrl:
@@ -955,7 +1176,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           imageWidth:
@@ -971,7 +1193,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           imageHeight:
@@ -987,7 +1210,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           imageBorderRadius:
@@ -1070,7 +1294,9 @@ function App() {
       ],
     ];
 
-    if (parent) {
+    if (
+      parent
+    ) {
       setComponents(
         updateComponentById(
           components,
@@ -1146,7 +1372,9 @@ function App() {
       ],
     ];
 
-    if (parent) {
+    if (
+      parent
+    ) {
       setComponents(
         updateComponentById(
           components,
@@ -1174,7 +1402,26 @@ function App() {
   ): BuilderComponent => {
     return {
       ...component,
-      id: crypto.randomUUID(),
+      id:
+        crypto.randomUUID(),
+      navbar:
+        component.navbar
+          ? {
+              ...component.navbar,
+              links:
+                component
+                  .navbar
+                  .links
+                  ? component.navbar.links.map(
+                      (link) => ({
+                        ...link,
+                        id:
+                          crypto.randomUUID(),
+                      })
+                    )
+                  : createDefaultNavbarLinks(),
+            }
+          : undefined,
       styles:
         component.styles
           ? {
@@ -1256,7 +1503,9 @@ function App() {
         selectedId
       );
 
-    if (parent) {
+    if (
+      parent
+    ) {
       const children =
         parent.children ??
         [];
@@ -1269,7 +1518,8 @@ function App() {
         );
 
       if (
-        index === -1
+        index ===
+        -1
       ) {
         return;
       }
@@ -1303,7 +1553,8 @@ function App() {
         );
 
       if (
-        index === -1
+        index ===
+        -1
       ) {
         return;
       }
@@ -1333,7 +1584,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           heroTitle:
@@ -1349,7 +1601,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           heroSubtitle:
@@ -1365,7 +1618,8 @@ function App() {
     setComponents(
       updateComponentById(
         components,
-        selectedId ?? "",
+        selectedId ??
+          "",
         (component) => ({
           ...component,
           heroButtonText:
@@ -1468,8 +1722,101 @@ function App() {
           savedProject
         );
 
+      const migratedProject =
+        parsedProject.map(
+          (component) => {
+            if (
+              component.type !==
+              "Navbar"
+            ) {
+              return component;
+            }
+
+            return {
+              ...component,
+              navbar: {
+                ...component.navbar,
+                logoText:
+                  component
+                    .navbar
+                    ?.logoText ??
+                  component.text ??
+                  "Logo",
+                logoSize:
+                  component
+                    .navbar
+                    ?.logoSize ??
+                  20,
+                navGap:
+                  component
+                    .navbar
+                    ?.navGap ??
+                  component
+                    .styles
+                    ?.gap ??
+                  24,
+                height:
+                  component
+                    .navbar
+                    ?.height ??
+                  component
+                    .styles
+                    ?.height ??
+                  72,
+                padding:
+                  component
+                    .navbar
+                    ?.padding ??
+                  component
+                    .styles
+                    ?.paddingLeft ??
+                  20,
+                borderRadius:
+                  component
+                    .navbar
+                    ?.borderRadius ??
+                  component
+                    .styles
+                    ?.borderRadius ??
+                  10,
+                borderColor:
+                  component
+                    .navbar
+                    ?.borderColor ??
+                  component
+                    .styles
+                    ?.borderColor ??
+                  "#e4e7ef",
+                borderWidth:
+                  component
+                    .navbar
+                    ?.borderWidth ??
+                  component
+                    .styles
+                    ?.borderWidth ??
+                  1,
+                boxShadow:
+                  component
+                    .navbar
+                    ?.boxShadow ??
+                  "0 4px 16px rgba(15, 23, 42, 0.06)",
+                sticky:
+                  component
+                    .navbar
+                    ?.sticky ??
+                  false,
+                links:
+                  component
+                    .navbar
+                    ?.links ??
+                  createDefaultNavbarLinks(),
+              },
+            };
+          }
+        );
+
       setComponents(
-        parsedProject
+        migratedProject
       );
 
       setSelectedId(
@@ -1608,6 +1955,9 @@ function App() {
         }
         updateStyles={
           updateStyles
+        }
+        updateNavbar={
+          updateNavbar
         }
         moveComponentUp={
           moveComponentUp

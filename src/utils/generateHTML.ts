@@ -364,6 +364,46 @@ function getResponsiveAttributes(
     : "";
 }
 
+function generateNavbarLinks(
+  component: BuilderComponent
+) {
+  const links =
+    component.navbar?.links ??
+    [
+      {
+        id: "home",
+        label: "Home",
+        url: "#",
+      },
+      {
+        id: "about",
+        label: "About",
+        url: "#",
+      },
+      {
+        id: "services",
+        label: "Services",
+        url: "#",
+      },
+      {
+        id: "contact",
+        label: "Contact",
+        url: "#",
+      },
+    ];
+
+  return links
+    .map(
+      (link) =>
+        `    <li><a href="${escapeHtml(
+          link.url
+        )}">${escapeHtml(
+          link.label
+        )}</a></li>`
+    )
+    .join("\n");
+}
+
 function generateComponentHTML(
   component: BuilderComponent
 ): string {
@@ -405,12 +445,15 @@ function generateComponentHTML(
     case "Navbar":
       return `
 <nav class="navbar"${styleAttribute}>
-  <div class="logo">Logo</div>
+  <div class="logo">
+    ${escapeHtml(
+      component.navbar?.logoText ??
+      component.text ??
+      "Logo"
+    )}
+  </div>
   <ul class="nav-links">
-    <li>Home</li>
-    <li>About</li>
-    <li>Services</li>
-    <li>Contact</li>
+${generateNavbarLinks(component)}
   </ul>
 </nav>
 `;

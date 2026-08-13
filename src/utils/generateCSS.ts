@@ -17,26 +17,112 @@ body {
   color: #000000;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background: #ffffff;
   width: 100%;
+  min-width: 0;
+  min-height: 72px;
+  padding: 0 20px;
+  background: #ffffff;
+  color: #172033;
+  border: 1px solid #e4e7ef;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.logo {
-  font-weight: bold;
+.navbar .logo {
+  flex-shrink: 0;
+  min-width: 0;
+  color: inherit;
+  font-weight: 700;
   font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-.nav-links {
+.navbar .nav-links {
   display: flex;
-  gap: 20px;
-  list-style: none;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-width: 0;
+  max-width: 100%;
   margin: 0;
   padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.navbar .nav-links li {
+  min-width: 0;
+  list-style: none;
+}
+
+.navbar .nav-links a {
+  display: inline-block;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.8;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.navbar .nav-links a:hover {
+  opacity: 1;
+}
+
+.navbar .navbar-cta,
+.navbar > button {
+  flex-shrink: 0;
+  padding: 9px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.navbar .navbar-cta:hover,
+.navbar > button:hover {
+  background: #6d28d9;
+}
+
+.navbar .navbar-cta:active,
+.navbar > button:active {
+  transform: translateY(1px);
+}
+
+.navbar[style*="position: sticky"] {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .hero {
@@ -58,7 +144,20 @@ body {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
+  background: #7c3aed;
+  color: #ffffff;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.hero button:hover {
+  background: #6d28d9;
+}
+
+.hero button:active {
+  transform: translateY(1px);
 }
 
 .heading {
@@ -79,8 +178,21 @@ body {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
+  background: #7c3aed;
+  color: #ffffff;
   cursor: pointer;
   margin-bottom: 20px;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.custom-button:hover {
+  background: #6d28d9;
+}
+
+.custom-button:active {
+  transform: translateY(1px);
 }
 
 .section {
@@ -94,8 +206,9 @@ body {
   min-width: 0;
   height: 100%;
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
+  background: #ffffff;
   box-sizing: border-box;
 }
 
@@ -224,6 +337,22 @@ body {
   color: white;
 }
 
+@media (max-width: 900px) {
+  .navbar {
+    gap: 15px;
+    padding: 0 16px;
+  }
+
+  .navbar .nav-links {
+    gap: 16px;
+  }
+
+  .navbar .navbar-cta,
+  .navbar > button {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .row {
     flex-direction: column;
@@ -274,9 +403,32 @@ body {
     font-size: 36px;
   }
 
-  .navbar-preview {
-    flex-direction: column;
-    gap: 15px;
+  .navbar {
+    min-height: 64px;
+  }
+
+  .navbar .nav-links {
+    gap: 12px;
+  }
+
+  .navbar .nav-links a {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    justify-content: center;
+  }
+
+  .navbar .logo {
+    display: none;
+  }
+
+  .navbar .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
   }
 }
 
@@ -327,6 +479,20 @@ body {
 
   .card {
     padding: 15px;
+  }
+
+  .navbar {
+    min-height: 58px;
+    padding: 0 12px;
+    border-radius: 8px;
+  }
+
+  .navbar .nav-links {
+    gap: 10px;
+  }
+
+  .navbar .nav-links a {
+    font-size: 12px;
   }
 }`;
 }

@@ -75,6 +75,65 @@ export interface ResponsiveStyles {
   mobile?: Partial<BuilderStyles>;
 }
 
+export interface NavbarLink {
+  id: string;
+  label: string;
+  url: string;
+  openInNewTab?: boolean;
+}
+
+export interface NavbarSettings {
+  logoText?: string;
+  logoSize?: number;
+  navGap?: number;
+  height?: number;
+  padding?: number;
+  borderRadius?: number;
+  borderColor?: string;
+  borderWidth?: number;
+  boxShadow?: string;
+  sticky?: boolean;
+  links?: NavbarLink[];
+}
+
+export interface HeroSettings {
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  buttonStyle?: "solid" | "outline" | "ghost";
+  contentWidth?: number;
+  contentWidthUnit?: "px" | "%";
+  verticalPadding?: number;
+  textAlign?: "left" | "center" | "right";
+}
+
+export interface SectionSettings {
+  title?: string;
+  content?: string;
+  contentWidth?: number;
+  contentWidthUnit?: "px" | "%";
+  textAlign?: "left" | "center" | "right";
+}
+
+export interface CardSettings {
+  title?: string;
+  content?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  showButton?: boolean;
+  imageUrl?: string;
+}
+
+export interface FooterSettings {
+  brandName?: string;
+  description?: string;
+  copyright?: string;
+  showNewsletter?: boolean;
+  newsletterTitle?: string;
+  newsletterDescription?: string;
+}
+
 export interface BuilderComponent {
   id: string;
   type: ComponentType;
@@ -90,6 +149,11 @@ export interface BuilderComponent {
   imageWidth?: number;
   imageHeight?: number;
   imageBorderRadius?: number;
+  navbar?: NavbarSettings;
+  hero?: HeroSettings;
+  section?: SectionSettings;
+  card?: CardSettings;
+  footer?: FooterSettings;
   styles?: BuilderStyles;
   responsive?: ResponsiveStyles;
   children?: BuilderComponent[];

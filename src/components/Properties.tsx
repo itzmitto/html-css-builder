@@ -6,6 +6,8 @@ import type {
   BuilderComponent,
   BuilderStyles,
   DeviceType,
+  NavbarSettings,
+  NavbarLink,
 } from "../types/builder";
 import LayoutProperties from "./properties/LayoutProperties";
 import TypographyProperties from "./properties/TypographyProperties";
@@ -28,6 +30,9 @@ interface PropertiesProps {
   updateImageBorderRadius: (value: number) => void;
   updateStyles: (
     styles: Partial<BuilderStyles>
+  ) => void;
+  updateNavbar: (
+    settings: Partial<NavbarSettings>
   ) => void;
   moveComponentUp: () => void;
   moveComponentDown: () => void;
@@ -56,11 +61,9 @@ function getDeviceLabel(
   if (device === "desktop") {
     return "Desktop";
   }
-
   if (device === "tablet") {
     return "Tablet";
   }
-
   return "Mobile";
 }
 
@@ -80,6 +83,7 @@ function Properties({
   updateImageHeight,
   updateImageBorderRadius,
   updateStyles,
+  updateNavbar,
   moveComponentUp,
   moveComponentDown,
   duplicateComponent,
@@ -87,6 +91,11 @@ function Properties({
 }: PropertiesProps) {
   const [activeTab, setActiveTab] =
     useState<PropertyTab>("content");
+
+  const [
+    expandedNavbarLinks,
+    setExpandedNavbarLinks,
+  ] = useState<Record<string, boolean>>({});
 
   const handleImageUpload = (
     event: ChangeEvent<HTMLInputElement>
@@ -98,14 +107,8 @@ function Properties({
       return;
     }
 
-    if (
-      !file.type.startsWith(
-        "image/"
-      )
-    ) {
-      alert(
-        "Selecteer een afbeelding."
-      );
+    if (!file.type.startsWith("image/")) {
+      alert("Selecteer een afbeelding.");
       return;
     }
 
@@ -127,8 +130,7 @@ function Properties({
   };
 
   const baseStyles: BuilderStyles =
-    selectedComponent?.styles ??
-    {};
+    selectedComponent?.styles ?? {};
 
   const responsiveStyles =
     selectedComponent?.responsive?.[
@@ -140,21 +142,57 @@ function Properties({
     ...responsiveStyles,
   };
 
+  const navbar: NavbarSettings =
+    selectedComponent?.navbar ?? {};
+
+  const navbarLinks: NavbarLink[] =
+    navbar.links ?? [
+      {
+        id: "home",
+        label: "Home",
+        url: "#",
+      },
+      {
+        id: "about",
+        label: "About",
+        url: "#",
+      },
+      {
+        id: "services",
+        label: "Services",
+        url: "#",
+      },
+      {
+        id: "contact",
+        label: "Contact",
+        url: "#",
+      },
+    ];
+
   const showTypography =
-    selectedComponent?.type ===
-      "Heading" ||
-    selectedComponent?.type ===
-      "Paragraph" ||
-    selectedComponent?.type ===
-      "Button";
+    selectedComponent?.type === "Heading" ||
+    selectedComponent?.type === "Paragraph" ||
+    selectedComponent?.type === "Button";
 
   const isLayoutComponent =
-    selectedComponent?.type ===
-      "Container" ||
-    selectedComponent?.type ===
-      "Row" ||
-    selectedComponent?.type ===
-      "Stack";
+    selectedComponent?.type === "Container" ||
+    selectedComponent?.type === "Row" ||
+    selectedComponent?.type === "Stack";
+
+  const isNavbar =
+    selectedComponent?.type === "Navbar";
+
+  const isHero =
+    selectedComponent?.type === "Hero";
+
+  const isSection =
+    selectedComponent?.type === "Section";
+
+  const isCard =
+    selectedComponent?.type === "Card";
+
+  const isFooter =
+    selectedComponent?.type === "Footer";
 
   const tabs: {
     id: PropertyTab;
@@ -185,73 +223,49 @@ function Properties({
   const applyContainerLayout = (
     layout: ContainerLayout
   ) => {
-    if (
-      layout === "vertical"
-    ) {
+    if (layout === "vertical") {
       updateStyles({
         display: "flex",
-        flexDirection:
-          "column",
-        gridColumns:
-          undefined,
-        gridGap:
-          undefined,
+        flexDirection: "column",
+        gridColumns: undefined,
+        gridGap: undefined,
         gap: 16,
-        justifyContent:
-          "flex-start",
-        alignItems:
-          "stretch",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
       });
-
       return;
     }
 
-    if (
-      layout ===
-      "horizontal"
-    ) {
+    if (layout === "horizontal") {
       updateStyles({
         display: "flex",
-        flexDirection:
-          "row",
-        gridColumns:
-          undefined,
-        gridGap:
-          undefined,
+        flexDirection: "row",
+        gridColumns: undefined,
+        gridGap: undefined,
         gap: 16,
-        justifyContent:
-          "flex-start",
-        alignItems:
-          "stretch",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
       });
-
       return;
     }
 
     const columns =
-      layout ===
-      "1-column"
+      layout === "1-column"
         ? 1
-        : layout ===
-          "2-columns"
+        : layout === "2-columns"
         ? 2
-        : layout ===
-          "3-columns"
+        : layout === "3-columns"
         ? 3
         : 4;
 
     updateStyles({
       display: "grid",
-      gridColumns:
-        columns,
+      gridColumns: columns,
       gridGap: 16,
       gap: 16,
-      flexDirection:
-        undefined,
-      justifyContent:
-        undefined,
-      alignItems:
-        undefined,
+      flexDirection: undefined,
+      justifyContent: undefined,
+      alignItems: undefined,
     });
   };
 
@@ -262,56 +276,32 @@ function Properties({
       }
 
       if (
-        selectedComponent.type !==
-          "Container" &&
-        selectedComponent.type !==
-          "Row" &&
-        selectedComponent.type !==
-          "Stack"
+        selectedComponent.type !== "Container" &&
+        selectedComponent.type !== "Row" &&
+        selectedComponent.type !== "Stack"
       ) {
         return "vertical";
       }
 
-      if (
-        styles.display ===
-        "grid"
-      ) {
-        if (
-          styles.gridColumns ===
-          1
-        ) {
+      if (styles.display === "grid") {
+        if (styles.gridColumns === 1) {
           return "1-column";
         }
-
-        if (
-          styles.gridColumns ===
-          2
-        ) {
+        if (styles.gridColumns === 2) {
           return "2-columns";
         }
-
-        if (
-          styles.gridColumns ===
-          3
-        ) {
+        if (styles.gridColumns === 3) {
           return "3-columns";
         }
-
-        if (
-          styles.gridColumns ===
-          4
-        ) {
+        if (styles.gridColumns === 4) {
           return "4-columns";
         }
-
         return "1-column";
       }
 
       if (
-        styles.display ===
-          "flex" &&
-        styles.flexDirection ===
-          "row"
+        styles.display === "flex" &&
+        styles.flexDirection === "row"
       ) {
         return "horizontal";
       }
@@ -327,203 +317,1391 @@ function Properties({
         </span>
 
         <strong>
-          {getDeviceLabel(
-            device
-          )}
+          {getDeviceLabel(device)}
         </strong>
 
-        {device !==
-          "desktop" && (
+        {device !== "desktop" && (
           <span className="responsive-device-description">
-            Wijzigingen gelden
-            alleen voor{" "}
-            {getDeviceLabel(
-              device
-            )}
-            .
+            Wijzigingen gelden alleen voor{" "}
+            {getDeviceLabel(device)}.
           </span>
         )}
       </div>
     );
   };
 
-  const renderContainerLayout =
-    () => {
-      if (
-        !isLayoutComponent
-      ) {
-        return null;
-      }
-
-      const currentLayout =
-        getCurrentContainerLayout();
-
-      return (
-        <div className="container-layout-section">
-          <h3 className="property-section-title">
-            Layout
-          </h3>
-
-          <div className="container-layout-grid">
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "vertical"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "vertical"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ☷
-              </span>
-
-              <span>
-                Vertical
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "horizontal"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "horizontal"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ☰
-              </span>
-
-              <span>
-                Horizontal
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "1-column"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "1-column"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ▤
-              </span>
-
-              <span>
-                1 Column
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "2-columns"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "2-columns"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ▦
-              </span>
-
-              <span>
-                2 Columns
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "3-columns"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "3-columns"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ▦
-              </span>
-
-              <span>
-                3 Columns
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className={
-                currentLayout ===
-                "4-columns"
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
-                  "4-columns"
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                ▦
-              </span>
-
-              <span>
-                4 Columns
-              </span>
-            </button>
-          </div>
-        </div>
+  const updateNavbarLink = (
+    linkId: string,
+    updates: Partial<NavbarLink>
+  ) => {
+    const updatedLinks =
+      navbarLinks.map((link) =>
+        link.id === linkId
+          ? {
+              ...link,
+              ...updates,
+            }
+          : link
       );
+
+    updateNavbar({
+      links: updatedLinks,
+    });
+  };
+
+  const addNavbarLink = () => {
+    const newLink: NavbarLink = {
+      id: crypto.randomUUID(),
+      label: "New Link",
+      url: "#",
     };
 
+    updateNavbar({
+      links: [
+        ...navbarLinks,
+        newLink,
+      ],
+    });
+
+    setExpandedNavbarLinks(
+      (current) => ({
+        ...current,
+        [newLink.id]: true,
+      })
+    );
+  };
+
+  const removeNavbarLink = (
+    linkId: string
+  ) => {
+    const updatedLinks =
+      navbarLinks.filter(
+        (link) =>
+          link.id !== linkId
+      );
+
+    updateNavbar({
+      links: updatedLinks,
+    });
+
+    setExpandedNavbarLinks(
+      (current) => {
+        const updated = {
+          ...current,
+        };
+
+        delete updated[linkId];
+
+        return updated;
+      }
+    );
+  };
+
+  const toggleNavbarLink = (
+    linkId: string
+  ) => {
+    setExpandedNavbarLinks(
+      (current) => ({
+        ...current,
+        [linkId]:
+          !current[linkId],
+      })
+    );
+  };
+
+  const renderNavbarLinks = () => {
+    if (!isNavbar) {
+      return null;
+    }
+
+    return (
+      <div
+        style={{
+          marginTop: "25px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+            marginBottom: "10px",
+          }}
+        >
+          <h4
+            style={{
+              color: "#d1d5db",
+              margin: 0,
+            }}
+          >
+            Navigation Links
+          </h4>
+
+          <span
+            style={{
+              color: "#94a3b8",
+              fontSize: "12px",
+            }}
+          >
+            {navbarLinks.length}
+          </span>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          {navbarLinks.map(
+            (link, index) => {
+              const expanded =
+                expandedNavbarLinks[
+                  link.id
+                ] ?? false;
+
+              return (
+                <div
+                  key={link.id}
+                  style={{
+                    border:
+                      "1px solid #374151",
+                    borderRadius:
+                      "9px",
+                    background:
+                      "#111827",
+                    overflow:
+                      "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems:
+                        "center",
+                      gap: "6px",
+                      padding: "8px",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleNavbarLink(
+                          link.id
+                        )
+                      }
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        border:
+                          "none",
+                        borderRadius:
+                          "6px",
+                        background:
+                          "transparent",
+                        color:
+                          "#9ca3af",
+                        cursor:
+                          "pointer",
+                      }}
+                    >
+                      {expanded
+                        ? "▾"
+                        : "▸"}
+                    </button>
+
+                    <div
+                      style={{
+                        width: "26px",
+                        height: "26px",
+                        display:
+                          "flex",
+                        alignItems:
+                          "center",
+                        justifyContent:
+                          "center",
+                        borderRadius:
+                          "6px",
+                        background:
+                          "#7c3aed",
+                        color:
+                          "#ffffff",
+                        fontSize:
+                          "11px",
+                        fontWeight:
+                          700,
+                      }}
+                    >
+                      {index + 1}
+                    </div>
+
+                    <div
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                      }}
+                    >
+                      <div
+                        style={{
+                          color:
+                            "#f3f4f6",
+                          fontSize:
+                            "13px",
+                          fontWeight:
+                            600,
+                          overflow:
+                            "hidden",
+                          textOverflow:
+                            "ellipsis",
+                          whiteSpace:
+                            "nowrap",
+                        }}
+                      >
+                        {link.label ||
+                          "Untitled Link"}
+                      </div>
+
+                      <div
+                        style={{
+                          color:
+                            "#6b7280",
+                          fontSize:
+                            "11px",
+                          overflow:
+                            "hidden",
+                          textOverflow:
+                            "ellipsis",
+                          whiteSpace:
+                            "nowrap",
+                          marginTop:
+                            "2px",
+                        }}
+                      >
+                        {link.url ||
+                          "#"}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        removeNavbarLink(
+                          link.id
+                        )
+                      }
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        border:
+                          "1px solid #7f1d1d",
+                        borderRadius:
+                          "6px",
+                        background:
+                          "#450a0a",
+                        color:
+                          "#fca5a5",
+                        cursor:
+                          "pointer",
+                        fontSize:
+                          "14px",
+                      }}
+                      title="Remove link"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {expanded && (
+                    <div
+                      style={{
+                        padding: "10px",
+                        borderTop:
+                          "1px solid #374151",
+                      }}
+                    >
+                      <label className="property-label">
+                        Link Text
+                      </label>
+
+                      <input
+                        type="text"
+                        className="property-input"
+                        value={
+                          link.label
+                        }
+                        onChange={(
+                          e
+                        ) =>
+                          updateNavbarLink(
+                            link.id,
+                            {
+                              label:
+                                e
+                                  .target
+                                  .value,
+                            }
+                          )
+                        }
+                      />
+
+                      <label className="property-label">
+                        URL
+                      </label>
+
+                      <input
+                        type="text"
+                        className="property-input"
+                        value={
+                          link.url
+                        }
+                        onChange={(
+                          e
+                        ) =>
+                          updateNavbarLink(
+                            link.id,
+                            {
+                              url:
+                                e
+                                  .target
+                                  .value,
+                            }
+                          )
+                        }
+                        placeholder="/about"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          toggleNavbarLink(
+                            link.id
+                          )
+                        }
+                        style={{
+                          width: "100%",
+                          marginTop:
+                            "10px",
+                          padding:
+                            "8px",
+                          border:
+                            "1px solid #374151",
+                          borderRadius:
+                            "7px",
+                          background:
+                            "#1f2937",
+                          color:
+                            "#d1d5db",
+                          cursor:
+                            "pointer",
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+          )}
+
+          <button
+            type="button"
+            onClick={addNavbarLink}
+            style={{
+              width: "100%",
+              marginTop: "4px",
+              padding: "10px",
+              border:
+                "1px dashed #7c3aed",
+              borderRadius: "8px",
+              background:
+                "rgba(124,58,237,0.08)",
+              color: "#c4b5fd",
+              cursor: "pointer",
+              fontSize: "13px",
+              fontWeight: 600,
+            }}
+          >
+            + Add Navigation Link
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderNavbarContent = () => {
+    if (!isNavbar) {
+      return null;
+    }
+
+    const currentAlignment =
+      styles.horizontalAlign ??
+      "left";
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Navbar
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Navigation Bar
+          </strong>
+
+          <span>
+            Bouw je navbar zoals in
+            een echte website builder.
+          </span>
+        </div>
+
+        <h4
+          style={{
+            marginTop: "10px",
+            marginBottom: "10px",
+            color: "#d1d5db",
+          }}
+        >
+          Branding
+        </h4>
+
+        <label className="property-label">
+          Logo Text
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            navbar.logoText ??
+            selectedComponent?.text ??
+            "Logo"
+          }
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateText(value);
+
+            updateNavbar({
+              logoText:
+                value,
+            });
+          }}
+        />
+
+        <label className="property-label">
+          Logo Size
+        </label>
+
+        <input
+          type="number"
+          min="10"
+          max="80"
+          value={
+            navbar.logoSize ??
+            20
+          }
+          onChange={(e) =>
+            updateNavbar({
+              logoSize:
+                Number(
+                  e.target.value
+                ),
+            })
+          }
+          className="property-input"
+        />
+
+        {renderNavbarLinks()}
+
+        <h4
+          style={{
+            marginTop: "25px",
+            marginBottom: "10px",
+            color: "#d1d5db",
+          }}
+        >
+          Layout
+        </h4>
+
+        <label className="property-label">
+          Navbar Height
+        </label>
+
+        <input
+          type="number"
+          min="40"
+          max="200"
+          value={
+            navbar.height ??
+            styles.height ??
+            72
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateNavbar({
+              height:
+                value,
+            });
+
+            updateStyles({
+              height:
+                value,
+              heightUnit:
+                "px",
+            });
+          }}
+          className="property-input"
+        />
+
+        <label className="property-label">
+          Horizontal Padding
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value={
+            navbar.padding ??
+            styles.paddingLeft ??
+            20
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateNavbar({
+              padding:
+                value,
+            });
+
+            updateStyles({
+              paddingLeft:
+                value,
+              paddingRight:
+                value,
+            });
+          }}
+          className="property-input"
+        />
+
+        <label className="property-label">
+          Navigation Gap
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value={
+            navbar.navGap ??
+            styles.gap ??
+            24
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateNavbar({
+              navGap:
+                value,
+            });
+
+            updateStyles({
+              gap: value,
+            });
+          }}
+          className="property-input"
+        />
+
+        <label className="property-label">
+          Alignment
+        </label>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(3, 1fr)",
+            gap: "6px",
+            marginTop: "8px",
+          }}
+        >
+          {(
+            [
+              "left",
+              "center",
+              "right",
+            ] as const
+          ).map(
+            (alignment) => (
+              <button
+                key={alignment}
+                type="button"
+                onClick={() =>
+                  updateStyles({
+                    horizontalAlign:
+                      alignment,
+                  })
+                }
+                style={{
+                  padding:
+                    "10px 5px",
+                  border: "none",
+                  borderRadius:
+                    "7px",
+                  background:
+                    currentAlignment ===
+                    alignment
+                      ? "#7c3aed"
+                      : "#f1f5f9",
+                  color:
+                    currentAlignment ===
+                    alignment
+                      ? "#ffffff"
+                      : "#475569",
+                  cursor:
+                    "pointer",
+                }}
+              >
+                {alignment
+                  .charAt(0)
+                  .toUpperCase() +
+                  alignment.slice(
+                    1
+                  )}
+              </button>
+            )
+          )}
+        </div>
+
+        <h4
+          style={{
+            marginTop: "25px",
+            marginBottom: "10px",
+            color: "#d1d5db",
+          }}
+        >
+          Border
+        </h4>
+
+        <label className="property-label">
+          Border Width
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          max="20"
+          value={
+            navbar.borderWidth ??
+            styles.borderWidth ??
+            1
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateNavbar({
+              borderWidth:
+                value,
+            });
+
+            updateStyles({
+              borderWidth:
+                value,
+            });
+          }}
+          className="property-input"
+        />
+
+        <label className="property-label">
+          Border Radius
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value={
+            navbar.borderRadius ??
+            styles.borderRadius ??
+            10
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateNavbar({
+              borderRadius:
+                value,
+            });
+
+            updateStyles({
+              borderRadius:
+                value,
+            });
+          }}
+          className="property-input"
+        />
+
+        <label className="property-label">
+          Border Color
+        </label>
+
+        <input
+          type="color"
+          value={
+            navbar.borderColor ??
+            styles.borderColor ??
+            "#e4e7ef"
+          }
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateNavbar({
+              borderColor:
+                value,
+            });
+
+            updateStyles({
+              borderColor:
+                value,
+            });
+          }}
+          style={{
+            width: "100%",
+            height: "45px",
+            marginTop: "8px",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        />
+
+        <h4
+          style={{
+            marginTop: "25px",
+            marginBottom: "10px",
+            color: "#d1d5db",
+          }}
+        >
+          Effects
+        </h4>
+
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "space-between",
+            gap: "10px",
+            marginTop: "12px",
+            color: "#d1d5db",
+            fontSize: "13px",
+            cursor: "pointer",
+          }}
+        >
+          <span>
+            Box Shadow
+          </span>
+
+          <input
+            type="checkbox"
+            checked={
+              Boolean(
+                navbar.boxShadow &&
+                navbar.boxShadow !==
+                  "none"
+              )
+            }
+            onChange={(e) =>
+              updateNavbar({
+                boxShadow:
+                  e.target.checked
+                    ? "0 4px 16px rgba(15, 23, 42, 0.08)"
+                    : "none",
+              })
+            }
+          />
+        </label>
+
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "space-between",
+            gap: "10px",
+            marginTop: "15px",
+            color: "#d1d5db",
+            fontSize: "13px",
+            cursor: "pointer",
+          }}
+        >
+          <span>
+            Sticky Navbar
+          </span>
+
+          <input
+            type="checkbox"
+            checked={
+              navbar.sticky ??
+              false
+            }
+            onChange={(e) =>
+              updateNavbar({
+                sticky:
+                  e.target.checked,
+              })
+            }
+          />
+        </label>
+      </div>
+    );
+  };
+
+  const renderHeroContent = () => {
+    if (!isHero) {
+      return null;
+    }
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Hero Content
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Hero Section
+          </strong>
+
+          <span>
+            Maak een opvallende hero
+            voor je website met een
+            heading, tekst en CTA.
+          </span>
+        </div>
+
+        <label className="property-label">
+          Heading
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            selectedComponent?.heroTitle ??
+            ""
+          }
+          onChange={(e) =>
+            updateHeroTitle(
+              e.target.value
+            )
+          }
+        />
+
+        <label className="property-label">
+          Subtitle
+        </label>
+
+        <textarea
+          className="property-input"
+          rows={4}
+          value={
+            selectedComponent?.heroSubtitle ??
+            ""
+          }
+          onChange={(e) =>
+            updateHeroSubtitle(
+              e.target.value
+            )
+          }
+          style={{
+            resize: "vertical",
+            minHeight: "90px",
+          }}
+        />
+
+        <label className="property-label">
+          Primary Button
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            selectedComponent?.heroButtonText ??
+            ""
+          }
+          onChange={(e) =>
+            updateHeroButtonText(
+              e.target.value
+            )
+          }
+        />
+
+        <h4
+          style={{
+            marginTop: "25px",
+            marginBottom: "10px",
+            color: "#d1d5db",
+          }}
+        >
+          Hero Layout
+        </h4>
+
+        <label className="property-label">
+          Content Width
+        </label>
+
+        <select
+          value={
+            styles.maxWidth
+              ? String(
+                  styles.maxWidth
+                )
+              : "900"
+          }
+          onChange={(e) => {
+            updateStyles({
+              maxWidth:
+                Number(
+                  e.target.value
+                ),
+              maxWidthUnit:
+                "px",
+            });
+          }}
+          className="property-input"
+        >
+          <option value="600">
+            600px - Compact
+          </option>
+          <option value="720">
+            720px - Medium
+          </option>
+          <option value="900">
+            900px - Large
+          </option>
+          <option value="1100">
+            1100px - Wide
+          </option>
+        </select>
+
+        <label className="property-label">
+          Vertical Spacing
+        </label>
+
+        <input
+          type="range"
+          min="40"
+          max="180"
+          value={
+            styles.paddingTop ??
+            80
+          }
+          onChange={(e) => {
+            const value =
+              Number(
+                e.target.value
+              );
+
+            updateStyles({
+              paddingTop:
+                value,
+              paddingBottom:
+                value,
+            });
+          }}
+          className="property-range"
+        />
+
+        <div className="property-value">
+          {styles.paddingTop ??
+            80}
+          px
+        </div>
+      </div>
+    );
+  };
+
+  const renderSectionContent = () => {
+    if (!isSection) {
+      return null;
+    }
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Section Content
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Content Section
+          </strong>
+
+          <span>
+            Gebruik deze section voor
+            contentblokken en
+            call-to-actions.
+          </span>
+        </div>
+
+        <label className="property-label">
+          Section Title
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          defaultValue="Section Title"
+          onChange={(e) => {
+            updateText(
+              e.target.value
+            );
+          }}
+        />
+
+        <label className="property-label">
+          Section Description
+        </label>
+
+        <textarea
+          className="property-input"
+          rows={4}
+          defaultValue="Section content..."
+          style={{
+            resize: "vertical",
+            minHeight: "90px",
+          }}
+        />
+
+        <label className="property-label">
+          Content Alignment
+        </label>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(3, 1fr)",
+            gap: "6px",
+            marginTop: "8px",
+          }}
+        >
+          {(
+            [
+              "left",
+              "center",
+              "right",
+            ] as const
+          ).map(
+            (alignment) => (
+              <button
+                key={alignment}
+                type="button"
+                onClick={() =>
+                  updateStyles({
+                    textAlign:
+                      alignment,
+                  })
+                }
+                style={{
+                  padding:
+                    "10px 5px",
+                  border: "none",
+                  borderRadius:
+                    "7px",
+                  background:
+                    styles.textAlign ===
+                    alignment
+                      ? "#7c3aed"
+                      : "#f1f5f9",
+                  color:
+                    styles.textAlign ===
+                    alignment
+                      ? "#ffffff"
+                      : "#475569",
+                  cursor:
+                    "pointer",
+                }}
+              >
+                {alignment
+                  .charAt(0)
+                  .toUpperCase() +
+                  alignment.slice(
+                    1
+                  )}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderCardContent = () => {
+    if (!isCard) {
+      return null;
+    }
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Card Content
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Content Card
+          </strong>
+
+          <span>
+            Pas de content en layout
+            van deze kaart aan.
+          </span>
+        </div>
+
+        <label className="property-label">
+          Card Title
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          defaultValue="Card Title"
+        />
+
+        <label className="property-label">
+          Description
+        </label>
+
+        <textarea
+          className="property-input"
+          rows={4}
+          defaultValue="Card description"
+          style={{
+            resize: "vertical",
+            minHeight: "90px",
+          }}
+        />
+
+        <label className="property-label">
+          Card Height
+        </label>
+
+        <input
+          type="number"
+          min="150"
+          max="700"
+          value={
+            styles.height ??
+            250
+          }
+          onChange={(e) =>
+            updateStyles({
+              height:
+                Number(
+                  e.target.value
+                ),
+              heightUnit:
+                "px",
+            })
+          }
+          className="property-input"
+        />
+      </div>
+    );
+  };
+
+  const renderFooterContent = () => {
+    if (!isFooter) {
+      return null;
+    }
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Footer Content
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Website Footer
+          </strong>
+
+          <span>
+            Stel de basis van je footer
+            in voor branding en
+            content.
+          </span>
+        </div>
+
+        <label className="property-label">
+          Brand Name
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          defaultValue="Brand"
+        />
+
+        <label className="property-label">
+          Footer Description
+        </label>
+
+        <textarea
+          className="property-input"
+          rows={4}
+          defaultValue="Build beautiful websites with a flexible and modern visual editor."
+          style={{
+            resize: "vertical",
+            minHeight: "90px",
+          }}
+        />
+
+        <label className="property-label">
+          Footer Height
+        </label>
+
+        <input
+          type="number"
+          min="150"
+          max="900"
+          value={
+            styles.height ??
+            360
+          }
+          onChange={(e) =>
+            updateStyles({
+              height:
+                Number(
+                  e.target.value
+                ),
+              heightUnit:
+                "px",
+            })
+          }
+          className="property-input"
+        />
+      </div>
+    );
+  };
+
+  const renderContainerLayout = () => {
+    if (!isLayoutComponent) {
+      return null;
+    }
+
+    const currentLayout =
+      getCurrentContainerLayout();
+
+    return (
+      <div className="container-layout-section">
+        <h3 className="property-section-title">
+          Layout
+        </h3>
+
+        <div className="container-layout-grid">
+          {[
+            {
+              value: "vertical" as const,
+              icon: "☷",
+              label: "Vertical",
+            },
+            {
+              value: "horizontal" as const,
+              icon: "☰",
+              label: "Horizontal",
+            },
+            {
+              value: "1-column" as const,
+              icon: "▤",
+              label: "1 Column",
+            },
+            {
+              value: "2-columns" as const,
+              icon: "▦",
+              label: "2 Columns",
+            },
+            {
+              value: "3-columns" as const,
+              icon: "▦",
+              label: "3 Columns",
+            },
+            {
+              value: "4-columns" as const,
+              icon: "▦",
+              label: "4 Columns",
+            },
+          ].map((layout) => (
+            <button
+              key={layout.value}
+              type="button"
+              className={
+                currentLayout ===
+                layout.value
+                  ? "container-layout-button active"
+                  : "container-layout-button"
+              }
+              onClick={() =>
+                applyContainerLayout(
+                  layout.value
+                )
+              }
+            >
+              <span className="container-layout-icon">
+                {layout.icon}
+              </span>
+
+              <span>
+                {layout.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderContentTab = () => {
-    if (
-      !selectedComponent
-    ) {
+    if (!selectedComponent) {
       return null;
     }
 
     return (
       <>
         {renderContainerLayout()}
+        {renderNavbarContent()}
+        {renderHeroContent()}
+        {renderSectionContent()}
+        {renderCardContent()}
+        {renderFooterContent()}
 
-        {(selectedComponent.type ===
-          "Heading" ||
-          selectedComponent.type ===
-            "Paragraph" ||
-          selectedComponent.type ===
-            "Button") && (
+        {(selectedComponent.type === "Heading" ||
+          selectedComponent.type === "Paragraph" ||
+          selectedComponent.type === "Button") && (
           <div>
             <h3 className="property-section-title">
               Content
@@ -550,74 +1728,23 @@ function Properties({
         )}
 
         {selectedComponent.type ===
-          "Hero" && (
-          <div>
-            <h3 className="property-section-title">
-              Hero Content
-            </h3>
-
-            <label className="property-label">
-              Hero Title
-            </label>
-
-            <input
-              className="property-input"
-              type="text"
-              value={
-                selectedComponent.heroTitle ??
-                ""
-              }
-              onChange={(e) =>
-                updateHeroTitle(
-                  e.target.value
-                )
-              }
-            />
-
-            <label className="property-label">
-              Hero Subtitle
-            </label>
-
-            <input
-              className="property-input"
-              type="text"
-              value={
-                selectedComponent.heroSubtitle ??
-                ""
-              }
-              onChange={(e) =>
-                updateHeroSubtitle(
-                  e.target.value
-                )
-              }
-            />
-
-            <label className="property-label">
-              Hero Button Text
-            </label>
-
-            <input
-              className="property-input"
-              type="text"
-              value={
-                selectedComponent.heroButtonText ??
-                ""
-              }
-              onChange={(e) =>
-                updateHeroButtonText(
-                  e.target.value
-                )
-              }
-            />
-          </div>
-        )}
-
-        {selectedComponent.type ===
           "Image" && (
           <div>
             <h3 className="property-section-title">
               Image
             </h3>
+
+            <div className="container-info">
+              <strong>
+                Image Element
+              </strong>
+
+              <span>
+                Upload en beheer je
+                afbeelding direct vanuit
+                de builder.
+              </span>
+            </div>
 
             <label className="property-label">
               Upload Image
@@ -655,10 +1782,8 @@ function Properties({
             />
 
             <div className="property-value">
-              {
-                selectedComponent.imageWidth ??
-                100
-              }
+              {selectedComponent.imageWidth ??
+                100}
               %
             </div>
 
@@ -685,10 +1810,8 @@ function Properties({
             />
 
             <div className="property-value">
-              {
-                selectedComponent.imageHeight ??
-                300
-              }
+              {selectedComponent.imageHeight ??
+                300}
               px
             </div>
 
@@ -715,10 +1838,8 @@ function Properties({
             />
 
             <div className="property-value">
-              {
-                selectedComponent.imageBorderRadius ??
-                8
-              }
+              {selectedComponent.imageBorderRadius ??
+                8}
               px
             </div>
 
@@ -731,14 +1852,12 @@ function Properties({
                 style={{
                   width: "100%",
                   height: "180px",
-                  objectFit:
-                    "cover",
-                  marginTop:
-                    "15px",
-                  borderRadius:
-                    "8px",
-                  display:
-                    "block",
+                  objectFit: "cover",
+                  marginTop: "15px",
+                  borderRadius: "10px",
+                  display: "block",
+                  border:
+                    "1px solid #374151",
                 }}
               />
             )}
@@ -758,10 +1877,9 @@ function Properties({
               </strong>
 
               <span>
-                Nieuwe componenten
-                worden aan deze
-                container toegevoegd
-                wanneer deze
+                Nieuwe componenten worden
+                aan deze container
+                toegevoegd wanneer deze
                 geselecteerd is.
               </span>
             </div>
@@ -800,20 +1918,16 @@ function Properties({
             />
 
             <div className="property-value">
-              {
-                styles.height ??
+              {styles.height ??
                 selectedComponent.minHeight ??
-                300
-              }
+                300}
               px
             </div>
 
             <div className="container-children-info">
               <span className="container-children-count">
-                {
-                  selectedComponent.children?.length ??
-                  0
-                }
+                {selectedComponent.children?.length ??
+                  0}
               </span>
 
               <div>
@@ -822,8 +1936,8 @@ function Properties({
                 </strong>
 
                 <span>
-                  Components inside
-                  this container
+                  Components inside this
+                  container
                 </span>
               </div>
             </div>
@@ -836,33 +1950,25 @@ function Properties({
             "Stack") && (
           <div>
             <h3 className="property-section-title">
-              {
-                selectedComponent.type
-              }
+              {selectedComponent.type}
             </h3>
 
             <div className="container-info">
               <strong>
-                {
-                  selectedComponent.type
-                }{" "}
-                Layout
+                {selectedComponent.type} Layout
               </strong>
 
               <span>
-                Voeg componenten toe
-                aan deze layout
-                terwijl hij
+                Voeg componenten toe aan
+                deze layout terwijl hij
                 geselecteerd is.
               </span>
             </div>
 
             <div className="container-children-info">
               <span className="container-children-count">
-                {
-                  selectedComponent.children?.length ??
-                  0
-                }
+                {selectedComponent.children?.length ??
+                  0}
               </span>
 
               <div>
@@ -871,29 +1977,11 @@ function Properties({
                 </strong>
 
                 <span>
-                  Components inside
-                  this layout
+                  Components inside this
+                  layout
                 </span>
               </div>
             </div>
-          </div>
-        )}
-
-        {(selectedComponent.type ===
-          "Navbar" ||
-          selectedComponent.type ===
-            "Section" ||
-          selectedComponent.type ===
-            "Card" ||
-          selectedComponent.type ===
-            "Footer") && (
-          <div className="empty-tab">
-            <span>
-              Dit component gebruikt
-              voornamelijk de
-              Layout, Type en Style
-              instellingen.
-            </span>
           </div>
         )}
       </>
@@ -930,11 +2018,9 @@ function Properties({
           <option value="visible">
             Visible
           </option>
-
           <option value="hidden">
             Hidden
           </option>
-
           <option value="auto">
             Auto
           </option>
@@ -951,9 +2037,10 @@ function Properties({
           }
           onChange={(e) =>
             updateStyles({
-              zIndex: Number(
-                e.target.value
-              ),
+              zIndex:
+                Number(
+                  e.target.value
+                ),
             })
           }
           className="property-input"
@@ -965,21 +2052,15 @@ function Properties({
 
         <div className="component-meta">
           <div className="meta-row">
-            <span>
-              Type
-            </span>
+            <span>Type</span>
 
             <strong>
-              {
-                selectedComponent?.type
-              }
+              {selectedComponent?.type}
             </strong>
           </div>
 
           <div className="meta-row">
-            <span>
-              Device
-            </span>
+            <span>Device</span>
 
             <strong>
               {getDeviceLabel(
@@ -989,27 +2070,19 @@ function Properties({
           </div>
 
           <div className="meta-row">
-            <span>
-              ID
-            </span>
+            <span>ID</span>
 
             <strong className="component-id">
-              {
-                selectedComponent?.id
-              }
+              {selectedComponent?.id}
             </strong>
           </div>
 
           <div className="meta-row">
-            <span>
-              Children
-            </span>
+            <span>Children</span>
 
             <strong>
-              {
-                selectedComponent?.children?.length ??
-                0
-              }
+              {selectedComponent?.children?.length ??
+                0}
             </strong>
           </div>
         </div>
@@ -1061,9 +2134,7 @@ function Properties({
     );
   };
 
-  if (
-    !selectedComponent
-  ) {
+  if (!selectedComponent) {
     return (
       <aside className="properties">
         <h2>
@@ -1081,11 +2152,9 @@ function Properties({
           </h3>
 
           <p>
-            Selecteer een
-            component op het
-            canvas of in Layers
-            om de properties
-            te bekijken.
+            Selecteer een component op
+            het canvas of in Layers om
+            de properties te bekijken.
           </p>
         </div>
       </aside>
@@ -1101,9 +2170,7 @@ function Properties({
           </span>
 
           <h2>
-            {
-              selectedComponent.type
-            }
+            {selectedComponent.type}
           </h2>
         </div>
       </div>
@@ -1114,9 +2181,7 @@ function Properties({
         {tabs.map(
           (tab) => (
             <button
-              key={
-                tab.id
-              }
+              key={tab.id}
               type="button"
               className={
                 activeTab ===
@@ -1130,9 +2195,7 @@ function Properties({
                 )
               }
             >
-              {
-                tab.label
-              }
+              {tab.label}
             </button>
           )
         )}
@@ -1173,9 +2236,8 @@ function Properties({
             <div className="empty-tab">
               <span>
                 Typography is
-                beschikbaar
-                voor Heading,
-                Paragraph en
+                beschikbaar voor
+                Heading, Paragraph en
                 Button.
               </span>
             </div>
