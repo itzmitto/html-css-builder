@@ -77,9 +77,11 @@ function getDeviceLabel(
   if (device === "desktop") {
     return "Desktop";
   }
+
   if (device === "tablet") {
     return "Tablet";
   }
+
   return "Mobile";
 }
 
@@ -265,6 +267,7 @@ function Properties({
         justifyContent: "flex-start",
         alignItems: "stretch",
       });
+
       return;
     }
 
@@ -278,6 +281,7 @@ function Properties({
         justifyContent: "flex-start",
         alignItems: "stretch",
       });
+
       return;
     }
 
@@ -319,15 +323,19 @@ function Properties({
         if (styles.gridColumns === 1) {
           return "1-column";
         }
+
         if (styles.gridColumns === 2) {
           return "2-columns";
         }
+
         if (styles.gridColumns === 3) {
           return "3-columns";
         }
+
         if (styles.gridColumns === 4) {
           return "4-columns";
         }
+
         return "1-column";
       }
 
@@ -386,6 +394,7 @@ function Properties({
       id: crypto.randomUUID(),
       label: "New Link",
       url: "#",
+      openInNewTab: false,
     };
 
     updateNavbar({
@@ -456,7 +465,8 @@ function Properties({
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent:
+              "space-between",
             gap: "8px",
             marginBottom: "10px",
           }}
@@ -483,7 +493,8 @@ function Properties({
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection:
+              "column",
             gap: "8px",
           }}
         >
@@ -510,11 +521,13 @@ function Properties({
                 >
                   <div
                     style={{
-                      display: "flex",
+                      display:
+                        "flex",
                       alignItems:
                         "center",
                       gap: "6px",
-                      padding: "8px",
+                      padding:
+                        "8px",
                     }}
                   >
                     <button
@@ -525,8 +538,10 @@ function Properties({
                         )
                       }
                       style={{
-                        width: "28px",
-                        height: "28px",
+                        width:
+                          "28px",
+                        height:
+                          "28px",
                         border:
                           "none",
                         borderRadius:
@@ -546,8 +561,10 @@ function Properties({
 
                     <div
                       style={{
-                        width: "26px",
-                        height: "26px",
+                        width:
+                          "26px",
+                        height:
+                          "26px",
                         display:
                           "flex",
                         alignItems:
@@ -624,8 +641,10 @@ function Properties({
                         )
                       }
                       style={{
-                        width: "30px",
-                        height: "30px",
+                        width:
+                          "30px",
+                        height:
+                          "30px",
                         border:
                           "1px solid #7f1d1d",
                         borderRadius:
@@ -647,7 +666,8 @@ function Properties({
                   {expanded && (
                     <div
                       style={{
-                        padding: "10px",
+                        padding:
+                          "10px",
                         borderTop:
                           "1px solid #374151",
                       }}
@@ -669,8 +689,7 @@ function Properties({
                             link.id,
                             {
                               label:
-                                e
-                                  .target
+                                e.target
                                   .value,
                             }
                           )
@@ -694,8 +713,7 @@ function Properties({
                             link.id,
                             {
                               url:
-                                e
-                                  .target
+                                e.target
                                   .value,
                             }
                           )
@@ -705,8 +723,10 @@ function Properties({
 
                       <label
                         style={{
-                          display: "flex",
-                          alignItems: "center",
+                          display:
+                            "flex",
+                          alignItems:
+                            "center",
                           justifyContent:
                             "space-between",
                           gap: "10px",
@@ -737,8 +757,7 @@ function Properties({
                               link.id,
                               {
                                 openInNewTab:
-                                  e
-                                    .target
+                                  e.target
                                     .checked,
                               }
                             )
@@ -763,13 +782,18 @@ function Properties({
               padding: "10px",
               border:
                 "1px dashed #7c3aed",
-              borderRadius: "8px",
+              borderRadius:
+                "8px",
               background:
                 "rgba(124,58,237,0.08)",
-              color: "#c4b5fd",
-              cursor: "pointer",
-              fontSize: "13px",
-              fontWeight: 600,
+              color:
+                "#c4b5fd",
+              cursor:
+                "pointer",
+              fontSize:
+                "13px",
+              fontWeight:
+                600,
             }}
           >
             + Add Navigation Link
@@ -968,7 +992,8 @@ function Properties({
             });
 
             updateStyles({
-              gap: value,
+              gap:
+                value,
             });
           }}
           className="property-input"
@@ -1007,7 +1032,8 @@ function Properties({
                 style={{
                   padding:
                     "10px 5px",
-                  border: "none",
+                  border:
+                    "none",
                   borderRadius:
                     "7px",
                   background:
@@ -1138,9 +1164,12 @@ function Properties({
             width: "100%",
             height: "45px",
             marginTop: "8px",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
+            border:
+              "none",
+            borderRadius:
+              "8px",
+            cursor:
+              "pointer",
           }}
         />
 
@@ -1156,15 +1185,21 @@ function Properties({
 
         <label
           style={{
-            display: "flex",
-            alignItems: "center",
+            display:
+              "flex",
+            alignItems:
+              "center",
             justifyContent:
               "space-between",
             gap: "10px",
-            marginTop: "12px",
-            color: "#d1d5db",
-            fontSize: "13px",
-            cursor: "pointer",
+            marginTop:
+              "12px",
+            color:
+              "#d1d5db",
+            fontSize:
+              "13px",
+            cursor:
+              "pointer",
           }}
         >
           <span>
@@ -1183,7 +1218,8 @@ function Properties({
             onChange={(e) =>
               updateNavbar({
                 boxShadow:
-                  e.target.checked
+                  e.target
+                    .checked
                     ? "0 4px 16px rgba(15, 23, 42, 0.08)"
                     : "none",
               })
@@ -1193,15 +1229,21 @@ function Properties({
 
         <label
           style={{
-            display: "flex",
-            alignItems: "center",
+            display:
+              "flex",
+            alignItems:
+              "center",
             justifyContent:
               "space-between",
             gap: "10px",
-            marginTop: "15px",
-            color: "#d1d5db",
-            fontSize: "13px",
-            cursor: "pointer",
+            marginTop:
+              "15px",
+            color:
+              "#d1d5db",
+            fontSize:
+              "13px",
+            cursor:
+              "pointer",
           }}
         >
           <span>
@@ -1301,8 +1343,10 @@ function Properties({
             );
           }}
           style={{
-            resize: "vertical",
-            minHeight: "90px",
+            resize:
+              "vertical",
+            minHeight:
+              "90px",
           }}
         />
 
@@ -1376,9 +1420,11 @@ function Properties({
           <option value="solid">
             Solid
           </option>
+
           <option value="outline">
             Outline
           </option>
+
           <option value="ghost">
             Ghost
           </option>
@@ -1390,9 +1436,11 @@ function Properties({
 
         <div
           style={{
-            display: "flex",
+            display:
+              "flex",
             gap: "8px",
-            marginTop: "8px",
+            marginTop:
+              "8px",
           }}
         >
           <input
@@ -1429,12 +1477,14 @@ function Properties({
               })
             }
             style={{
-              width: "80px",
+              width:
+                "80px",
             }}
           >
             <option value="px">
               px
             </option>
+
             <option value="%">
               %
             </option>
@@ -1488,11 +1538,13 @@ function Properties({
 
         <div
           style={{
-            display: "grid",
+            display:
+              "grid",
             gridTemplateColumns:
               "repeat(3, 1fr)",
             gap: "6px",
-            marginTop: "8px",
+            marginTop:
+              "8px",
           }}
         >
           {(
@@ -1520,7 +1572,8 @@ function Properties({
                 style={{
                   padding:
                     "10px 5px",
-                  border: "none",
+                  border:
+                    "none",
                   borderRadius:
                     "7px",
                   background:
@@ -1613,7 +1666,7 @@ function Properties({
           rows={5}
           value={
             section.content ??
-            "Section content..."
+            "Section content goes here."
           }
           onChange={(e) =>
             updateSection({
@@ -1622,8 +1675,10 @@ function Properties({
             })
           }
           style={{
-            resize: "vertical",
-            minHeight: "100px",
+            resize:
+              "vertical",
+            minHeight:
+              "100px",
           }}
         />
 
@@ -1633,9 +1688,11 @@ function Properties({
 
         <div
           style={{
-            display: "flex",
+            display:
+              "flex",
             gap: "8px",
-            marginTop: "8px",
+            marginTop:
+              "8px",
           }}
         >
           <input
@@ -1672,12 +1729,14 @@ function Properties({
               })
             }
             style={{
-              width: "80px",
+              width:
+                "80px",
             }}
           >
             <option value="px">
               px
             </option>
+
             <option value="%">
               %
             </option>
@@ -1690,11 +1749,13 @@ function Properties({
 
         <div
           style={{
-            display: "grid",
+            display:
+              "grid",
             gridTemplateColumns:
               "repeat(3, 1fr)",
             gap: "6px",
-            marginTop: "8px",
+            marginTop:
+              "8px",
           }}
         >
           {(
@@ -1722,7 +1783,8 @@ function Properties({
                 style={{
                   padding:
                     "10px 5px",
-                  border: "none",
+                  border:
+                    "none",
                   borderRadius:
                     "7px",
                   background:
@@ -1807,7 +1869,7 @@ function Properties({
           rows={5}
           value={
             card.content ??
-            "Card description"
+            "Card description goes here."
           }
           onChange={(e) =>
             updateCard({
@@ -1816,8 +1878,10 @@ function Properties({
             })
           }
           style={{
-            resize: "vertical",
-            minHeight: "100px",
+            resize:
+              "vertical",
+            minHeight:
+              "100px",
           }}
         />
 
@@ -1862,15 +1926,22 @@ function Properties({
 
         <label
           style={{
-            display: "flex",
-            alignItems: "center",
+            display:
+              "flex",
+            alignItems:
+              "center",
             justifyContent:
               "space-between",
-            gap: "10px",
-            marginTop: "15px",
-            color: "#d1d5db",
-            fontSize: "13px",
-            cursor: "pointer",
+            gap:
+              "10px",
+            marginTop:
+              "15px",
+            color:
+              "#d1d5db",
+            fontSize:
+              "13px",
+            cursor:
+              "pointer",
           }}
         >
           <span>
@@ -1891,6 +1962,77 @@ function Properties({
             }
           />
         </label>
+
+        <label className="property-label">
+          Card Image
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file =
+              e.target.files?.[0];
+
+            if (!file) {
+              return;
+            }
+
+            if (
+              !file.type.startsWith(
+                "image/"
+              )
+            ) {
+              alert(
+                "Selecteer een afbeelding."
+              );
+              return;
+            }
+
+            const reader =
+              new FileReader();
+
+            reader.onload = () => {
+              if (
+                typeof reader.result ===
+                "string"
+              ) {
+                updateCard({
+                  imageUrl:
+                    reader.result,
+                });
+              }
+            };
+
+            reader.readAsDataURL(
+              file
+            );
+          }}
+          className="property-file"
+        />
+
+        {card.imageUrl && (
+          <img
+            src={card.imageUrl}
+            alt="Card"
+            style={{
+              width:
+                "100%",
+              height:
+                "140px",
+              objectFit:
+                "cover",
+              marginTop:
+                "12px",
+              borderRadius:
+                "10px",
+              display:
+                "block",
+              border:
+                "1px solid #374151",
+            }}
+          />
+        )}
 
         <label className="property-label">
           Card Height
@@ -1979,8 +2121,10 @@ function Properties({
             })
           }
           style={{
-            resize: "vertical",
-            minHeight: "100px",
+            resize:
+              "vertical",
+            minHeight:
+              "100px",
           }}
         />
 
@@ -2005,15 +2149,22 @@ function Properties({
 
         <label
           style={{
-            display: "flex",
-            alignItems: "center",
+            display:
+              "flex",
+            alignItems:
+              "center",
             justifyContent:
               "space-between",
-            gap: "10px",
-            marginTop: "15px",
-            color: "#d1d5db",
-            fontSize: "13px",
-            cursor: "pointer",
+            gap:
+              "10px",
+            marginTop:
+              "15px",
+            color:
+              "#d1d5db",
+            fontSize:
+              "13px",
+            cursor:
+              "pointer",
           }}
         >
           <span>
@@ -2052,8 +2203,7 @@ function Properties({
               onChange={(e) =>
                 updateFooter({
                   newsletterTitle:
-                    e.target
-                      .value,
+                    e.target.value,
                 })
               }
             />
@@ -2072,8 +2222,7 @@ function Properties({
               onChange={(e) =>
                 updateFooter({
                   newsletterDescription:
-                    e.target
-                      .value,
+                    e.target.value,
                 })
               }
               style={{
@@ -2120,6 +2269,45 @@ function Properties({
     const currentLayout =
       getCurrentContainerLayout();
 
+    const layouts = [
+      {
+        value:
+          "vertical" as const,
+        icon: "☷",
+        label: "Vertical",
+      },
+      {
+        value:
+          "horizontal" as const,
+        icon: "☰",
+        label: "Horizontal",
+      },
+      {
+        value:
+          "1-column" as const,
+        icon: "▤",
+        label: "1 Column",
+      },
+      {
+        value:
+          "2-columns" as const,
+        icon: "▦",
+        label: "2 Columns",
+      },
+      {
+        value:
+          "3-columns" as const,
+        icon: "▦",
+        label: "3 Columns",
+      },
+      {
+        value:
+          "4-columns" as const,
+        icon: "▦",
+        label: "4 Columns",
+      },
+    ];
+
     return (
       <div className="container-layout-section">
         <h3 className="property-section-title">
@@ -2127,38 +2315,7 @@ function Properties({
         </h3>
 
         <div className="container-layout-grid">
-          {[
-            {
-              value: "vertical" as const,
-              icon: "☷",
-              label: "Vertical",
-            },
-            {
-              value: "horizontal" as const,
-              icon: "☰",
-              label: "Horizontal",
-            },
-            {
-              value: "1-column" as const,
-              icon: "▤",
-              label: "1 Column",
-            },
-            {
-              value: "2-columns" as const,
-              icon: "▦",
-              label: "2 Columns",
-            },
-            {
-              value: "3-columns" as const,
-              icon: "▦",
-              label: "3 Columns",
-            },
-            {
-              value: "4-columns" as const,
-              icon: "▦",
-              label: "4 Columns",
-            },
-          ].map(
+          {layouts.map(
             (layout) => (
               <button
                 key={layout.value}
@@ -2204,9 +2361,12 @@ function Properties({
         {renderCardContent()}
         {renderFooterContent()}
 
-        {(selectedComponent.type === "Heading" ||
-          selectedComponent.type === "Paragraph" ||
-          selectedComponent.type === "Button") && (
+        {(selectedComponent.type ===
+          "Heading" ||
+          selectedComponent.type ===
+            "Paragraph" ||
+          selectedComponent.type ===
+            "Button") && (
           <div>
             <h3 className="property-section-title">
               Content
@@ -2246,8 +2406,8 @@ function Properties({
 
               <span>
                 Upload en beheer je
-                afbeelding direct vanuit
-                de builder.
+                afbeelding direct
+                vanuit de builder.
               </span>
             </div>
 
@@ -2355,8 +2515,10 @@ function Properties({
                 }
                 alt="Selected"
                 style={{
-                  width: "100%",
-                  height: "180px",
+                  width:
+                    "100%",
+                  height:
+                    "180px",
                   objectFit:
                     "cover",
                   marginTop:
