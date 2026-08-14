@@ -25,6 +25,7 @@ function App() {
     useState<string | null>(null);
   const [device, setDevice] =
     useState<DeviceType>("desktop");
+
   const findComponentById = (
     componentList: BuilderComponent[],
     id: string
@@ -33,19 +34,23 @@ function App() {
       if (component.id === id) {
         return component;
       }
+
       if (component.children?.length) {
         const found =
           findComponentById(
             component.children,
             id
           );
+
         if (found) {
           return found;
         }
       }
     }
+
     return undefined;
   };
+
   const findParentById = (
     componentList: BuilderComponent[],
     childId: string
@@ -59,19 +64,23 @@ function App() {
       ) {
         return component;
       }
+
       if (component.children?.length) {
         const found =
           findParentById(
             component.children,
             childId
           );
+
         if (found) {
           return found;
         }
       }
     }
+
     return undefined;
   };
+
   const isDescendant = (
     component: BuilderComponent,
     id: string
@@ -79,10 +88,12 @@ function App() {
     if (!component.children?.length) {
       return false;
     }
+
     for (const child of component.children) {
       if (child.id === id) {
         return true;
       }
+
       if (
         isDescendant(
           child,
@@ -92,8 +103,10 @@ function App() {
         return true;
       }
     }
+
     return false;
   };
+
   const isLayoutParent = (
     type: ComponentType
   ): boolean => {
@@ -103,6 +116,7 @@ function App() {
       type === "Stack"
     );
   };
+
   const selectedComponent =
     selectedId
       ? findComponentById(
@@ -110,6 +124,7 @@ function App() {
           selectedId
         )
       : undefined;
+
   const createDefaultStyles =
     (): BuilderStyles => ({
       width: 100,
@@ -161,11 +176,13 @@ function App() {
         "visible",
       zIndex: 1,
     });
+
   const createComponentStyles = (
     type: ComponentType
   ): BuilderStyles => {
     const styles =
       createDefaultStyles();
+
     if (
       type ===
       "Container"
@@ -180,6 +197,7 @@ function App() {
         gridGap: 16,
       };
     }
+
     if (
       type ===
       "Row"
@@ -198,6 +216,7 @@ function App() {
         gap: 16,
       };
     }
+
     if (
       type ===
       "Stack"
@@ -216,6 +235,7 @@ function App() {
         gap: 16,
       };
     }
+
     if (
       type ===
       "Card"
@@ -230,8 +250,13 @@ function App() {
           "%",
         backgroundColor:
           "#ffffff",
+        color:
+          "#111827",
+        textAlign:
+          "left",
       };
     }
+
     if (
       type ===
       "Navbar"
@@ -270,6 +295,7 @@ function App() {
           10,
       };
     }
+
     if (
       type ===
       "Hero"
@@ -291,6 +317,7 @@ function App() {
           "center",
       };
     }
+
     if (
       type ===
       "Section"
@@ -312,6 +339,7 @@ function App() {
           "left",
       };
     }
+
     if (
       type ===
       "Footer"
@@ -333,6 +361,7 @@ function App() {
           "center",
       };
     }
+
     if (
       type ===
       "Heading"
@@ -351,6 +380,7 @@ function App() {
           "left",
       };
     }
+
     if (
       type ===
       "Paragraph"
@@ -369,6 +399,7 @@ function App() {
           "left",
       };
     }
+
     if (
       type ===
       "Button"
@@ -377,7 +408,8 @@ function App() {
         ...styles,
         height:
           undefined,
-        width: undefined,
+        width:
+          undefined,
         widthUnit:
           undefined,
         fontSize:
@@ -386,6 +418,7 @@ function App() {
           600,
       };
     }
+
     if (
       type ===
       "Image"
@@ -398,95 +431,124 @@ function App() {
           "transparent",
       };
     }
+
     return styles;
   };
-  const createDefaultNavbarLinks = () => [
-    {
-      id: crypto.randomUUID(),
-      label: "Home",
-      url: "#",
-    },
-    {
-      id: crypto.randomUUID(),
-      label: "About",
-      url: "#",
-    },
-    {
-      id: crypto.randomUUID(),
-      label: "Services",
-      url: "#",
-    },
-    {
-      id: crypto.randomUUID(),
-      label: "Contact",
-      url: "#",
-    },
-  ];
-  const createDefaultHero = (): HeroSettings => ({
-    title:
-      "Build something amazing",
-    subtitle:
-      "Create a beautiful website with your visual website builder.",
-    buttonText:
-      "Get Started",
-    buttonUrl:
-      "#contact",
-    buttonStyle:
-      "solid",
-    contentWidth:
-      900,
-    contentWidthUnit:
-      "px",
-    verticalPadding:
-      80,
-    textAlign:
-      "center",
-  });
-  const createDefaultSection = (): SectionSettings => ({
-    title:
-      "Section Title",
-    content:
-      "Section content goes here. Add more components inside this section to build your page.",
-    contentWidth:
-      1100,
-    contentWidthUnit:
-      "px",
-    textAlign:
-      "left",
-  });
-  const createDefaultCard = (): CardSettings => ({
-    title:
-      "Card Title",
-    content:
-      "Card description goes here.",
-    buttonText:
-      "Learn More",
-    buttonUrl:
-      "#",
-    showButton:
-      true,
-    imageUrl:
-      "",
-  });
-  const createDefaultFooter = (): FooterSettings => ({
-    brandName:
-      "Your Brand",
-    description:
-      "Build beautiful websites with a flexible and modern visual editor.",
-    copyright:
-      "© 2026 Your Brand",
-    showNewsletter:
-      false,
-    newsletterTitle:
-      "Stay in the loop",
-    newsletterDescription:
-      "Subscribe for updates and new content.",
-  });
+
+  const createDefaultNavbarLinks =
+    () => [
+      {
+        id:
+          crypto.randomUUID(),
+        label:
+          "Home",
+        url:
+          "#",
+      },
+      {
+        id:
+          crypto.randomUUID(),
+        label:
+          "About",
+        url:
+          "#",
+      },
+      {
+        id:
+          crypto.randomUUID(),
+        label:
+          "Services",
+        url:
+          "#",
+      },
+      {
+        id:
+          crypto.randomUUID(),
+        label:
+          "Contact",
+        url:
+          "#",
+      },
+    ];
+
+  const createDefaultHero =
+    (): HeroSettings => ({
+      title:
+        "Build something amazing",
+      subtitle:
+        "Create a beautiful website with your visual website builder.",
+      buttonText:
+        "Get Started",
+      buttonUrl:
+        "#contact",
+      buttonStyle:
+        "solid",
+      contentWidth:
+        900,
+      contentWidthUnit:
+        "px",
+      verticalPadding:
+        80,
+      textAlign:
+        "center",
+    });
+
+  const createDefaultSection =
+    (): SectionSettings => ({
+      title:
+        "Section Title",
+      content:
+        "Section content goes here. Add more components inside this section to build your page.",
+      contentWidth:
+        1100,
+      contentWidthUnit:
+        "px",
+      textAlign:
+        "left",
+    });
+
+  const createDefaultCard =
+    (): CardSettings => ({
+      title:
+        "Card Title",
+      content:
+        "Card description goes here.",
+      buttonText:
+        "Learn More",
+      buttonUrl:
+        "#",
+      showButton:
+        true,
+      imageUrl:
+        "",
+      textAlign:
+        "left",
+    });
+
+  const createDefaultFooter =
+    (): FooterSettings => ({
+      brandName:
+        "Your Brand",
+      description:
+        "Build beautiful websites with a flexible and modern visual editor.",
+      copyright:
+        "© 2026 Your Brand",
+      showNewsletter:
+        false,
+      newsletterTitle:
+        "Stay in the loop",
+      newsletterDescription:
+        "Subscribe for updates and new content.",
+      textAlign:
+        "center",
+    });
+
   const createComponent = (
     type: ComponentType
   ): BuilderComponent => {
     const styles =
       createComponentStyles(type);
+
     const navbarSettings:
       NavbarSettings | undefined =
       type === "Navbar"
@@ -515,28 +577,34 @@ function App() {
               createDefaultNavbarLinks(),
           }
         : undefined;
+
     const heroSettings:
       HeroSettings | undefined =
       type === "Hero"
         ? createDefaultHero()
         : undefined;
+
     const sectionSettings:
       SectionSettings | undefined =
       type === "Section"
         ? createDefaultSection()
         : undefined;
+
     const cardSettings:
       CardSettings | undefined =
       type === "Card"
         ? createDefaultCard()
         : undefined;
+
     const footerSettings:
       FooterSettings | undefined =
       type === "Footer"
         ? createDefaultFooter()
         : undefined;
+
     return {
-      id: crypto.randomUUID(),
+      id:
+        crypto.randomUUID(),
       type,
       text:
         type ===
@@ -612,6 +680,7 @@ function App() {
       children: [],
     };
   };
+
   const updateComponentById = (
     componentList: BuilderComponent[],
     id: string,
@@ -629,6 +698,7 @@ function App() {
             component
           );
         }
+
         if (
           component.children?.length
         ) {
@@ -642,10 +712,12 @@ function App() {
               ),
           };
         }
+
         return component;
       }
     );
   };
+
   const removeComponentById = (
     componentList: BuilderComponent[],
     id: string
@@ -661,6 +733,7 @@ function App() {
     ) {
       const component =
         componentList[index];
+
       if (
         component.id ===
         id
@@ -668,17 +741,20 @@ function App() {
         const updated = [
           ...componentList,
         ];
+
         const [removed] =
           updated.splice(
             index,
             1
           );
+
         return {
           components:
             updated,
           removed,
         };
       }
+
       if (
         component.children?.length
       ) {
@@ -687,17 +763,20 @@ function App() {
             component.children,
             id
           );
+
         if (
           result.removed
         ) {
           const updated = [
             ...componentList,
           ];
+
           updated[index] = {
             ...component,
             children:
               result.components,
           };
+
           return {
             components:
               updated,
@@ -707,11 +786,13 @@ function App() {
         }
       }
     }
+
     return {
       components:
         componentList,
     };
   };
+
   const addChildToParent = (
     componentList: BuilderComponent[],
     parentId: string,
@@ -730,6 +811,7 @@ function App() {
       })
     );
   };
+
   const insertBeforeComponent = (
     componentList: BuilderComponent[],
     targetId: string,
@@ -741,6 +823,7 @@ function App() {
           component.id ===
           targetId
       );
+
     if (
       targetIndex !==
       -1
@@ -748,13 +831,16 @@ function App() {
       const updated = [
         ...componentList,
       ];
+
       updated.splice(
         targetIndex,
         0,
         componentToInsert
       );
+
       return updated;
     }
+
     return componentList.map(
       (component) => {
         if (
@@ -766,6 +852,7 @@ function App() {
               targetId,
               componentToInsert
             );
+
           if (
             updatedChildren !==
             component.children
@@ -777,15 +864,18 @@ function App() {
             };
           }
         }
+
         return component;
       }
     );
   };
+
   const addComponent = (
     type: ComponentType
   ) => {
     const newComponent =
       createComponent(type);
+
     if (
       selectedComponent &&
       isLayoutParent(
@@ -798,22 +888,28 @@ function App() {
           selectedComponent.id,
           newComponent
         );
+
       setComponents(
         updated
       );
+
       setSelectedId(
         newComponent.id
       );
+
       return;
     }
+
     setComponents([
       ...components,
       newComponent,
     ]);
+
     setSelectedId(
       newComponent.id
     );
   };
+
   const reorderComponents = (
     activeId: string,
     overId: string
@@ -824,22 +920,26 @@ function App() {
     ) {
       return;
     }
+
     const activeComponent =
       findComponentById(
         components,
         activeId
       );
+
     const overComponent =
       findComponentById(
         components,
         overId
       );
+
     if (
       !activeComponent ||
       !overComponent
     ) {
       return;
     }
+
     if (
       isDescendant(
         activeComponent,
@@ -848,22 +948,27 @@ function App() {
     ) {
       return;
     }
+
     const activeParent =
       findParentById(
         components,
         activeId
       );
+
     const overParent =
       findParentById(
         components,
         overId
       );
+
     const activeParentId =
       activeParent?.id ??
       null;
+
     const overParentId =
       overParent?.id ??
       null;
+
     if (
       activeParentId ===
       overParentId
@@ -873,18 +978,21 @@ function App() {
           ? activeParent.children ??
             []
           : components;
+
       const oldIndex =
         currentList.findIndex(
           (component) =>
             component.id ===
             activeId
         );
+
       const newIndex =
         currentList.findIndex(
           (component) =>
             component.id ===
             overId
         );
+
       if (
         oldIndex ===
           -1 ||
@@ -893,8 +1001,10 @@ function App() {
       ) {
         return;
       }
+
       const updatedList =
         [...currentList];
+
       const [
         movedComponent,
       ] =
@@ -902,11 +1012,13 @@ function App() {
           oldIndex,
           1
         );
+
       updatedList.splice(
         newIndex,
         0,
         movedComponent
       );
+
       if (
         activeParent
       ) {
@@ -926,33 +1038,42 @@ function App() {
           updatedList
         );
       }
+
       setSelectedId(
         activeId
       );
+
       return;
     }
+
     const removal =
       removeComponentById(
         components,
         activeId
       );
+
     if (
       !removal.removed
     ) {
       return;
     }
+
     const movedComponent =
       removal.removed;
+
     let updatedComponents =
       removal.components;
+
     const target =
       findComponentById(
         updatedComponents,
         overId
       );
+
     if (!target) {
       return;
     }
+
     if (
       isLayoutParent(
         target.type
@@ -964,27 +1085,34 @@ function App() {
           target.id,
           movedComponent
         );
+
       setComponents(
         updatedComponents
       );
+
       setSelectedId(
         movedComponent.id
       );
+
       return;
     }
+
     updatedComponents =
       insertBeforeComponent(
         updatedComponents,
         target.id,
         movedComponent
       );
+
     setComponents(
       updatedComponents
     );
+
     setSelectedId(
       movedComponent.id
     );
   };
+
   const handleCanvasDragEnd = (
     event: DragEndEvent
   ) => {
@@ -992,14 +1120,17 @@ function App() {
       active,
       over,
     } = event;
+
     if (!over) {
       return;
     }
+
     reorderComponents(
       String(active.id),
       String(over.id)
     );
   };
+
   const updateText = (
     value: string
   ) => {
@@ -1057,6 +1188,7 @@ function App() {
       )
     );
   };
+
   const updateStyles = (
     updates: Partial<BuilderStyles>
   ) => {
@@ -1114,6 +1246,7 @@ function App() {
                   : component.navbar,
             };
           }
+
           return {
             ...component,
             responsive: {
@@ -1131,6 +1264,7 @@ function App() {
       )
     );
   };
+
   const updateNavbar = (
     updates: Partial<NavbarSettings>
   ) => {
@@ -1154,6 +1288,7 @@ function App() {
       )
     );
   };
+
   const updateHero = (
     updates: Partial<HeroSettings>
   ) => {
@@ -1188,6 +1323,7 @@ function App() {
       )
     );
   };
+
   const updateSection = (
     updates: Partial<SectionSettings>
   ) => {
@@ -1212,6 +1348,7 @@ function App() {
       )
     );
   };
+
   const updateCard = (
     updates: Partial<CardSettings>
   ) => {
@@ -1236,6 +1373,7 @@ function App() {
       )
     );
   };
+
   const updateFooter = (
     updates: Partial<FooterSettings>
   ) => {
@@ -1260,6 +1398,7 @@ function App() {
       )
     );
   };
+
   const updateFontSize = (
     value: number
   ) => {
@@ -1284,6 +1423,7 @@ function App() {
               },
             };
           }
+
           return {
             ...component,
             responsive: {
@@ -1302,6 +1442,7 @@ function App() {
       )
     );
   };
+
   const updateColor = (
     value: string
   ) => {
@@ -1326,6 +1467,7 @@ function App() {
               },
             };
           }
+
           return {
             ...component,
             responsive: {
@@ -1344,6 +1486,7 @@ function App() {
       )
     );
   };
+
   const updateBackgroundColor = (
     value: string
   ) => {
@@ -1368,6 +1511,7 @@ function App() {
               },
             };
           }
+
           return {
             ...component,
             responsive: {
@@ -1386,6 +1530,7 @@ function App() {
       )
     );
   };
+
   const updateMinHeight = (
     value: number
   ) => {
@@ -1412,6 +1557,7 @@ function App() {
               },
             };
           }
+
           return {
             ...component,
             responsive: {
@@ -1432,6 +1578,7 @@ function App() {
       )
     );
   };
+
   const updateImage = (
     value: string
   ) => {
@@ -1448,6 +1595,7 @@ function App() {
       )
     );
   };
+
   const updateImageWidth = (
     value: number
   ) => {
@@ -1464,6 +1612,7 @@ function App() {
       )
     );
   };
+
   const updateImageHeight = (
     value: number
   ) => {
@@ -1480,6 +1629,7 @@ function App() {
       )
     );
   };
+
   const updateImageBorderRadius = (
     value: number
   ) => {
@@ -1496,53 +1646,64 @@ function App() {
       )
     );
   };
+
   const deleteComponent = () => {
     if (
       !selectedId
     ) {
       return;
     }
+
     const result =
       removeComponentById(
         components,
         selectedId
       );
+
     setComponents(
       result.components
     );
+
     setSelectedId(
       null
     );
   };
+
   const moveComponentUp = () => {
     if (
       !selectedId
     ) {
       return;
     }
+
     const parent =
       findParentById(
         components,
         selectedId
       );
+
     const list =
       parent
         ? parent.children ??
           []
         : components;
+
     const index =
       list.findIndex(
         (component) =>
           component.id ===
           selectedId
       );
+
     if (
       index <= 0
     ) {
       return;
     }
+
     const updatedList =
       [...list];
+
     [
       updatedList[
         index - 1
@@ -1558,6 +1719,7 @@ function App() {
         index - 1
       ],
     ];
+
     if (
       parent
     ) {
@@ -1577,32 +1739,38 @@ function App() {
         updatedList
       );
     }
+
     setSelectedId(
       selectedId
     );
   };
+
   const moveComponentDown = () => {
     if (
       !selectedId
     ) {
       return;
     }
+
     const parent =
       findParentById(
         components,
         selectedId
       );
+
     const list =
       parent
         ? parent.children ??
           []
         : components;
+
     const index =
       list.findIndex(
         (component) =>
           component.id ===
           selectedId
       );
+
     if (
       index === -1 ||
       index ===
@@ -1610,8 +1778,10 @@ function App() {
     ) {
       return;
     }
+
     const updatedList =
       [...list];
+
     [
       updatedList[
         index + 1
@@ -1627,6 +1797,7 @@ function App() {
         index + 1
       ],
     ];
+
     if (
       parent
     ) {
@@ -1646,10 +1817,12 @@ function App() {
         updatedList
       );
     }
+
     setSelectedId(
       selectedId
     );
   };
+
   const cloneComponentTree = (
     component: BuilderComponent
   ): BuilderComponent => {
@@ -1751,54 +1924,65 @@ function App() {
           : [],
     };
   };
+
   const duplicateComponent = () => {
     if (
       !selectedId
     ) {
       return;
     }
+
     const component =
       findComponentById(
         components,
         selectedId
       );
+
     if (!component) {
       return;
     }
+
     const duplicate =
       cloneComponentTree(
         component
       );
+
     const parent =
       findParentById(
         components,
         selectedId
       );
+
     if (
       parent
     ) {
       const children =
         parent.children ??
         [];
+
       const index =
         children.findIndex(
           (child) =>
             child.id ===
             selectedId
         );
+
       if (
         index ===
         -1
       ) {
         return;
       }
+
       const updatedChildren =
         [...children];
+
       updatedChildren.splice(
         index + 1,
         0,
         duplicate
       );
+
       setComponents(
         updateComponentById(
           components,
@@ -1817,27 +2001,33 @@ function App() {
             component.id ===
             selectedId
         );
+
       if (
         index ===
         -1
       ) {
         return;
       }
+
       const updated =
         [...components];
+
       updated.splice(
         index + 1,
         0,
         duplicate
       );
+
       setComponents(
         updated
       );
     }
+
     setSelectedId(
       duplicate.id
     );
   };
+
   const updateHeroTitle = (
     value: string
   ) => {
@@ -1846,6 +2036,7 @@ function App() {
         value,
     });
   };
+
   const updateHeroSubtitle = (
     value: string
   ) => {
@@ -1854,6 +2045,7 @@ function App() {
         value,
     });
   };
+
   const updateHeroButtonText = (
     value: string
   ) => {
@@ -1862,6 +2054,7 @@ function App() {
         value,
     });
   };
+
   const downloadFile = (
     filename: string,
     content: string
@@ -1874,41 +2067,52 @@ function App() {
             "text/plain",
         }
       );
+
     const url =
       URL.createObjectURL(
         blob
       );
+
     const link =
       document.createElement(
         "a"
       );
+
     link.href =
       url;
+
     link.download =
       filename;
+
     link.click();
+
     URL.revokeObjectURL(
       url
     );
   };
+
   const exportHTML = () => {
     const html =
       generateHTML(
         components
       );
+
     downloadFile(
       "index.html",
       html
     );
   };
+
   const exportCSS = () => {
     const css =
       generateCSS();
+
     downloadFile(
       "style.css",
       css
     );
   };
+
   const saveProject = () => {
     localStorage.setItem(
       "website-builder-project",
@@ -1916,15 +2120,18 @@ function App() {
         components
       )
     );
+
     alert(
       "Project opgeslagen!"
     );
   };
+
   const loadProject = () => {
     const savedProject =
       localStorage.getItem(
         "website-builder-project"
       );
+
     if (
       !savedProject
     ) {
@@ -1933,12 +2140,14 @@ function App() {
       );
       return;
     }
+
     try {
       const parsedProject:
         BuilderComponent[] =
         JSON.parse(
           savedProject
         );
+
       const migrateComponent = (
         component: BuilderComponent
       ): BuilderComponent => {
@@ -1946,12 +2155,14 @@ function App() {
           component.children?.map(
             migrateComponent
           ) ?? [];
-        let migrated =
-          {
+
+        let migrated:
+          BuilderComponent = {
             ...component,
             children:
               migratedChildren,
           };
+
         if (
           component.type ===
           "Navbar"
@@ -2020,12 +2231,14 @@ function App() {
             },
           };
         }
+
         if (
           component.type ===
           "Hero"
         ) {
           const defaults =
             createDefaultHero();
+
           migrated = {
             ...migrated,
             hero: {
@@ -2049,12 +2262,14 @@ function App() {
             },
           };
         }
+
         if (
           component.type ===
           "Section"
         ) {
           const defaults =
             createDefaultSection();
+
           migrated = {
             ...migrated,
             section: {
@@ -2068,12 +2283,14 @@ function App() {
             },
           };
         }
+
         if (
           component.type ===
           "Card"
         ) {
           const defaults =
             createDefaultCard();
+
           migrated = {
             ...migrated,
             card: {
@@ -2087,12 +2304,14 @@ function App() {
             },
           };
         }
+
         if (
           component.type ===
           "Footer"
         ) {
           const defaults =
             createDefaultFooter();
+
           migrated = {
             ...migrated,
             footer: {
@@ -2106,18 +2325,23 @@ function App() {
             },
           };
         }
+
         return migrated;
       };
+
       const migratedProject =
         parsedProject.map(
           migrateComponent
         );
+
       setComponents(
         migratedProject
       );
+
       setSelectedId(
         null
       );
+
       alert(
         "Project geladen!"
       );
@@ -2127,6 +2351,7 @@ function App() {
       );
     }
   };
+
   return (
     <div className="editor">
       <Sidebar
@@ -2146,6 +2371,7 @@ function App() {
           reorderComponents
         }
       />
+
       <div className="canvas">
         <div className="canvas-header">
           <button
@@ -2155,6 +2381,7 @@ function App() {
           >
             Export HTML
           </button>
+
           <button
             onClick={
               exportCSS
@@ -2162,6 +2389,7 @@ function App() {
           >
             Export CSS
           </button>
+
           <button
             onClick={
               saveProject
@@ -2169,6 +2397,7 @@ function App() {
           >
             Save Project
           </button>
+
           <button
             onClick={
               loadProject
@@ -2177,6 +2406,7 @@ function App() {
             Load Project
           </button>
         </div>
+
         <Canvas
           components={
             components
@@ -2198,6 +2428,7 @@ function App() {
           }
         />
       </div>
+
       <Properties
         selectedComponent={
           selectedComponent
@@ -2275,4 +2506,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
