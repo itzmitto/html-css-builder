@@ -157,4 +157,4 @@ export interface BuilderComponent {
   styles?: BuilderStyles;
   responsive?: ResponsiveStyles;
   children?: BuilderComponent[];
-}
+} 

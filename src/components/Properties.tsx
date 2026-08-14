@@ -8,6 +8,10 @@ import type {
   DeviceType,
   NavbarSettings,
   NavbarLink,
+  HeroSettings,
+  SectionSettings,
+  CardSettings,
+  FooterSettings,
 } from "../types/builder";
 import LayoutProperties from "./properties/LayoutProperties";
 import TypographyProperties from "./properties/TypographyProperties";
@@ -24,6 +28,18 @@ interface PropertiesProps {
   updateHeroTitle: (value: string) => void;
   updateHeroSubtitle: (value: string) => void;
   updateHeroButtonText: (value: string) => void;
+  updateHero: (
+    settings: Partial<HeroSettings>
+  ) => void;
+  updateSection: (
+    settings: Partial<SectionSettings>
+  ) => void;
+  updateCard: (
+    settings: Partial<CardSettings>
+  ) => void;
+  updateFooter: (
+    settings: Partial<FooterSettings>
+  ) => void;
   updateImage: (value: string) => void;
   updateImageWidth: (value: number) => void;
   updateImageHeight: (value: number) => void;
@@ -78,6 +94,10 @@ function Properties({
   updateHeroTitle,
   updateHeroSubtitle,
   updateHeroButtonText,
+  updateHero,
+  updateSection,
+  updateCard,
+  updateFooter,
   updateImage,
   updateImageWidth,
   updateImageHeight,
@@ -144,6 +164,18 @@ function Properties({
 
   const navbar: NavbarSettings =
     selectedComponent?.navbar ?? {};
+
+  const hero: HeroSettings =
+    selectedComponent?.hero ?? {};
+
+  const section: SectionSettings =
+    selectedComponent?.section ?? {};
+
+  const card: CardSettings =
+    selectedComponent?.card ?? {};
+
+  const footer: FooterSettings =
+    selectedComponent?.footer ?? {};
 
   const navbarLinks: NavbarLink[] =
     navbar.links ?? [
@@ -607,7 +639,6 @@ function Properties({
                         fontSize:
                           "14px",
                       }}
-                      title="Remove link"
                     >
                       ×
                     </button>
@@ -672,33 +703,48 @@ function Properties({
                         placeholder="/about"
                       />
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          toggleNavbarLink(
-                            link.id
-                          )
-                        }
+                      <label
                         style={{
-                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent:
+                            "space-between",
+                          gap: "10px",
                           marginTop:
-                            "10px",
-                          padding:
-                            "8px",
-                          border:
-                            "1px solid #374151",
-                          borderRadius:
-                            "7px",
-                          background:
-                            "#1f2937",
+                            "12px",
                           color:
                             "#d1d5db",
+                          fontSize:
+                            "13px",
                           cursor:
                             "pointer",
                         }}
                       >
-                        Close
-                      </button>
+                        <span>
+                          Open in new tab
+                        </span>
+
+                        <input
+                          type="checkbox"
+                          checked={
+                            link.openInNewTab ??
+                            false
+                          }
+                          onChange={(
+                            e
+                          ) =>
+                            updateNavbarLink(
+                              link.id,
+                              {
+                                openInNewTab:
+                                  e
+                                    .target
+                                    .checked,
+                              }
+                            )
+                          }
+                        />
+                      </label>
                     </div>
                   )}
                 </div>
@@ -708,7 +754,9 @@ function Properties({
 
           <button
             type="button"
-            onClick={addNavbarLink}
+            onClick={
+              addNavbarLink
+            }
             style={{
               width: "100%",
               marginTop: "4px",
@@ -1186,7 +1234,7 @@ function Properties({
     return (
       <div>
         <h3 className="property-section-title">
-          Hero Content
+          Hero
         </h3>
 
         <div className="container-info">
@@ -1195,9 +1243,8 @@ function Properties({
           </strong>
 
           <span>
-            Maak een opvallende hero
-            voor je website met een
-            heading, tekst en CTA.
+            Beheer hier de volledige
+            hero-content en CTA.
           </span>
         </div>
 
@@ -1209,14 +1256,23 @@ function Properties({
           type="text"
           className="property-input"
           value={
+            hero.title ??
             selectedComponent?.heroTitle ??
-            ""
+            "Hero Title"
           }
-          onChange={(e) =>
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateHero({
+              title:
+                value,
+            });
+
             updateHeroTitle(
-              e.target.value
-            )
-          }
+              value
+            );
+          }}
         />
 
         <label className="property-label">
@@ -1227,14 +1283,23 @@ function Properties({
           className="property-input"
           rows={4}
           value={
+            hero.subtitle ??
             selectedComponent?.heroSubtitle ??
-            ""
+            "Hero Subtitle goes here"
           }
-          onChange={(e) =>
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateHero({
+              subtitle:
+                value,
+            });
+
             updateHeroSubtitle(
-              e.target.value
-            )
-          }
+              value
+            );
+          }}
           style={{
             resize: "vertical",
             minHeight: "90px",
@@ -1242,80 +1307,150 @@ function Properties({
         />
 
         <label className="property-label">
-          Primary Button
+          Button Text
         </label>
 
         <input
           type="text"
           className="property-input"
           value={
+            hero.buttonText ??
             selectedComponent?.heroButtonText ??
-            ""
+            "Get Started"
           }
-          onChange={(e) =>
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateHero({
+              buttonText:
+                value,
+            });
+
             updateHeroButtonText(
-              e.target.value
-            )
-          }
+              value
+            );
+          }}
         />
 
-        <h4
-          style={{
-            marginTop: "25px",
-            marginBottom: "10px",
-            color: "#d1d5db",
-          }}
+        <label className="property-label">
+          Button URL
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            hero.buttonUrl ??
+            "#"
+          }
+          onChange={(e) =>
+            updateHero({
+              buttonUrl:
+                e.target.value,
+            })
+          }
+          placeholder="#contact"
+        />
+
+        <label className="property-label">
+          Button Style
+        </label>
+
+        <select
+          className="property-input"
+          value={
+            hero.buttonStyle ??
+            "solid"
+          }
+          onChange={(e) =>
+            updateHero({
+              buttonStyle:
+                e.target.value as
+                  | "solid"
+                  | "outline"
+                  | "ghost",
+            })
+          }
         >
-          Hero Layout
-        </h4>
+          <option value="solid">
+            Solid
+          </option>
+          <option value="outline">
+            Outline
+          </option>
+          <option value="ghost">
+            Ghost
+          </option>
+        </select>
 
         <label className="property-label">
           Content Width
         </label>
 
-        <select
-          value={
-            styles.maxWidth
-              ? String(
-                  styles.maxWidth
-                )
-              : "900"
-          }
-          onChange={(e) => {
-            updateStyles({
-              maxWidth:
-                Number(
-                  e.target.value
-                ),
-              maxWidthUnit:
-                "px",
-            });
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginTop: "8px",
           }}
-          className="property-input"
         >
-          <option value="600">
-            600px - Compact
-          </option>
-          <option value="720">
-            720px - Medium
-          </option>
-          <option value="900">
-            900px - Large
-          </option>
-          <option value="1100">
-            1100px - Wide
-          </option>
-        </select>
+          <input
+            type="number"
+            min="300"
+            max="1600"
+            className="property-input"
+            value={
+              hero.contentWidth ??
+              900
+            }
+            onChange={(e) =>
+              updateHero({
+                contentWidth:
+                  Number(
+                    e.target.value
+                  ),
+              })
+            }
+          />
+
+          <select
+            className="property-input"
+            value={
+              hero.contentWidthUnit ??
+              "px"
+            }
+            onChange={(e) =>
+              updateHero({
+                contentWidthUnit:
+                  e.target.value as
+                    | "px"
+                    | "%",
+              })
+            }
+            style={{
+              width: "80px",
+            }}
+          >
+            <option value="px">
+              px
+            </option>
+            <option value="%">
+              %
+            </option>
+          </select>
+        </div>
 
         <label className="property-label">
-          Vertical Spacing
+          Vertical Padding
         </label>
 
         <input
           type="range"
-          min="40"
-          max="180"
+          min="20"
+          max="200"
           value={
+            hero.verticalPadding ??
             styles.paddingTop ??
             80
           }
@@ -1324,6 +1459,11 @@ function Properties({
               Number(
                 e.target.value
               );
+
+            updateHero({
+              verticalPadding:
+                value,
+            });
 
             updateStyles({
               paddingTop:
@@ -1336,68 +1476,14 @@ function Properties({
         />
 
         <div className="property-value">
-          {styles.paddingTop ??
+          {hero.verticalPadding ??
+            styles.paddingTop ??
             80}
           px
         </div>
-      </div>
-    );
-  };
-
-  const renderSectionContent = () => {
-    if (!isSection) {
-      return null;
-    }
-
-    return (
-      <div>
-        <h3 className="property-section-title">
-          Section Content
-        </h3>
-
-        <div className="container-info">
-          <strong>
-            Content Section
-          </strong>
-
-          <span>
-            Gebruik deze section voor
-            contentblokken en
-            call-to-actions.
-          </span>
-        </div>
 
         <label className="property-label">
-          Section Title
-        </label>
-
-        <input
-          type="text"
-          className="property-input"
-          defaultValue="Section Title"
-          onChange={(e) => {
-            updateText(
-              e.target.value
-            );
-          }}
-        />
-
-        <label className="property-label">
-          Section Description
-        </label>
-
-        <textarea
-          className="property-input"
-          rows={4}
-          defaultValue="Section content..."
-          style={{
-            resize: "vertical",
-            minHeight: "90px",
-          }}
-        />
-
-        <label className="property-label">
-          Content Alignment
+          Text Alignment
         </label>
 
         <div
@@ -1420,12 +1506,17 @@ function Properties({
               <button
                 key={alignment}
                 type="button"
-                onClick={() =>
+                onClick={() => {
+                  updateHero({
+                    textAlign:
+                      alignment,
+                  });
+
                   updateStyles({
                     textAlign:
                       alignment,
-                  })
-                }
+                  });
+                }}
                 style={{
                   padding:
                     "10px 5px",
@@ -1433,12 +1524,218 @@ function Properties({
                   borderRadius:
                     "7px",
                   background:
-                    styles.textAlign ===
+                    (hero.textAlign ??
+                      styles.textAlign ??
+                      "center") ===
                     alignment
                       ? "#7c3aed"
                       : "#f1f5f9",
                   color:
-                    styles.textAlign ===
+                    (hero.textAlign ??
+                      styles.textAlign ??
+                      "center") ===
+                    alignment
+                      ? "#ffffff"
+                      : "#475569",
+                  cursor:
+                    "pointer",
+                }}
+              >
+                {alignment
+                  .charAt(0)
+                  .toUpperCase() +
+                  alignment.slice(
+                    1
+                  )}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderSectionContent = () => {
+    if (!isSection) {
+      return null;
+    }
+
+    return (
+      <div>
+        <h3 className="property-section-title">
+          Section
+        </h3>
+
+        <div className="container-info">
+          <strong>
+            Content Section
+          </strong>
+
+          <span>
+            Beheer de content en
+            positionering van deze
+            section.
+          </span>
+        </div>
+
+        <label className="property-label">
+          Title
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            section.title ??
+            "Section Title"
+          }
+          onChange={(e) => {
+            const value =
+              e.target.value;
+
+            updateSection({
+              title:
+                value,
+            });
+
+            updateText(
+              value
+            );
+          }}
+        />
+
+        <label className="property-label">
+          Content
+        </label>
+
+        <textarea
+          className="property-input"
+          rows={5}
+          value={
+            section.content ??
+            "Section content..."
+          }
+          onChange={(e) =>
+            updateSection({
+              content:
+                e.target.value,
+            })
+          }
+          style={{
+            resize: "vertical",
+            minHeight: "100px",
+          }}
+        />
+
+        <label className="property-label">
+          Content Width
+        </label>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginTop: "8px",
+          }}
+        >
+          <input
+            type="number"
+            min="300"
+            max="1600"
+            className="property-input"
+            value={
+              section.contentWidth ??
+              1100
+            }
+            onChange={(e) =>
+              updateSection({
+                contentWidth:
+                  Number(
+                    e.target.value
+                  ),
+              })
+            }
+          />
+
+          <select
+            className="property-input"
+            value={
+              section.contentWidthUnit ??
+              "px"
+            }
+            onChange={(e) =>
+              updateSection({
+                contentWidthUnit:
+                  e.target.value as
+                    | "px"
+                    | "%",
+              })
+            }
+            style={{
+              width: "80px",
+            }}
+          >
+            <option value="px">
+              px
+            </option>
+            <option value="%">
+              %
+            </option>
+          </select>
+        </div>
+
+        <label className="property-label">
+          Text Alignment
+        </label>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(3, 1fr)",
+            gap: "6px",
+            marginTop: "8px",
+          }}
+        >
+          {(
+            [
+              "left",
+              "center",
+              "right",
+            ] as const
+          ).map(
+            (alignment) => (
+              <button
+                key={alignment}
+                type="button"
+                onClick={() => {
+                  updateSection({
+                    textAlign:
+                      alignment,
+                  });
+
+                  updateStyles({
+                    textAlign:
+                      alignment,
+                  });
+                }}
+                style={{
+                  padding:
+                    "10px 5px",
+                  border: "none",
+                  borderRadius:
+                    "7px",
+                  background:
+                    (section.textAlign ??
+                      styles.textAlign ??
+                      "left") ===
+                    alignment
+                      ? "#7c3aed"
+                      : "#f1f5f9",
+                  color:
+                    (section.textAlign ??
+                      styles.textAlign ??
+                      "left") ===
                     alignment
                       ? "#ffffff"
                       : "#475569",
@@ -1468,7 +1765,7 @@ function Properties({
     return (
       <div>
         <h3 className="property-section-title">
-          Card Content
+          Card
         </h3>
 
         <div className="container-info">
@@ -1477,19 +1774,28 @@ function Properties({
           </strong>
 
           <span>
-            Pas de content en layout
-            van deze kaart aan.
+            Beheer titel, beschrijving
+            en CTA van de kaart.
           </span>
         </div>
 
         <label className="property-label">
-          Card Title
+          Title
         </label>
 
         <input
           type="text"
           className="property-input"
-          defaultValue="Card Title"
+          value={
+            card.title ??
+            "Card Title"
+          }
+          onChange={(e) =>
+            updateCard({
+              title:
+                e.target.value,
+            })
+          }
         />
 
         <label className="property-label">
@@ -1498,13 +1804,93 @@ function Properties({
 
         <textarea
           className="property-input"
-          rows={4}
-          defaultValue="Card description"
+          rows={5}
+          value={
+            card.content ??
+            "Card description"
+          }
+          onChange={(e) =>
+            updateCard({
+              content:
+                e.target.value,
+            })
+          }
           style={{
             resize: "vertical",
-            minHeight: "90px",
+            minHeight: "100px",
           }}
         />
+
+        <label className="property-label">
+          Button Text
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            card.buttonText ??
+            "Learn More"
+          }
+          onChange={(e) =>
+            updateCard({
+              buttonText:
+                e.target.value,
+            })
+          }
+        />
+
+        <label className="property-label">
+          Button URL
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            card.buttonUrl ??
+            "#"
+          }
+          onChange={(e) =>
+            updateCard({
+              buttonUrl:
+                e.target.value,
+            })
+          }
+          placeholder="#contact"
+        />
+
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "space-between",
+            gap: "10px",
+            marginTop: "15px",
+            color: "#d1d5db",
+            fontSize: "13px",
+            cursor: "pointer",
+          }}
+        >
+          <span>
+            Show Button
+          </span>
+
+          <input
+            type="checkbox"
+            checked={
+              card.showButton ??
+              true
+            }
+            onChange={(e) =>
+              updateCard({
+                showButton:
+                  e.target.checked,
+              })
+            }
+          />
+        </label>
 
         <label className="property-label">
           Card Height
@@ -1542,7 +1928,7 @@ function Properties({
     return (
       <div>
         <h3 className="property-section-title">
-          Footer Content
+          Footer
         </h3>
 
         <div className="container-info">
@@ -1551,9 +1937,8 @@ function Properties({
           </strong>
 
           <span>
-            Stel de basis van je footer
-            in voor branding en
-            content.
+            Beheer branding, tekst en
+            newsletter content.
           </span>
         </div>
 
@@ -1564,22 +1949,140 @@ function Properties({
         <input
           type="text"
           className="property-input"
-          defaultValue="Brand"
+          value={
+            footer.brandName ??
+            "Brand"
+          }
+          onChange={(e) =>
+            updateFooter({
+              brandName:
+                e.target.value,
+            })
+          }
         />
 
         <label className="property-label">
-          Footer Description
+          Description
         </label>
 
         <textarea
           className="property-input"
-          rows={4}
-          defaultValue="Build beautiful websites with a flexible and modern visual editor."
+          rows={5}
+          value={
+            footer.description ??
+            "Build beautiful websites with a flexible and modern visual editor."
+          }
+          onChange={(e) =>
+            updateFooter({
+              description:
+                e.target.value,
+            })
+          }
           style={{
             resize: "vertical",
-            minHeight: "90px",
+            minHeight: "100px",
           }}
         />
+
+        <label className="property-label">
+          Copyright
+        </label>
+
+        <input
+          type="text"
+          className="property-input"
+          value={
+            footer.copyright ??
+            "© 2026 Your Company"
+          }
+          onChange={(e) =>
+            updateFooter({
+              copyright:
+                e.target.value,
+            })
+          }
+        />
+
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "space-between",
+            gap: "10px",
+            marginTop: "15px",
+            color: "#d1d5db",
+            fontSize: "13px",
+            cursor: "pointer",
+          }}
+        >
+          <span>
+            Show Newsletter
+          </span>
+
+          <input
+            type="checkbox"
+            checked={
+              footer.showNewsletter ??
+              false
+            }
+            onChange={(e) =>
+              updateFooter({
+                showNewsletter:
+                  e.target.checked,
+              })
+            }
+          />
+        </label>
+
+        {(footer.showNewsletter ??
+          false) && (
+          <>
+            <label className="property-label">
+              Newsletter Title
+            </label>
+
+            <input
+              type="text"
+              className="property-input"
+              value={
+                footer.newsletterTitle ??
+                "Stay in the loop"
+              }
+              onChange={(e) =>
+                updateFooter({
+                  newsletterTitle:
+                    e.target
+                      .value,
+                })
+              }
+            />
+
+            <label className="property-label">
+              Newsletter Description
+            </label>
+
+            <textarea
+              className="property-input"
+              rows={3}
+              value={
+                footer.newsletterDescription ??
+                "Subscribe for updates and new content."
+              }
+              onChange={(e) =>
+                updateFooter({
+                  newsletterDescription:
+                    e.target
+                      .value,
+                })
+              }
+              style={{
+                resize:
+                  "vertical",
+              }}
+            />
+          </>
+        )}
 
         <label className="property-label">
           Footer Height
@@ -1655,31 +2158,33 @@ function Properties({
               icon: "▦",
               label: "4 Columns",
             },
-          ].map((layout) => (
-            <button
-              key={layout.value}
-              type="button"
-              className={
-                currentLayout ===
-                layout.value
-                  ? "container-layout-button active"
-                  : "container-layout-button"
-              }
-              onClick={() =>
-                applyContainerLayout(
+          ].map(
+            (layout) => (
+              <button
+                key={layout.value}
+                type="button"
+                className={
+                  currentLayout ===
                   layout.value
-                )
-              }
-            >
-              <span className="container-layout-icon">
-                {layout.icon}
-              </span>
+                    ? "container-layout-button active"
+                    : "container-layout-button"
+                }
+                onClick={() =>
+                  applyContainerLayout(
+                    layout.value
+                  )
+                }
+              >
+                <span className="container-layout-icon">
+                  {layout.icon}
+                </span>
 
-              <span>
-                {layout.label}
-              </span>
-            </button>
-          ))}
+                <span>
+                  {layout.label}
+                </span>
+              </button>
+            )
+          )}
         </div>
       </div>
     );
@@ -1852,10 +2357,14 @@ function Properties({
                 style={{
                   width: "100%",
                   height: "180px",
-                  objectFit: "cover",
-                  marginTop: "15px",
-                  borderRadius: "10px",
-                  display: "block",
+                  objectFit:
+                    "cover",
+                  marginTop:
+                    "15px",
+                  borderRadius:
+                    "10px",
+                  display:
+                    "block",
                   border:
                     "1px solid #374151",
                 }}
@@ -2018,9 +2527,11 @@ function Properties({
           <option value="visible">
             Visible
           </option>
+
           <option value="hidden">
             Hidden
           </option>
+
           <option value="auto">
             Auto
           </option>
@@ -2052,7 +2563,9 @@ function Properties({
 
         <div className="component-meta">
           <div className="meta-row">
-            <span>Type</span>
+            <span>
+              Type
+            </span>
 
             <strong>
               {selectedComponent?.type}
@@ -2060,7 +2573,9 @@ function Properties({
           </div>
 
           <div className="meta-row">
-            <span>Device</span>
+            <span>
+              Device
+            </span>
 
             <strong>
               {getDeviceLabel(
@@ -2070,7 +2585,9 @@ function Properties({
           </div>
 
           <div className="meta-row">
-            <span>ID</span>
+            <span>
+              ID
+            </span>
 
             <strong className="component-id">
               {selectedComponent?.id}
@@ -2078,7 +2595,9 @@ function Properties({
           </div>
 
           <div className="meta-row">
-            <span>Children</span>
+            <span>
+              Children
+            </span>
 
             <strong>
               {selectedComponent?.children?.length ??
