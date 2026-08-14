@@ -26,11 +26,14 @@ function getResponsiveStyles(
 ): BuilderStyles {
   const baseStyles =
     component.styles ?? {};
+
   if (device === "desktop") {
     return baseStyles;
   }
+
   const deviceStyles =
     component.responsive?.[device] ?? {};
+
   return {
     ...baseStyles,
     ...deviceStyles,
@@ -43,18 +46,22 @@ function getBuilderStyle(
   if (!styles) {
     return {};
   }
+
   const maxWidth =
     styles.maxWidth !== undefined &&
     styles.maxWidth > 0
       ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
       : undefined;
+
   const minHeight =
     styles.minHeight !== undefined &&
     styles.minHeight > 0
       ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
       : undefined;
+
   const horizontalAlign =
     styles.horizontalAlign ?? "left";
+
   const horizontalAlignmentStyles: CSSProperties =
     horizontalAlign === "center"
       ? {
@@ -79,6 +86,7 @@ function getBuilderStyle(
               ? `${styles.marginRight}px`
               : "0",
         };
+
   return {
     width:
       styles.width !== undefined
@@ -200,39 +208,54 @@ function PreviewRenderer({
       component,
       device
     );
+
   const builderStyle =
     getBuilderStyle(styles);
+
   const backgroundColor =
     styles.backgroundColor ||
     component.backgroundColor ||
     "#ffffff";
+
   const textColor =
     styles.color ||
     component.color ||
     "#000000";
+
   const fontFamily =
     styles.fontFamily ||
     "Arial";
+
   const textAlign =
     styles.textAlign ||
     "left";
+
   const children =
     component.children ?? [];
+
   const isContainer =
-    component.type === "Container";
+    component.type ===
+    "Container";
+
   const isRow =
-    component.type === "Row";
+    component.type ===
+    "Row";
+
   const isStack =
-    component.type === "Stack";
+    component.type ===
+    "Stack";
+
   const isLayoutComponent =
     isContainer ||
     isRow ||
     isStack;
+
   const resolvedDisplay =
     styles.display ??
     (isRow || isStack
       ? "flex"
       : "block");
+
   const resolvedFlexDirection =
     styles.flexDirection ??
     (isRow
@@ -240,16 +263,19 @@ function PreviewRenderer({
       : isStack
       ? "column"
       : undefined);
+
   const resolvedGap =
     styles.gap !== undefined
       ? styles.gap
       : isRow || isStack
       ? 16
       : 0;
+
   const renderChildren = () => {
     if (children.length === 0) {
       return null;
     }
+
     return children.map(
       (child) => {
         const childStyle: CSSProperties = {
@@ -259,6 +285,7 @@ function PreviewRenderer({
           boxSizing:
             "border-box",
         };
+
         if (
           resolvedDisplay ===
           "grid"
@@ -266,6 +293,7 @@ function PreviewRenderer({
           childStyle.width =
             "100%";
         }
+
         if (
           resolvedDisplay ===
             "flex" &&
@@ -277,6 +305,7 @@ function PreviewRenderer({
           childStyle.minWidth =
             0;
         }
+
         if (
           resolvedDisplay ===
             "flex" &&
@@ -286,6 +315,7 @@ function PreviewRenderer({
           childStyle.width =
             "100%";
         }
+
         return (
           <div
             key={child.id}
@@ -300,6 +330,7 @@ function PreviewRenderer({
       }
     );
   };
+
   if (isLayoutComponent) {
     const layoutStyle: CSSProperties = {
       ...builderStyle,
@@ -373,6 +404,7 @@ function PreviewRenderer({
         "border-box",
       minWidth: 0,
     };
+
     if (
       children.length === 0
     ) {
@@ -386,12 +418,14 @@ function PreviewRenderer({
             <ContainerPreview
               minHeight={
                 component.minHeight ??
-                styles.height
+                styles.height ??
+                300
               }
             />
           </div>
         );
       }
+
       return (
         <div
           style={
@@ -431,6 +465,7 @@ function PreviewRenderer({
         </div>
       );
     }
+
     return (
       <div
         style={
@@ -487,6 +522,7 @@ function PreviewRenderer({
       </div>
     );
   }
+
   return (
     <div
       style={{
@@ -579,6 +615,7 @@ function PreviewRenderer({
           }
         />
       )}
+
       {component.type ===
         "Hero" && (
         <HeroPreview
@@ -596,26 +633,6 @@ function PreviewRenderer({
             component.hero?.buttonText ??
             component.heroButtonText ??
             "Get Started"
-          }
-          buttonUrl={
-            component.hero?.buttonUrl ??
-            "#"
-          }
-          buttonStyle={
-            component.hero?.buttonStyle ??
-            "solid"
-          }
-          contentWidth={
-            component.hero?.contentWidth ??
-            900
-          }
-          contentWidthUnit={
-            component.hero?.contentWidthUnit ??
-            "px"
-          }
-          verticalPadding={
-            component.hero?.verticalPadding ??
-            80
           }
           backgroundColor={
             backgroundColor ||
@@ -636,6 +653,7 @@ function PreviewRenderer({
           }
         />
       )}
+
       {component.type ===
         "Section" && (
         <SectionPreview
@@ -645,16 +663,7 @@ function PreviewRenderer({
           }
           content={
             component.section?.content ??
-            "Section content goes here. Add more components inside this section to build your page."
-          }
-          contentWidth={
-            component.section?.contentWidth ??
-            1100
-          }
-          contentWidthUnit={
-            component.section
-              ?.contentWidthUnit ??
-            "px"
+            "Section content..."
           }
           backgroundColor={
             backgroundColor
@@ -674,33 +683,10 @@ function PreviewRenderer({
           }
         />
       )}
+
       {component.type ===
         "Card" && (
         <CardPreview
-          title={
-            component.card?.title ??
-            "Card Title"
-          }
-          content={
-            component.card?.content ??
-            "Card description goes here. Create a clean and flexible content block for your website."
-          }
-          buttonText={
-            component.card?.buttonText ??
-            "Learn More"
-          }
-          buttonUrl={
-            component.card?.buttonUrl ??
-            "#"
-          }
-          showButton={
-            component.card?.showButton ??
-            true
-          }
-          imageUrl={
-            component.card?.imageUrl ??
-            ""
-          }
           backgroundColor={
             backgroundColor
           }
@@ -711,14 +697,14 @@ function PreviewRenderer({
             fontFamily
           }
           textAlign={
-            component.card?.textAlign ??
-            (textAlign as
+            textAlign as
               | "left"
               | "center"
-              | "right")
+              | "right"
           }
         />
       )}
+
       {component.type ===
         "Footer" && (
         <FooterPreview
@@ -739,28 +725,9 @@ function PreviewRenderer({
               | "center"
               | "right"
           }
-          brandName={
-            component.footer?.brandName ??
-            "Brand"
-          }
-          description={
-            component.footer?.description ??
-            "Build beautiful websites with a flexible and modern visual editor."
-          }
-          newsletterTitle={
-            component.footer?.newsletterTitle ??
-            "Stay in the loop"
-          }
-          newsletterText={
-            component.footer?.newsletterText ??
-            "Get product updates and useful design tips in your inbox."
-          }
-          copyright={
-            component.footer?.copyright ??
-            "© 2026 Brand. All rights reserved."
-          }
         />
       )}
+
       {component.type ===
         "Heading" && (
         <HeadingPreview
@@ -769,29 +736,37 @@ function PreviewRenderer({
           }
           fontSize={
             styles.fontSize ??
-            component.fontSize
+            component.fontSize ??
+            32
           }
           color={
             styles.color ??
-            component.color
+            component.color ??
+            "#000000"
           }
           fontFamily={
-            styles.fontFamily
+            styles.fontFamily ??
+            "Arial"
           }
           fontWeight={
-            styles.fontWeight
+            styles.fontWeight ??
+            700
           }
           lineHeight={
-            styles.lineHeight
+            styles.lineHeight ??
+            1.2
           }
           letterSpacing={
-            styles.letterSpacing
+            styles.letterSpacing ??
+            0
           }
           textAlign={
-            styles.textAlign
+            styles.textAlign ??
+            "left"
           }
         />
       )}
+
       {component.type ===
         "Paragraph" && (
         <ParagraphPreview
@@ -800,29 +775,37 @@ function PreviewRenderer({
           }
           fontSize={
             styles.fontSize ??
-            component.fontSize
+            component.fontSize ??
+            16
           }
           color={
             styles.color ??
-            component.color
+            component.color ??
+            "#000000"
           }
           fontFamily={
-            styles.fontFamily
+            styles.fontFamily ??
+            "Arial"
           }
           fontWeight={
-            styles.fontWeight
+            styles.fontWeight ??
+            400
           }
           lineHeight={
-            styles.lineHeight
+            styles.lineHeight ??
+            1.5
           }
           letterSpacing={
-            styles.letterSpacing
+            styles.letterSpacing ??
+            0
           }
           textAlign={
-            styles.textAlign
+            styles.textAlign ??
+            "left"
           }
         />
       )}
+
       {component.type ===
         "Button" && (
         <ButtonPreview
@@ -831,28 +814,36 @@ function PreviewRenderer({
           }
           color={
             styles.color ??
-            component.color
+            component.color ??
+            "#000000"
           }
           fontSize={
-            styles.fontSize
+            styles.fontSize ??
+            16
           }
           fontFamily={
-            styles.fontFamily
+            styles.fontFamily ??
+            "Arial"
           }
           fontWeight={
-            styles.fontWeight
+            styles.fontWeight ??
+            600
           }
           lineHeight={
-            styles.lineHeight
+            styles.lineHeight ??
+            1.5
           }
           letterSpacing={
-            styles.letterSpacing
+            styles.letterSpacing ??
+            0
           }
           textAlign={
-            styles.textAlign
+            styles.textAlign ??
+            "center"
           }
         />
       )}
+
       {component.type ===
         "Image" && (
         <ImagePreview
@@ -860,16 +851,20 @@ function PreviewRenderer({
             component.imageUrl
           }
           width={
-            component.imageWidth
+            component.imageWidth ??
+            100
           }
           height={
-            component.imageHeight
+            component.imageHeight ??
+            300
           }
           borderRadius={
-            component.imageBorderRadius
+            component.imageBorderRadius ??
+            8
           }
         />
       )}
+
       {children.length >
         0 && (
         <div
