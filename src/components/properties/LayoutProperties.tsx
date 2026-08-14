@@ -38,18 +38,49 @@ function BoxModel({
   const inputStyle = {
     width: "100%",
     padding: "8px",
-    borderRadius: "6px",
+    borderRadius: "7px",
     border: "none",
     textAlign: "center" as const,
-    boxSizing: "border-box" as const,
+    boxSizing:
+      "border-box" as const,
+    background: "#ffffff",
+    color: "#111827",
+    outline: "none",
   };
 
+  const update =
+    (
+      property:
+        | "top"
+        | "right"
+        | "bottom"
+        | "left"
+    ) =>
+    (
+      value: number
+    ) => {
+      onChange(
+        property,
+        Math.max(0, value)
+      );
+    };
+
   return (
-    <div style={{ marginTop: "20px" }}>
+    <div
+      style={{
+        marginTop: "22px",
+      }}
+    >
       <h4
         style={{
           marginBottom: "10px",
           color: "#d1d5db",
+          fontSize: "13px",
+          fontWeight: 700,
+          textTransform:
+            "uppercase",
+          letterSpacing:
+            "0.06em",
         }}
       >
         {title}
@@ -64,6 +95,8 @@ function BoxModel({
             "1fr 1fr 1fr",
           gap: "6px",
           background: "#111827",
+          border:
+            "1px solid #374151",
           padding: "8px",
           borderRadius: "10px",
         }}
@@ -72,43 +105,63 @@ function BoxModel({
 
         <input
           type="number"
+          min="0"
           value={top}
           onChange={(e) =>
-            onChange(
-              "top",
-              Number(e.target.value)
+            update("top")(
+              Number(
+                e.target.value
+              )
             )
           }
           placeholder="Top"
-          style={inputStyle}
+          aria-label={`${title} top`}
+          style={
+            inputStyle
+          }
         />
 
         <div />
 
         <input
           type="number"
+          min="0"
           value={left}
           onChange={(e) =>
-            onChange(
-              "left",
-              Number(e.target.value)
+            update("left")(
+              Number(
+                e.target.value
+              )
             )
           }
           placeholder="Left"
-          style={inputStyle}
+          aria-label={`${title} left`}
+          style={
+            inputStyle
+          }
         />
 
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#9ca3af",
-            fontSize: "11px",
+            alignItems:
+              "center",
+            justifyContent:
+              "center",
+            color:
+              "#9ca3af",
+            fontSize:
+              "10px",
+            fontWeight:
+              700,
             border:
               "1px dashed #4b5563",
-            borderRadius: "6px",
-            minHeight: "36px",
+            borderRadius:
+              "7px",
+            minHeight:
+              "36px",
+            letterSpacing:
+              "0.05em",
           }}
         >
           BOX
@@ -116,30 +169,40 @@ function BoxModel({
 
         <input
           type="number"
+          min="0"
           value={right}
           onChange={(e) =>
-            onChange(
-              "right",
-              Number(e.target.value)
+            update("right")(
+              Number(
+                e.target.value
+              )
             )
           }
           placeholder="Right"
-          style={inputStyle}
+          aria-label={`${title} right`}
+          style={
+            inputStyle
+          }
         />
 
         <div />
 
         <input
           type="number"
+          min="0"
           value={bottom}
           onChange={(e) =>
-            onChange(
-              "bottom",
-              Number(e.target.value)
+            update("bottom")(
+              Number(
+                e.target.value
+              )
             )
           }
           placeholder="Bottom"
-          style={inputStyle}
+          aria-label={`${title} bottom`}
+          style={
+            inputStyle
+          }
         />
 
         <div />
@@ -172,7 +235,14 @@ function LayoutProperties({
     padding: "10px",
     borderRadius: "8px",
     border: "none",
-    boxSizing: "border-box" as const,
+    boxSizing:
+      "border-box" as const,
+    background:
+      "#ffffff",
+    color:
+      "#111827",
+    outline:
+      "none",
   };
 
   const twoColumnStyle = {
@@ -183,8 +253,33 @@ function LayoutProperties({
 
   const selectStyle = {
     ...inputStyle,
-    background: "white",
-    color: "#111827",
+    cursor:
+      "pointer",
+  };
+
+  const sectionTitleStyle = {
+    marginTop: "24px",
+    marginBottom: "11px",
+    color: "#d1d5db",
+    fontSize: "13px",
+    fontWeight: 700,
+    textTransform:
+      "uppercase" as const,
+    letterSpacing:
+      "0.06em",
+  };
+
+  const labelStyle = {
+    display: "block",
+    marginTop: "14px",
+    color: "#d1d5db",
+    fontSize: "13px",
+  };
+
+  const valueStyle = {
+    marginTop: "6px",
+    color: "#9ca3af",
+    fontSize: "12px",
   };
 
   const setDisplay = (
@@ -193,9 +288,12 @@ function LayoutProperties({
       | "flex"
       | "grid"
   ) => {
-    if (display === "flex") {
+    if (
+      display === "flex"
+    ) {
       updateStyles({
-        display: "flex",
+        display:
+          "flex",
         flexDirection:
           styles.flexDirection ??
           "row",
@@ -206,21 +304,28 @@ function LayoutProperties({
           styles.alignItems ??
           "stretch",
         gap:
-          styles.gap ?? 16,
+          styles.gap ??
+          16,
       });
 
       return;
     }
 
-    if (display === "grid") {
+    if (
+      display === "grid"
+    ) {
       updateStyles({
-        display: "grid",
+        display:
+          "grid",
         gridColumns:
-          styles.gridColumns ?? 1,
+          styles.gridColumns ??
+          1,
         gridGap:
-          styles.gridGap ?? 16,
+          styles.gridGap ??
+          16,
         gap:
-          styles.gap ?? 16,
+          styles.gap ??
+          16,
         flexDirection:
           undefined,
         justifyContent:
@@ -233,7 +338,8 @@ function LayoutProperties({
     }
 
     updateStyles({
-      display: "block",
+      display:
+        "block",
       flexDirection:
         undefined,
       justifyContent:
@@ -253,7 +359,8 @@ function LayoutProperties({
       | "column"
   ) => {
     updateStyles({
-      display: "flex",
+      display:
+        "flex",
       flexDirection:
         direction,
     });
@@ -265,15 +372,24 @@ function LayoutProperties({
     const safeColumns =
       Math.min(
         12,
-        Math.max(1, columns)
+        Math.max(
+          1,
+          Number.isFinite(
+            columns
+          )
+            ? columns
+            : 1
+        )
       );
 
     updateStyles({
-      display: "grid",
+      display:
+        "grid",
       gridColumns:
         safeColumns,
       gridGap:
-        styles.gridGap ?? 16,
+        styles.gridGap ??
+        16,
       gap:
         styles.gridGap ??
         styles.gap ??
@@ -287,15 +403,46 @@ function LayoutProperties({
     });
   };
 
+  const updateGap = (
+    value: number
+  ) => {
+    updateStyles({
+      gap:
+        Math.max(
+          0,
+          value
+        ),
+    });
+  };
+
+  const updateGridGap = (
+    value: number
+  ) => {
+    const safeValue =
+      Math.max(
+        0,
+        value
+      );
+
+    updateStyles({
+      gridGap:
+        safeValue,
+      gap:
+        safeValue,
+    });
+  };
+
   const applyResponsivePreset = (
     columns: number
   ) => {
     updateStyles({
-      display: "grid",
+      display:
+        "grid",
       gridColumns:
         columns,
       gridGap:
-        styles.gridGap ?? 16,
+        styles.gridGap ??
+        16,
       gap:
         styles.gridGap ??
         styles.gap ??
@@ -305,16 +452,131 @@ function LayoutProperties({
 
   const getRecommendedColumns =
     () => {
-      if (device === "desktop") {
+      if (
+        device ===
+        "desktop"
+      ) {
         return 3;
       }
 
-      if (device === "tablet") {
+      if (
+        device ===
+        "tablet"
+      ) {
         return 2;
       }
 
       return 1;
     };
+
+  const applyLayoutPreset = (
+    preset:
+      | "content"
+      | "split"
+      | "cards"
+      | "center"
+      | "stack"
+  ) => {
+    if (
+      preset ===
+      "content"
+    ) {
+      updateStyles({
+        display:
+          "block",
+        width: 100,
+        widthUnit:
+          "%",
+        maxWidth:
+          1100,
+        maxWidthUnit:
+          "px",
+        marginLeft:
+          0,
+        marginRight:
+          0,
+        paddingLeft:
+          24,
+        paddingRight:
+          24,
+      });
+
+      return;
+    }
+
+    if (
+      preset ===
+      "split"
+    ) {
+      updateStyles({
+        display:
+          "flex",
+        flexDirection:
+          "row",
+        justifyContent:
+          "space-between",
+        alignItems:
+          "center",
+        gap:
+          32,
+      });
+
+      return;
+    }
+
+    if (
+      preset ===
+      "cards"
+    ) {
+      updateStyles({
+        display:
+          "grid",
+        gridColumns:
+          3,
+        gridGap:
+          24,
+        gap:
+          24,
+      });
+
+      return;
+    }
+
+    if (
+      preset ===
+      "center"
+    ) {
+      updateStyles({
+        display:
+          "flex",
+        flexDirection:
+          "column",
+        justifyContent:
+          "center",
+        alignItems:
+          "center",
+        gap:
+          16,
+        horizontalAlign:
+          "center",
+      });
+
+      return;
+    }
+
+    updateStyles({
+      display:
+        "flex",
+      flexDirection:
+        "column",
+      justifyContent:
+        "flex-start",
+      alignItems:
+        "stretch",
+      gap:
+        16,
+    });
+  };
 
   return (
     <div>
@@ -325,47 +587,71 @@ function LayoutProperties({
       <div
         style={{
           marginTop: "10px",
-          padding: "10px 12px",
-          background: "#111827",
+          padding:
+            "10px 12px",
+          background:
+            "#111827",
           border:
             "1px solid #374151",
-          borderRadius: "8px",
-          color: "#d1d5db",
-          fontSize: "12px",
+          borderRadius:
+            "8px",
+          color:
+            "#d1d5db",
+          fontSize:
+            "12px",
         }}
       >
         Editing:{" "}
         <strong
           style={{
-            color: "#ffffff",
+            color:
+              "#ffffff",
           }}
         >
-          {getDeviceLabel(device)}
+          {getDeviceLabel(
+            device
+          )}
         </strong>
       </div>
 
       <h4
-        style={{
-          marginTop: "20px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
+        style={
+          sectionTitleStyle
+        }
       >
         Size
       </h4>
 
-      <p>Width</p>
+      <label
+        style={
+          labelStyle
+        }
+      >
+        Width
+      </label>
 
-      <div style={twoColumnStyle}>
+      <div
+        style={
+          twoColumnStyle
+        }
+      >
         <input
           type="number"
           min="0"
-          value={styles.width ?? 100}
+          value={
+            styles.width ??
+            100
+          }
           onChange={(e) =>
             updateStyles({
-              width: Number(
-                e.target.value
-              ),
+              width:
+                Math.max(
+                  0,
+                  Number(
+                    e.target
+                      .value
+                  )
+                ),
             })
           }
           style={{
@@ -376,19 +662,22 @@ function LayoutProperties({
 
         <select
           value={
-            styles.widthUnit ?? "%"
+            styles.widthUnit ??
+            "%"
           }
           onChange={(e) =>
             updateStyles({
               widthUnit:
-                e.target.value as
+                e.target
+                  .value as
                   | "%"
                   | "px",
             })
           }
           style={{
             ...selectStyle,
-            width: "75px",
+            width:
+              "75px",
           }}
         >
           <option value="%">
@@ -400,26 +689,36 @@ function LayoutProperties({
         </select>
       </div>
 
-      <p
-        style={{
-          marginTop: "15px",
-        }}
+      <label
+        style={
+          labelStyle
+        }
       >
         Height
-      </p>
+      </label>
 
-      <div style={twoColumnStyle}>
+      <div
+        style={
+          twoColumnStyle
+        }
+      >
         <input
           type="number"
           min="0"
           value={
-            styles.height ?? 300
+            styles.height ??
+            300
           }
           onChange={(e) =>
             updateStyles({
-              height: Number(
-                e.target.value
-              ),
+              height:
+                Math.max(
+                  0,
+                  Number(
+                    e.target
+                      .value
+                  )
+                ),
             })
           }
           style={{
@@ -436,14 +735,16 @@ function LayoutProperties({
           onChange={(e) =>
             updateStyles({
               heightUnit:
-                e.target.value as
+                e.target
+                  .value as
                   | "%"
                   | "px",
             })
           }
           style={{
             ...selectStyle,
-            width: "75px",
+            width:
+              "75px",
           }}
         >
           <option value="px">
@@ -455,26 +756,36 @@ function LayoutProperties({
         </select>
       </div>
 
-      <p
-        style={{
-          marginTop: "15px",
-        }}
+      <label
+        style={
+          labelStyle
+        }
       >
         Max Width
-      </p>
+      </label>
 
-      <div style={twoColumnStyle}>
+      <div
+        style={
+          twoColumnStyle
+        }
+      >
         <input
           type="number"
           min="0"
           value={
-            styles.maxWidth ?? 0
+            styles.maxWidth ??
+            0
           }
           onChange={(e) =>
             updateStyles({
-              maxWidth: Number(
-                e.target.value
-              ),
+              maxWidth:
+                Math.max(
+                  0,
+                  Number(
+                    e.target
+                      .value
+                  )
+                ),
             })
           }
           style={{
@@ -491,14 +802,16 @@ function LayoutProperties({
           onChange={(e) =>
             updateStyles({
               maxWidthUnit:
-                e.target.value as
+                e.target
+                  .value as
                   | "%"
                   | "px",
             })
           }
           style={{
             ...selectStyle,
-            width: "75px",
+            width:
+              "75px",
           }}
         >
           <option value="px">
@@ -510,26 +823,36 @@ function LayoutProperties({
         </select>
       </div>
 
-      <p
-        style={{
-          marginTop: "15px",
-        }}
+      <label
+        style={
+          labelStyle
+        }
       >
         Min Height
-      </p>
+      </label>
 
-      <div style={twoColumnStyle}>
+      <div
+        style={
+          twoColumnStyle
+        }
+      >
         <input
           type="number"
           min="0"
           value={
-            styles.minHeight ?? 0
+            styles.minHeight ??
+            0
           }
           onChange={(e) =>
             updateStyles({
-              minHeight: Number(
-                e.target.value
-              ),
+              minHeight:
+                Math.max(
+                  0,
+                  Number(
+                    e.target
+                      .value
+                  )
+                ),
             })
           }
           style={{
@@ -546,14 +869,16 @@ function LayoutProperties({
           onChange={(e) =>
             updateStyles({
               minHeightUnit:
-                e.target.value as
+                e.target
+                  .value as
                   | "%"
                   | "px",
             })
           }
           style={{
             ...selectStyle,
-            width: "75px",
+            width:
+              "75px",
           }}
         >
           <option value="px">
@@ -568,138 +893,155 @@ function LayoutProperties({
       <BoxModel
         title="Margin"
         top={
-          styles.marginTop ?? 0
+          styles.marginTop ??
+          0
         }
         right={
-          styles.marginRight ?? 0
+          styles.marginRight ??
+          0
         }
         bottom={
-          styles.marginBottom ?? 0
+          styles.marginBottom ??
+          0
         }
         left={
-          styles.marginLeft ?? 0
+          styles.marginLeft ??
+          0
         }
         onChange={(
           property,
           value
         ) => {
+          const updates: Partial<BuilderStyles> =
+            {};
+
           if (
-            property === "top"
+            property ===
+            "top"
           ) {
-            updateStyles({
-              marginTop:
-                value,
-            });
+            updates.marginTop =
+              value;
           }
 
           if (
-            property === "right"
+            property ===
+            "right"
           ) {
-            updateStyles({
-              marginRight:
-                value,
-            });
+            updates.marginRight =
+              value;
           }
 
           if (
             property ===
             "bottom"
           ) {
-            updateStyles({
-              marginBottom:
-                value,
-            });
+            updates.marginBottom =
+              value;
           }
 
           if (
-            property === "left"
+            property ===
+            "left"
           ) {
-            updateStyles({
-              marginLeft:
-                value,
-            });
+            updates.marginLeft =
+              value;
           }
+
+          updateStyles(
+            updates
+          );
         }}
       />
 
       <BoxModel
         title="Padding"
         top={
-          styles.paddingTop ?? 0
+          styles.paddingTop ??
+          0
         }
         right={
-          styles.paddingRight ?? 0
+          styles.paddingRight ??
+          0
         }
         bottom={
-          styles.paddingBottom ?? 0
+          styles.paddingBottom ??
+          0
         }
         left={
-          styles.paddingLeft ?? 0
+          styles.paddingLeft ??
+          0
         }
         onChange={(
           property,
           value
         ) => {
+          const updates: Partial<BuilderStyles> =
+            {};
+
           if (
-            property === "top"
+            property ===
+            "top"
           ) {
-            updateStyles({
-              paddingTop:
-                value,
-            });
+            updates.paddingTop =
+              value;
           }
 
           if (
-            property === "right"
+            property ===
+            "right"
           ) {
-            updateStyles({
-              paddingRight:
-                value,
-            });
+            updates.paddingRight =
+              value;
           }
 
           if (
             property ===
             "bottom"
           ) {
-            updateStyles({
-              paddingBottom:
-                value,
-            });
+            updates.paddingBottom =
+              value;
           }
 
           if (
-            property === "left"
+            property ===
+            "left"
           ) {
-            updateStyles({
-              paddingLeft:
-                value,
-            });
+            updates.paddingLeft =
+              value;
           }
+
+          updateStyles(
+            updates
+          );
         }}
       />
 
       <h4
-        style={{
-          marginTop: "25px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
+        style={
+          sectionTitleStyle
+        }
       >
         Positioning
       </h4>
 
-      <p>
+      <label
+        style={
+          labelStyle
+        }
+      >
         Horizontal Alignment
-      </p>
+      </label>
 
       <div
         style={{
-          display: "grid",
+          display:
+            "grid",
           gridTemplateColumns:
             "repeat(3, 1fr)",
-          gap: "6px",
-          marginTop: "8px",
+          gap:
+            "6px",
+          marginTop:
+            "8px",
         }}
       >
         {(
@@ -724,23 +1066,26 @@ function LayoutProperties({
               style={{
                 padding:
                   "10px 5px",
-                border: "none",
+                border:
+                  "none",
                 borderRadius:
-                  "6px",
+                  "7px",
                 background:
                   (styles.horizontalAlign ??
                     "left") ===
                   alignment
-                    ? "#2563eb"
+                    ? "#7c3aed"
                     : "#374151",
                 color:
-                  "white",
+                  "#ffffff",
                 cursor:
                   "pointer",
               }}
             >
               {alignment
-                .charAt(0)
+                .charAt(
+                  0
+                )
                 .toUpperCase() +
                 alignment.slice(
                   1
@@ -751,21 +1096,21 @@ function LayoutProperties({
       </div>
 
       <h4
-        style={{
-          marginTop: "25px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
+        style={
+          sectionTitleStyle
+        }
       >
         Display
       </h4>
 
       <div
         style={{
-          display: "grid",
+          display:
+            "grid",
           gridTemplateColumns:
             "repeat(3, 1fr)",
-          gap: "6px",
+          gap:
+            "6px",
           marginBottom:
             "10px",
         }}
@@ -791,22 +1136,25 @@ function LayoutProperties({
               style={{
                 padding:
                   "10px 5px",
-                border: "none",
+                border:
+                  "none",
                 borderRadius:
-                  "6px",
+                  "7px",
                 background:
                   styles.display ===
                   display
-                    ? "#2563eb"
+                    ? "#7c3aed"
                     : "#374151",
                 color:
-                  "white",
+                  "#ffffff",
                 cursor:
                   "pointer",
               }}
             >
               {display
-                .charAt(0)
+                .charAt(
+                  0
+                )
                 .toUpperCase() +
                 display.slice(
                   1
@@ -819,14 +1167,13 @@ function LayoutProperties({
       {styles.display ===
         "flex" && (
         <>
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Flex Direction
-          </p>
+          </label>
 
           <div
             style={{
@@ -834,7 +1181,8 @@ function LayoutProperties({
                 "grid",
               gridTemplateColumns:
                 "1fr 1fr",
-              gap: "6px",
+              gap:
+                "6px",
               marginTop:
                 "8px",
             }}
@@ -845,7 +1193,9 @@ function LayoutProperties({
                 "column",
               ] as const
             ).map(
-              (direction) => (
+              (
+                direction
+              ) => (
                 <button
                   key={
                     direction
@@ -862,14 +1212,14 @@ function LayoutProperties({
                     border:
                       "none",
                     borderRadius:
-                      "6px",
+                      "7px",
                     background:
                       styles.flexDirection ===
                       direction
-                        ? "#2563eb"
+                        ? "#7c3aed"
                         : "#374151",
                     color:
-                      "white",
+                      "#ffffff",
                     cursor:
                       "pointer",
                   }}
@@ -883,14 +1233,13 @@ function LayoutProperties({
             )}
           </div>
 
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Justify Content
-          </p>
+          </label>
 
           <select
             value={
@@ -934,14 +1283,13 @@ function LayoutProperties({
             </option>
           </select>
 
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Align Items
-          </p>
+          </label>
 
           <select
             value={
@@ -977,48 +1325,55 @@ function LayoutProperties({
             </option>
           </select>
 
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Gap
-          </p>
+          </label>
 
           <input
             type="number"
             min="0"
             value={
-              styles.gap ?? 16
+              styles.gap ??
+              16
             }
             onChange={(e) =>
-              updateStyles({
-                gap: Number(
+              updateGap(
+                Number(
                   e.target.value
-                ),
-              })
+                )
+              )
             }
-            style={{
-              ...inputStyle,
-              marginTop:
-                "8px",
-            }}
+            style={
+              inputStyle
+            }
           />
+
+          <div
+            style={
+              valueStyle
+            }
+          >
+            {styles.gap ??
+              16}
+            px
+          </div>
         </>
       )}
 
       {styles.display ===
         "grid" && (
         <>
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Columns
-          </p>
+          </label>
 
           <input
             type="number"
@@ -1049,13 +1404,16 @@ function LayoutProperties({
                 "grid",
               gridTemplateColumns:
                 "repeat(4, 1fr)",
-              gap: "6px",
+              gap:
+                "6px",
               marginTop:
                 "10px",
             }}
           >
             {[1, 2, 3, 4].map(
-              (columns) => (
+              (
+                columns
+              ) => (
                 <button
                   key={
                     columns
@@ -1072,14 +1430,14 @@ function LayoutProperties({
                     border:
                       "none",
                     borderRadius:
-                      "6px",
+                      "7px",
                     background:
                       styles.gridColumns ===
                       columns
-                        ? "#2563eb"
+                        ? "#7c3aed"
                         : "#374151",
                     color:
-                      "white",
+                      "#ffffff",
                     cursor:
                       "pointer",
                   }}
@@ -1090,14 +1448,13 @@ function LayoutProperties({
             )}
           </div>
 
-          <p
-            style={{
-              marginTop:
-                "15px",
-            }}
+          <label
+            style={
+              labelStyle
+            }
           >
             Grid Gap
-          </p>
+          </label>
 
           <input
             type="number"
@@ -1106,37 +1463,35 @@ function LayoutProperties({
               styles.gridGap ??
               16
             }
-            onChange={(e) => {
-              const value =
+            onChange={(e) =>
+              updateGridGap(
                 Number(
-                  e.target.value
-                );
-
-              updateStyles({
-                gridGap:
-                  value,
-                gap:
-                  value,
-              });
-            }}
-            style={{
-              ...inputStyle,
-              marginTop:
-                "8px",
-            }}
+                  e.target
+                    .value
+                )
+              )
+            }
+            style={
+              inputStyle
+            }
           />
 
-          <h4
-            style={{
-              marginTop:
-                "25px",
-              marginBottom:
-                "10px",
-              color:
-                "#d1d5db",
-            }}
+          <div
+            style={
+              valueStyle
+            }
           >
-            Responsive Preset
+            {styles.gridGap ??
+              16}
+            px
+          </div>
+
+          <h4
+            style={
+              sectionTitleStyle
+            }
+          >
+            Responsive
           </h4>
 
           <div
@@ -1180,16 +1535,13 @@ function LayoutProperties({
               <strong
                 style={{
                   color:
-                    "#60a5fa",
+                    "#a78bfa",
                 }}
               >
-                {getRecommendedColumns()}
-              </strong>{" "}
-              column
-              {getRecommendedColumns() !==
-              1
-                ? "s"
-                : ""}
+                {
+                  getRecommendedColumns()
+                }
+              </strong>
             </div>
 
             <button
@@ -1207,15 +1559,17 @@ function LayoutProperties({
                 border:
                   "none",
                 borderRadius:
-                  "6px",
+                  "7px",
                 background:
-                  "#2563eb",
+                  "#7c3aed",
                 color:
-                  "white",
+                  "#ffffff",
                 cursor:
                   "pointer",
                 fontWeight:
                   600,
+                fontSize:
+                  "12px",
               }}
             >
               Use{" "}
@@ -1226,15 +1580,141 @@ function LayoutProperties({
               {getRecommendedColumns() !==
               1
                 ? "s"
-                : ""}{" "}
-              on{" "}
-              {getDeviceLabel(
-                device
-              )}
+                : ""}
             </button>
           </div>
         </>
       )}
+
+      <h4
+        style={
+          sectionTitleStyle
+        }
+      >
+        Layout Presets
+      </h4>
+
+      <div
+        style={{
+          display:
+            "grid",
+          gridTemplateColumns:
+            "repeat(2, 1fr)",
+          gap:
+            "8px",
+          marginTop:
+            "10px",
+        }}
+      >
+        {(
+          [
+            {
+              id:
+                "content" as const,
+              label:
+                "Content",
+              description:
+                "Centered content width",
+            },
+            {
+              id:
+                "split" as const,
+              label:
+                "Split",
+              description:
+                "Two sides",
+            },
+            {
+              id:
+                "cards" as const,
+              label:
+                "Cards",
+              description:
+                "3-column grid",
+            },
+            {
+              id:
+                "center" as const,
+              label:
+                "Centered",
+              description:
+                "Center stack",
+            },
+            {
+              id:
+                "stack" as const,
+              label:
+                "Stack",
+              description:
+                "Vertical flow",
+            },
+          ]
+        ).map(
+          (preset) => (
+            <button
+              key={
+                preset.id
+              }
+              type="button"
+              onClick={() =>
+                applyLayoutPreset(
+                  preset.id
+                )
+              }
+              style={{
+                minHeight:
+                  "68px",
+                padding:
+                  "10px 8px",
+                border:
+                  "1px solid #374151",
+                borderRadius:
+                  "8px",
+                background:
+                  "#111827",
+                color:
+                  "#ffffff",
+                cursor:
+                  "pointer",
+                textAlign:
+                  "left",
+              }}
+            >
+              <strong
+                style={{
+                  display:
+                    "block",
+                  fontSize:
+                    "12px",
+                }}
+              >
+                {
+                  preset.label
+                }
+              </strong>
+
+              <span
+                style={{
+                  display:
+                    "block",
+                  marginTop:
+                    "4px",
+                  color:
+                    "#9ca3af",
+                  fontSize:
+                    "10px",
+                  lineHeight:
+                    1.4,
+                }}
+              >
+                {
+                  preset.description
+                }
+              </span>
+            </button>
+          )
+        )}
+      </div>
     </div>
   );
 }
