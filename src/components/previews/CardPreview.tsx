@@ -1,11 +1,22 @@
 interface CardPreviewProps {
+  title?: string;
+  content?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  showButton?: boolean;
+  imageUrl?: string;
   backgroundColor?: string;
   textColor?: string;
   fontFamily?: string;
   textAlign?: "left" | "center" | "right";
 }
-
 function CardPreview({
+  title = "Card Title",
+  content = "Card description goes here. Create a clean and flexible content block for your website.",
+  buttonText = "Learn More",
+  buttonUrl = "#",
+  showButton = true,
+  imageUrl = "",
   backgroundColor = "#ffffff",
   textColor = "#000000",
   fontFamily = "Arial",
@@ -17,7 +28,17 @@ function CardPreview({
       : textAlign === "right"
       ? "flex-end"
       : "center";
-
+  const isDark =
+    textColor.toLowerCase() === "#ffffff" ||
+    textColor.toLowerCase() === "#fff";
+  const accentColor =
+    isDark
+      ? "#ffffff"
+      : "#7c3aed";
+  const mutedTextColor =
+    isDark
+      ? "rgba(255,255,255,0.78)"
+      : "rgba(15,23,42,0.62)";
   return (
     <article
       className="card-preview"
@@ -39,6 +60,32 @@ function CardPreview({
         flexDirection: "column",
       }}
     >
+      {imageUrl && (
+        <div
+          style={{
+            width: "100%",
+            height: "170px",
+            marginBottom: "20px",
+            borderRadius: "12px",
+            overflow: "hidden",
+            background:
+              isDark
+                ? "rgba(255,255,255,0.06)"
+                : "#f5f3fa",
+          }}
+        >
+          <img
+            src={imageUrl}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "block",
+              objectFit: "cover",
+            }}
+          />
+        </div>
+      )}
       <div
         style={{
           display: "flex",
@@ -62,13 +109,10 @@ function CardPreview({
             padding: "5px 9px",
             borderRadius: "999px",
             background:
-              textColor === "#ffffff"
+              isDark
                 ? "rgba(255,255,255,0.10)"
                 : "rgba(124,58,237,0.09)",
-            color:
-              textColor === "#ffffff"
-                ? "#ffffff"
-                : "#7c3aed",
+            color: accentColor,
             fontSize: "10px",
             fontWeight: 700,
             lineHeight: 1.2,
@@ -78,14 +122,13 @@ function CardPreview({
         >
           Featured
         </span>
-
         <span
           style={{
             color: textColor,
             fontSize: "11px",
             fontWeight: 600,
             opacity:
-              textColor === "#ffffff"
+              isDark
                 ? 0.65
                 : 0.45,
           }}
@@ -93,7 +136,6 @@ function CardPreview({
           01
         </span>
       </div>
-
       <div
         style={{
           width: "100%",
@@ -115,30 +157,23 @@ function CardPreview({
             overflowWrap: "break-word",
           }}
         >
-          Card Title
+          {title}
         </h3>
-
         <p
           style={{
             width: "100%",
             maxWidth: "520px",
             margin: "12px 0 0",
-            color: textColor,
+            color: mutedTextColor,
             fontFamily,
             fontSize: "14px",
             lineHeight: 1.7,
-            opacity:
-              textColor === "#ffffff"
-                ? 0.78
-                : 0.62,
             overflowWrap: "break-word",
           }}
         >
-          Card description goes here. Create a clean and flexible
-          content block for your website.
+          {content}
         </p>
       </div>
-
       <div
         style={{
           display: "flex",
@@ -159,11 +194,11 @@ function CardPreview({
             padding: "7px 10px",
             borderRadius: "8px",
             background:
-              textColor === "#ffffff"
+              isDark
                 ? "rgba(255,255,255,0.07)"
                 : "#f7f5fb",
             border:
-              textColor === "#ffffff"
+              isDark
                 ? "1px solid rgba(255,255,255,0.09)"
                 : "1px solid #ece9f4",
             color: textColor,
@@ -173,17 +208,16 @@ function CardPreview({
         >
           Modern
         </span>
-
         <span
           style={{
             padding: "7px 10px",
             borderRadius: "8px",
             background:
-              textColor === "#ffffff"
+              isDark
                 ? "rgba(255,255,255,0.07)"
                 : "#f7f5fb",
             border:
-              textColor === "#ffffff"
+              isDark
                 ? "1px solid rgba(255,255,255,0.09)"
                 : "1px solid #ece9f4",
             color: textColor,
@@ -194,65 +228,71 @@ function CardPreview({
           Flexible
         </span>
       </div>
-
-      <div
-        style={{
-          marginTop: "auto",
-          paddingTop: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent:
-            textAlign === "right"
-              ? "flex-end"
-              : textAlign === "center"
-              ? "center"
-              : "space-between",
-          gap: "12px",
-          width: "100%",
-        }}
-      >
-        <span
+      {showButton && (
+        <div
           style={{
-            color: textColor,
-            fontSize: "12px",
-            fontWeight: 600,
-            opacity:
-              textColor === "#ffffff"
-                ? 0.58
-                : 0.48,
+            marginTop: "auto",
+            paddingTop: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              textAlign === "right"
+                ? "flex-end"
+                : textAlign === "center"
+                ? "center"
+                : "space-between",
+            gap: "12px",
+            width: "100%",
           }}
         >
-          Learn more
-        </span>
-
-        <button
-          className="button-preview"
-          type="button"
-          style={{
-            minHeight: "40px",
-            maxWidth: "100%",
-            boxSizing: "border-box",
-            padding: "9px 15px",
-            border:
-              textColor === "#ffffff"
-                ? "1px solid rgba(255,255,255,0.10)"
-                : "1px solid #e5e1ee",
-            borderRadius: "9px",
-            background:
-              textColor === "#ffffff"
-                ? "rgba(255,255,255,0.09)"
-                : "#ffffff",
-            color: textColor,
-            fontFamily,
-            fontSize: "12px",
-            fontWeight: 700,
-            cursor: "pointer",
-          }}
-        >
-          Learn More →
-        </button>
-      </div>
-
+          <span
+            style={{
+              color: textColor,
+              fontSize: "12px",
+              fontWeight: 600,
+              opacity:
+                isDark
+                  ? 0.58
+                  : 0.48,
+            }}
+          >
+            Learn more
+          </span>
+          <a
+            href={buttonUrl}
+            onClick={(event) =>
+              event.preventDefault()
+            }
+            className="button-preview"
+            style={{
+              minHeight: "40px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              maxWidth: "100%",
+              boxSizing: "border-box",
+              padding: "9px 15px",
+              border:
+                isDark
+                  ? "1px solid rgba(255,255,255,0.10)"
+                  : "1px solid #e5e1ee",
+              borderRadius: "9px",
+              background:
+                isDark
+                  ? "rgba(255,255,255,0.09)"
+                  : "#ffffff",
+              color: textColor,
+              fontFamily,
+              fontSize: "12px",
+              fontWeight: 700,
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            {buttonText} →
+          </a>
+        </div>
+      )}
       <div
         aria-hidden="true"
         style={{
@@ -263,7 +303,7 @@ function CardPreview({
           top: "-70px",
           borderRadius: "50%",
           background:
-            textColor === "#ffffff"
+            isDark
               ? "rgba(255,255,255,0.04)"
               : "rgba(124,58,237,0.045)",
           pointerEvents: "none",
@@ -272,5 +312,4 @@ function CardPreview({
     </article>
   );
 }
-
 export default CardPreview;
