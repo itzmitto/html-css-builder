@@ -16,6 +16,9 @@ interface NavbarPreviewProps {
   boxShadow?: string;
   sticky?: boolean;
   links?: NavbarLink[];
+  ctaText?: string;
+  ctaUrl?: string;
+  showCta?: boolean;
 }
 
 function NavbarPreview({
@@ -52,9 +55,11 @@ function NavbarPreview({
     {
       id: "contact",
       label: "Contact",
-      url: "#",
     },
   ],
+  ctaText = "Get Started",
+  ctaUrl = "#",
+  showCta = true,
 }: NavbarPreviewProps) {
   const navAlignment =
     textAlign === "center"
@@ -62,6 +67,20 @@ function NavbarPreview({
       : textAlign === "right"
       ? "flex-end"
       : "flex-start";
+
+  const isDark =
+    textColor.toLowerCase() === "#ffffff" ||
+    textColor.toLowerCase() === "#fff";
+
+  const primaryButtonBackground =
+    isDark
+      ? "#ffffff"
+      : "#7c3aed";
+
+  const primaryButtonColor =
+    isDark
+      ? "#111827"
+      : "#ffffff";
 
   return (
     <nav
@@ -102,8 +121,11 @@ function NavbarPreview({
           : undefined,
       }}
     >
-      <div
-        className="logo"
+      <a
+        href="#"
+        onClick={(event) =>
+          event.preventDefault()
+        }
         style={{
           flexShrink: 0,
           minWidth: 0,
@@ -114,14 +136,20 @@ function NavbarPreview({
           letterSpacing: "-0.02em",
           lineHeight: 1,
           whiteSpace: "nowrap",
+          textDecoration: "none",
+          cursor: "pointer",
+          maxWidth: "35%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
       >
         {logoText}
-      </div>
+      </a>
 
       <div
         className="nav-links"
         style={{
+          flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: navAlignment,
@@ -131,56 +159,87 @@ function NavbarPreview({
           overflow: "hidden",
         }}
       >
-        {links.map((link) => (
-          <a
-            key={link.id}
-            href={link.url}
-            onClick={(event) =>
-              event.preventDefault()
-            }
+        {links.length > 0 ? (
+          links.map((link) => (
+            <a
+              key={link.id}
+              href={link.url || "#"}
+              target={
+                link.openInNewTab
+                  ? "_blank"
+                  : undefined
+              }
+              rel={
+                link.openInNewTab
+                  ? "noreferrer"
+                  : undefined
+              }
+              onClick={(event) => {
+                event.preventDefault();
+              }}
+              style={{
+                color: textColor,
+                fontFamily,
+                fontSize: "14px",
+                fontWeight: 500,
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                opacity: 0.78,
+                textDecoration: "none",
+                transition:
+                  "opacity 0.15s ease, transform 0.15s ease",
+              }}
+            >
+              {link.label ||
+                "Untitled"}
+            </a>
+          ))
+        ) : (
+          <span
             style={{
               color: textColor,
+              opacity: 0.45,
+              fontSize: "13px",
               fontFamily,
-              fontSize: "14px",
-              fontWeight: 500,
-              whiteSpace: "nowrap",
-              cursor: "pointer",
-              opacity: 0.8,
-              textDecoration:
-                "none",
-              transition:
-                "opacity 0.15s ease, color 0.15s ease",
             }}
           >
-            {link.label}
-          </a>
-        ))}
+            No navigation links
+          </span>
+        )}
       </div>
 
-      <button
-        type="button"
-        style={{
-          flexShrink: 0,
-          padding: "9px 15px",
-          border: "none",
-          borderRadius: "8px",
-          background:
-            textColor === "#ffffff"
-              ? "#ffffff"
-              : "#7c3aed",
-          color:
-            textColor === "#ffffff"
-              ? "#111827"
-              : "#ffffff",
-          fontFamily,
-          fontSize: "13px",
-          fontWeight: 600,
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-        }}
-      >
-        Get Started
-      </button>
+      {showCta && (
+        <a
+          href={ctaUrl || "#"}
+          onClick={(event) =>
+            event.preventDefault()
+          }
+          style={{
+            flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "38px",
+            padding: "9px 15px",
+            border: "none",
+            borderRadius: "8px",
+            background:
+              primaryButtonBackground,
+            color:
+              primaryButtonColor,
+            fontFamily,
+            fontSize: "13px",
+            fontWeight: 600,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            textDecoration: "none",
+            transition:
+              "transform 0.15s ease, opacity 0.15s ease",
+          }}
+        >
+          {ctaText}
+        </a>
+      )}
     </nav>
   );
 }
