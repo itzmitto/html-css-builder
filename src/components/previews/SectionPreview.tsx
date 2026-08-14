@@ -5,15 +5,18 @@ interface SectionPreviewProps {
   textColor?: string;
   fontFamily?: string;
   textAlign?: "left" | "center" | "right";
+  contentWidth?: number;
+  contentWidthUnit?: "px" | "%";
 }
-
 function SectionPreview({
   title = "Section Title",
-  content = "Section content...",
+  content = "Section content goes here. Add more components inside this section to build your page.",
   backgroundColor = "#ffffff",
   textColor = "#000000",
   fontFamily = "Arial",
   textAlign = "left",
+  contentWidth = 1100,
+  contentWidthUnit = "px",
 }: SectionPreviewProps) {
   const alignment =
     textAlign === "left"
@@ -21,7 +24,17 @@ function SectionPreview({
       : textAlign === "right"
       ? "flex-end"
       : "center";
-
+  const isDark =
+    textColor.toLowerCase() === "#ffffff" ||
+    textColor.toLowerCase() === "#fff";
+  const accentColor =
+    isDark
+      ? "#ffffff"
+      : "#7c3aed";
+  const mutedTextColor =
+    isDark
+      ? "rgba(255,255,255,0.82)"
+      : "rgba(15,23,42,0.68)";
   return (
     <section
       className="section-preview"
@@ -45,7 +58,7 @@ function SectionPreview({
       <div
         style={{
           width: "100%",
-          maxWidth: "1100px",
+          maxWidth: `${contentWidth}${contentWidthUnit}`,
           marginLeft: "auto",
           marginRight: "auto",
           minWidth: 0,
@@ -66,13 +79,10 @@ function SectionPreview({
             marginBottom: "16px",
             borderRadius: "999px",
             background:
-              textColor === "#ffffff"
+              isDark
                 ? "rgba(255,255,255,0.10)"
                 : "rgba(124,58,237,0.09)",
-            color:
-              textColor === "#ffffff"
-                ? "#ffffff"
-                : "#7c3aed",
+            color: accentColor,
             fontSize: "11px",
             fontWeight: 700,
             lineHeight: 1.2,
@@ -82,7 +92,6 @@ function SectionPreview({
         >
           Section
         </span>
-
         <h2
           style={{
             width: "100%",
@@ -99,27 +108,21 @@ function SectionPreview({
         >
           {title}
         </h2>
-
         <p
           style={{
             width: "100%",
             maxWidth: "720px",
             marginTop: "18px",
             marginBottom: 0,
-            color: textColor,
+            color: mutedTextColor,
             fontFamily,
             fontSize: "17px",
             lineHeight: 1.75,
-            opacity:
-              textColor === "#ffffff"
-                ? 0.82
-                : 0.68,
             overflowWrap: "break-word",
           }}
         >
           {content}
         </p>
-
         <div
           style={{
             display: "flex",
@@ -138,11 +141,11 @@ function SectionPreview({
               padding: "10px 14px",
               borderRadius: "10px",
               background:
-                textColor === "#ffffff"
+                isDark
                   ? "rgba(255,255,255,0.08)"
                   : "#f8f7fc",
               border:
-                textColor === "#ffffff"
+                isDark
                   ? "1px solid rgba(255,255,255,0.10)"
                   : "1px solid #ece9f4",
               color: textColor,
@@ -155,10 +158,7 @@ function SectionPreview({
                 width: "8px",
                 height: "8px",
                 borderRadius: "50%",
-                background:
-                  textColor === "#ffffff"
-                    ? "#ffffff"
-                    : "#7c3aed",
+                background: accentColor,
                 opacity: 0.9,
               }}
             />
@@ -166,29 +166,31 @@ function SectionPreview({
               Modern & flexible
             </span>
           </div>
-
           <button
             type="button"
             style={{
               minHeight: "42px",
               padding: "10px 18px",
-              border: "none",
+              border:
+                isDark
+                  ? "1px solid rgba(255,255,255,0.20)"
+                  : "1px solid transparent",
               borderRadius: "9px",
               background:
-                textColor === "#ffffff"
-                  ? "#ffffff"
+                isDark
+                  ? "rgba(255,255,255,0.08)"
                   : "#7c3aed",
               color:
-                textColor === "#ffffff"
-                  ? "#111827"
+                isDark
+                  ? "#ffffff"
                   : "#ffffff",
               fontFamily,
               fontSize: "13px",
               fontWeight: 700,
               cursor: "pointer",
               boxShadow:
-                textColor === "#ffffff"
-                  ? "0 6px 20px rgba(0,0,0,0.10)"
+                isDark
+                  ? "none"
                   : "0 6px 20px rgba(124,58,237,0.18)",
             }}
           >
@@ -196,7 +198,6 @@ function SectionPreview({
           </button>
         </div>
       </div>
-
       <div
         aria-hidden="true"
         style={{
@@ -207,13 +208,12 @@ function SectionPreview({
           height: "300px",
           borderRadius: "50%",
           background:
-            textColor === "#ffffff"
+            isDark
               ? "rgba(255,255,255,0.05)"
               : "rgba(124,58,237,0.05)",
           pointerEvents: "none",
         }}
       />
-
       <div
         aria-hidden="true"
         style={{
@@ -224,7 +224,7 @@ function SectionPreview({
           height: "260px",
           borderRadius: "50%",
           border:
-            textColor === "#ffffff"
+            isDark
               ? "1px solid rgba(255,255,255,0.06)"
               : "1px solid rgba(124,58,237,0.07)",
           pointerEvents: "none",
@@ -233,5 +233,4 @@ function SectionPreview({
     </section>
   );
 }
-
 export default SectionPreview;
