@@ -3,13 +3,22 @@ interface FooterPreviewProps {
   textColor?: string;
   fontFamily?: string;
   textAlign?: "left" | "center" | "right";
+  brandName?: string;
+  description?: string;
+  newsletterTitle?: string;
+  newsletterText?: string;
+  copyright?: string;
 }
-
 function FooterPreview({
   backgroundColor = "#111827",
   textColor = "#ffffff",
   fontFamily = "Arial",
   textAlign = "center",
+  brandName = "Brand",
+  description = "Build beautiful websites with a flexible and modern visual editor.",
+  newsletterTitle = "Stay in the loop",
+  newsletterText = "Get product updates and useful design tips in your inbox.",
+  copyright = "© 2026 Brand. All rights reserved.",
 }: FooterPreviewProps) {
   const alignment =
     textAlign === "left"
@@ -17,17 +26,54 @@ function FooterPreview({
       : textAlign === "right"
       ? "flex-end"
       : "center";
-
+  const isDark =
+    textColor.toLowerCase() === "#ffffff" ||
+    textColor.toLowerCase() === "#fff";
+  const accentColor =
+    isDark
+      ? "#ffffff"
+      : "#7c3aed";
   const secondaryText =
-    textColor === "#ffffff"
+    isDark
       ? "rgba(255,255,255,0.62)"
-      : textColor;
-
+      : "rgba(15,23,42,0.58)";
   const subtleBorder =
-    textColor === "#ffffff"
+    isDark
       ? "rgba(255,255,255,0.10)"
       : "rgba(15,23,42,0.10)";
-
+  const surface =
+    isDark
+      ? "rgba(255,255,255,0.05)"
+      : "#ffffff";
+  const linkGroups = [
+    {
+      title: "Product",
+      links: [
+        "Features",
+        "Pricing",
+        "Templates",
+        "Integrations",
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        "About",
+        "Careers",
+        "Blog",
+        "Contact",
+      ],
+    },
+    {
+      title: "Resources",
+      links: [
+        "Documentation",
+        "Help Center",
+        "Community",
+        "Status",
+      ],
+    },
+  ];
   return (
     <footer
       className="footer-preview"
@@ -37,7 +83,8 @@ function FooterPreview({
         minWidth: 0,
         boxSizing: "border-box",
         minHeight: "360px",
-        padding: "52px 40px 24px",
+        padding:
+          "56px 40px 24px",
         backgroundColor,
         color: textColor,
         fontFamily,
@@ -60,7 +107,7 @@ function FooterPreview({
           style={{
             display: "grid",
             gridTemplateColumns:
-              "minmax(220px, 1.5fr) repeat(3, minmax(120px, 1fr)) minmax(220px, 1.3fr)",
+              "minmax(220px, 1.5fr) repeat(3, minmax(120px, 1fr)) minmax(220px, 1.25fr)",
             gap: "34px",
             alignItems: "start",
             textAlign,
@@ -73,209 +120,187 @@ function FooterPreview({
           >
             <div
               style={{
-                display: "inline-flex",
-                alignItems: "center",
+                display:
+                  "inline-flex",
+                alignItems:
+                  "center",
                 gap: "9px",
-                color: textColor,
-                fontSize: "22px",
+                color:
+                  textColor,
+                fontSize:
+                  "22px",
                 fontWeight: 800,
-                letterSpacing: "-0.03em",
+                letterSpacing:
+                  "-0.03em",
               }}
             >
               <span
                 style={{
-                  width: "28px",
-                  height: "28px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "8px",
+                  width:
+                    "30px",
+                  height:
+                    "30px",
+                  display:
+                    "inline-flex",
+                  alignItems:
+                    "center",
+                  justifyContent:
+                    "center",
+                  borderRadius:
+                    "9px",
                   background:
-                    textColor === "#ffffff"
-                      ? "#ffffff"
-                      : "#7c3aed",
+                    accentColor,
                   color:
-                    textColor === "#ffffff"
+                    isDark
                       ? "#111827"
                       : "#ffffff",
-                  fontSize: "13px",
+                  fontSize:
+                    "13px",
                   fontWeight: 800,
                 }}
               >
-                A
+                {brandName
+                  .charAt(0)
+                  .toUpperCase()}
               </span>
-              Brand
+              {brandName}
             </div>
-
             <p
               style={{
-                maxWidth: "300px",
-                marginTop: "15px",
-                color: secondaryText,
-                fontSize: "13px",
-                lineHeight: 1.7,
+                maxWidth:
+                  "300px",
+                marginTop:
+                  "15px",
+                color:
+                  secondaryText,
+                fontSize:
+                  "13px",
+                lineHeight:
+                  1.7,
               }}
             >
-              Build beautiful websites with a
-              flexible and modern visual editor.
+              {description}
             </p>
-
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
+                display:
+                  "flex",
+                alignItems:
+                  "center",
                 justifyContent:
                   alignment,
                 gap: "8px",
-                marginTop: "18px",
+                marginTop:
+                  "18px",
               }}
             >
               {[
                 "X",
                 "in",
                 "GH",
-              ].map((social) => (
-                <button
-                  key={social}
-                  type="button"
-                  style={{
-                    width: "34px",
-                    height: "34px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: `1px solid ${subtleBorder}`,
-                    borderRadius: "9px",
-                    background:
-                      textColor === "#ffffff"
-                        ? "rgba(255,255,255,0.05)"
-                        : "rgba(255,255,255,0.7)",
-                    color: textColor,
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  {social}
-                </button>
-              ))}
+              ].map(
+                (social) => (
+                  <button
+                    key={
+                      social
+                    }
+                    type="button"
+                    style={{
+                      width:
+                        "34px",
+                      height:
+                        "34px",
+                      display:
+                        "flex",
+                      alignItems:
+                        "center",
+                      justifyContent:
+                        "center",
+                      border: `1px solid ${subtleBorder}`,
+                      borderRadius:
+                        "9px",
+                      background:
+                        isDark
+                          ? "rgba(255,255,255,0.05)"
+                          : "rgba(255,255,255,0.8)",
+                      color:
+                        textColor,
+                      fontSize:
+                        "11px",
+                      fontWeight: 700,
+                      cursor:
+                        "pointer",
+                    }}
+                  >
+                    {social}
+                  </button>
+                )
+              )}
             </div>
           </div>
-
-          <div>
-            <h4
-              style={{
-                margin: 0,
-                marginBottom: "13px",
-                color: textColor,
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              Product
-            </h4>
-
-            {[
-              "Features",
-              "Pricing",
-              "Templates",
-              "Integrations",
-            ].map((item) => (
-              <a
-                key={item}
-                href="#"
-                style={{
-                  display: "block",
-                  marginBottom: "9px",
-                  color: secondaryText,
-                  fontSize: "13px",
-                  lineHeight: 1.4,
-                  textDecoration: "none",
-                }}
+          {linkGroups.map(
+            (group) => (
+              <div
+                key={
+                  group.title
+                }
               >
-                {item}
-              </a>
-            ))}
-          </div>
-
-          <div>
-            <h4
-              style={{
-                margin: 0,
-                marginBottom: "13px",
-                color: textColor,
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              Company
-            </h4>
-
-            {[
-              "About",
-              "Careers",
-              "Blog",
-              "Contact",
-            ].map((item) => (
-              <a
-                key={item}
-                href="#"
-                style={{
-                  display: "block",
-                  marginBottom: "9px",
-                  color: secondaryText,
-                  fontSize: "13px",
-                  lineHeight: 1.4,
-                  textDecoration: "none",
-                }}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
-
-          <div>
-            <h4
-              style={{
-                margin: 0,
-                marginBottom: "13px",
-                color: textColor,
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              Resources
-            </h4>
-
-            {[
-              "Documentation",
-              "Help Center",
-              "Community",
-              "Status",
-            ].map((item) => (
-              <a
-                key={item}
-                href="#"
-                style={{
-                  display: "block",
-                  marginBottom: "9px",
-                  color: secondaryText,
-                  fontSize: "13px",
-                  lineHeight: 1.4,
-                  textDecoration: "none",
-                }}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
-
+                <h4
+                  style={{
+                    margin: 0,
+                    marginBottom:
+                      "13px",
+                    color:
+                      textColor,
+                    fontSize:
+                      "12px",
+                    fontWeight: 700,
+                    textTransform:
+                      "uppercase",
+                    letterSpacing:
+                      "0.08em",
+                  }}
+                >
+                  {
+                    group.title
+                  }
+                </h4>
+                {group.links.map(
+                  (item) => (
+                    <a
+                      key={
+                        item
+                      }
+                      href="#"
+                      onClick={(
+                        event
+                      ) =>
+                        event.preventDefault()
+                      }
+                      style={{
+                        display:
+                          "block",
+                        marginBottom:
+                          "9px",
+                        color:
+                          secondaryText,
+                        fontSize:
+                          "13px",
+                        lineHeight:
+                          1.4,
+                        textDecoration:
+                          "none",
+                      }}
+                    >
+                      {
+                        item
+                      }
+                    </a>
+                  )
+                )}
+              </div>
+            )
+          )}
           <div
             style={{
               minWidth: 0,
@@ -284,32 +309,42 @@ function FooterPreview({
             <h4
               style={{
                 margin: 0,
-                marginBottom: "10px",
-                color: textColor,
-                fontSize: "15px",
+                marginBottom:
+                  "10px",
+                color:
+                  textColor,
+                fontSize:
+                  "15px",
                 fontWeight: 700,
               }}
             >
-              Stay in the loop
+              {
+                newsletterTitle
+              }
             </h4>
-
             <p
               style={{
                 margin: 0,
-                color: secondaryText,
-                fontSize: "12px",
-                lineHeight: 1.6,
+                color:
+                  secondaryText,
+                fontSize:
+                  "12px",
+                lineHeight:
+                  1.6,
               }}
             >
-              Get product updates and useful
-              design tips in your inbox.
+              {
+                newsletterText
+              }
             </p>
-
             <div
               style={{
-                display: "flex",
-                width: "100%",
-                marginTop: "14px",
+                display:
+                  "flex",
+                width:
+                  "100%",
+                marginTop:
+                  "14px",
                 gap: "7px",
               }}
             >
@@ -319,43 +354,52 @@ function FooterPreview({
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  height: "40px",
-                  padding: "0 11px",
+                  height:
+                    "40px",
+                  padding:
+                    "0 11px",
                   border: `1px solid ${subtleBorder}`,
-                  borderRadius: "8px",
-                  outline: "none",
+                  borderRadius:
+                    "8px",
+                  outline:
+                    "none",
                   background:
-                    textColor === "#ffffff"
+                    isDark
                       ? "rgba(255,255,255,0.06)"
-                      : "#ffffff",
-                  color: textColor,
+                      : surface,
+                  color:
+                    textColor,
                   fontFamily,
-                  fontSize: "12px",
+                  fontSize:
+                    "12px",
                   boxSizing:
                     "border-box",
                 }}
               />
-
               <button
                 type="button"
                 style={{
                   flexShrink: 0,
-                  height: "40px",
-                  padding: "0 13px",
-                  border: "none",
-                  borderRadius: "8px",
+                  height:
+                    "40px",
+                  padding:
+                    "0 13px",
+                  border:
+                    "none",
+                  borderRadius:
+                    "8px",
                   background:
-                    textColor === "#ffffff"
-                      ? "#ffffff"
-                      : "#7c3aed",
+                    accentColor,
                   color:
-                    textColor === "#ffffff"
+                    isDark
                       ? "#111827"
                       : "#ffffff",
                   fontFamily,
-                  fontSize: "12px",
+                  fontSize:
+                    "12px",
                   fontWeight: 700,
-                  cursor: "pointer",
+                  cursor:
+                    "pointer",
                 }}
               >
                 Join
@@ -363,90 +407,103 @@ function FooterPreview({
             </div>
           </div>
         </div>
-
         <div
           style={{
             width: "100%",
             height: "1px",
-            marginTop: "42px",
-            marginBottom: "18px",
-            background: subtleBorder,
+            marginTop:
+              "42px",
+            marginBottom:
+              "18px",
+            background:
+              subtleBorder,
           }}
         />
-
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
+            display:
+              "flex",
+            alignItems:
+              "center",
+            justifyContent:
+              "space-between",
+            flexWrap:
+              "wrap",
             gap: "10px",
-            color: secondaryText,
-            fontSize: "11px",
+            color:
+              secondaryText,
+            fontSize:
+              "11px",
           }}
         >
           <span>
-            © 2026 Brand. All rights reserved.
+            {copyright}
           </span>
-
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
+              display:
+                "flex",
+              alignItems:
+                "center",
               gap: "16px",
             }}
           >
-            <a
-              href="#"
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              Privacy
-            </a>
-
-            <a
-              href="#"
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              Terms
-            </a>
-
-            <a
-              href="#"
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              Cookies
-            </a>
+            {[
+              "Privacy",
+              "Terms",
+              "Cookies",
+            ].map(
+              (item) => (
+                <a
+                  key={
+                    item
+                  }
+                  href="#"
+                  onClick={(
+                    event
+                  ) =>
+                    event.preventDefault()
+                  }
+                  style={{
+                    color:
+                      "inherit",
+                    textDecoration:
+                      "none",
+                  }}
+                >
+                  {
+                    item
+                  }
+                </a>
+              )
+            )}
           </div>
         </div>
       </div>
-
       <div
         aria-hidden="true"
         style={{
-          position: "absolute",
-          width: "320px",
-          height: "320px",
-          right: "-150px",
-          bottom: "-170px",
-          borderRadius: "50%",
+          position:
+            "absolute",
+          width:
+            "320px",
+          height:
+            "320px",
+          right:
+            "-150px",
+          bottom:
+            "-170px",
+          borderRadius:
+            "50%",
           background:
-            textColor === "#ffffff"
+            isDark
               ? "rgba(255,255,255,0.035)"
               : "rgba(124,58,237,0.04)",
-          pointerEvents: "none",
+          pointerEvents:
+            "none",
         }}
       />
     </footer>
   );
 }
-
 export default FooterPreview;
