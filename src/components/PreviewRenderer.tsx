@@ -26,14 +26,11 @@ function getResponsiveStyles(
 ): BuilderStyles {
   const baseStyles =
     component.styles ?? {};
-
   if (device === "desktop") {
     return baseStyles;
   }
-
   const deviceStyles =
     component.responsive?.[device] ?? {};
-
   return {
     ...baseStyles,
     ...deviceStyles,
@@ -46,22 +43,18 @@ function getBuilderStyle(
   if (!styles) {
     return {};
   }
-
   const maxWidth =
     styles.maxWidth !== undefined &&
     styles.maxWidth > 0
       ? `${styles.maxWidth}${styles.maxWidthUnit ?? "px"}`
       : undefined;
-
   const minHeight =
     styles.minHeight !== undefined &&
     styles.minHeight > 0
       ? `${styles.minHeight}${styles.minHeightUnit ?? "px"}`
       : undefined;
-
   const horizontalAlign =
     styles.horizontalAlign ?? "left";
-
   const horizontalAlignmentStyles: CSSProperties =
     horizontalAlign === "center"
       ? {
@@ -86,7 +79,6 @@ function getBuilderStyle(
               ? `${styles.marginRight}px`
               : "0",
         };
-
   return {
     width:
       styles.width !== undefined
@@ -208,54 +200,39 @@ function PreviewRenderer({
       component,
       device
     );
-
   const builderStyle =
     getBuilderStyle(styles);
-
   const backgroundColor =
     styles.backgroundColor ||
     component.backgroundColor ||
     "#ffffff";
-
   const textColor =
     styles.color ||
     component.color ||
     "#000000";
-
   const fontFamily =
     styles.fontFamily ||
     "Arial";
-
   const textAlign =
     styles.textAlign ||
     "left";
-
   const children =
     component.children ?? [];
-
   const isContainer =
-    component.type ===
-    "Container";
-
+    component.type === "Container";
   const isRow =
-    component.type ===
-    "Row";
-
+    component.type === "Row";
   const isStack =
-    component.type ===
-    "Stack";
-
+    component.type === "Stack";
   const isLayoutComponent =
     isContainer ||
     isRow ||
     isStack;
-
   const resolvedDisplay =
     styles.display ??
     (isRow || isStack
       ? "flex"
       : "block");
-
   const resolvedFlexDirection =
     styles.flexDirection ??
     (isRow
@@ -263,19 +240,16 @@ function PreviewRenderer({
       : isStack
       ? "column"
       : undefined);
-
   const resolvedGap =
     styles.gap !== undefined
       ? styles.gap
       : isRow || isStack
       ? 16
       : 0;
-
   const renderChildren = () => {
     if (children.length === 0) {
       return null;
     }
-
     return children.map(
       (child) => {
         const childStyle: CSSProperties = {
@@ -285,7 +259,6 @@ function PreviewRenderer({
           boxSizing:
             "border-box",
         };
-
         if (
           resolvedDisplay ===
           "grid"
@@ -293,7 +266,6 @@ function PreviewRenderer({
           childStyle.width =
             "100%";
         }
-
         if (
           resolvedDisplay ===
             "flex" &&
@@ -305,7 +277,6 @@ function PreviewRenderer({
           childStyle.minWidth =
             0;
         }
-
         if (
           resolvedDisplay ===
             "flex" &&
@@ -315,7 +286,6 @@ function PreviewRenderer({
           childStyle.width =
             "100%";
         }
-
         return (
           <div
             key={child.id}
@@ -330,7 +300,6 @@ function PreviewRenderer({
       }
     );
   };
-
   if (isLayoutComponent) {
     const layoutStyle: CSSProperties = {
       ...builderStyle,
@@ -404,7 +373,6 @@ function PreviewRenderer({
         "border-box",
       minWidth: 0,
     };
-
     if (
       children.length === 0
     ) {
@@ -424,7 +392,6 @@ function PreviewRenderer({
           </div>
         );
       }
-
       return (
         <div
           style={
@@ -464,7 +431,6 @@ function PreviewRenderer({
         </div>
       );
     }
-
     return (
       <div
         style={
@@ -521,7 +487,6 @@ function PreviewRenderer({
       </div>
     );
   }
-
   return (
     <div
       style={{
@@ -608,24 +573,45 @@ function PreviewRenderer({
               ?.sticky ??
             false
           }
-          links={
-            component.navbar
-              ?.links
-          }
         />
       )}
-
       {component.type ===
         "Hero" && (
         <HeroPreview
           title={
-            component.heroTitle
+            component.hero?.title ??
+            component.heroTitle ??
+            "Hero Title"
           }
           subtitle={
-            component.heroSubtitle
+            component.hero?.subtitle ??
+            component.heroSubtitle ??
+            "Hero Subtitle goes here"
           }
           buttonText={
-            component.heroButtonText
+            component.hero?.buttonText ??
+            component.heroButtonText ??
+            "Get Started"
+          }
+          buttonUrl={
+            component.hero?.buttonUrl ??
+            "#"
+          }
+          buttonStyle={
+            component.hero?.buttonStyle ??
+            "solid"
+          }
+          contentWidth={
+            component.hero?.contentWidth ??
+            900
+          }
+          contentWidthUnit={
+            component.hero?.contentWidthUnit ??
+            "px"
+          }
+          verticalPadding={
+            component.hero?.verticalPadding ??
+            80
           }
           backgroundColor={
             backgroundColor ||
@@ -638,14 +624,14 @@ function PreviewRenderer({
             fontFamily
           }
           textAlign={
-            textAlign as
+            component.hero?.textAlign ??
+            (textAlign as
               | "left"
               | "center"
-              | "right"
+              | "right")
           }
         />
       )}
-
       {component.type ===
         "Section" && (
         <SectionPreview
@@ -666,7 +652,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Card" && (
         <CardPreview
@@ -687,7 +672,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Footer" && (
         <FooterPreview
@@ -710,7 +694,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Heading" && (
         <HeadingPreview
@@ -742,7 +725,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Paragraph" && (
         <ParagraphPreview
@@ -774,7 +756,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Button" && (
         <ButtonPreview
@@ -805,7 +786,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {component.type ===
         "Image" && (
         <ImagePreview
@@ -823,7 +803,6 @@ function PreviewRenderer({
           }
         />
       )}
-
       {children.length >
         0 && (
         <div
