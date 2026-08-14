@@ -573,6 +573,10 @@ function PreviewRenderer({
               ?.sticky ??
             false
           }
+          links={
+            component.navbar
+              ?.links
+          }
         />
       )}
       {component.type ===
@@ -635,6 +639,23 @@ function PreviewRenderer({
       {component.type ===
         "Section" && (
         <SectionPreview
+          title={
+            component.section?.title ??
+            "Section Title"
+          }
+          content={
+            component.section?.content ??
+            "Section content goes here. Add more components inside this section to build your page."
+          }
+          contentWidth={
+            component.section?.contentWidth ??
+            1100
+          }
+          contentWidthUnit={
+            component.section
+              ?.contentWidthUnit ??
+            "px"
+          }
           backgroundColor={
             backgroundColor
           }
@@ -645,16 +666,41 @@ function PreviewRenderer({
             fontFamily
           }
           textAlign={
-            textAlign as
+            component.section?.textAlign ??
+            (textAlign as
               | "left"
               | "center"
-              | "right"
+              | "right")
           }
         />
       )}
       {component.type ===
         "Card" && (
         <CardPreview
+          title={
+            component.card?.title ??
+            "Card Title"
+          }
+          content={
+            component.card?.content ??
+            "Card description goes here. Create a clean and flexible content block for your website."
+          }
+          buttonText={
+            component.card?.buttonText ??
+            "Learn More"
+          }
+          buttonUrl={
+            component.card?.buttonUrl ??
+            "#"
+          }
+          showButton={
+            component.card?.showButton ??
+            true
+          }
+          imageUrl={
+            component.card?.imageUrl ??
+            ""
+          }
           backgroundColor={
             backgroundColor
           }
@@ -665,10 +711,11 @@ function PreviewRenderer({
             fontFamily
           }
           textAlign={
-            textAlign as
+            component.card?.textAlign ??
+            (textAlign as
               | "left"
               | "center"
-              | "right"
+              | "right")
           }
         />
       )}
@@ -691,6 +738,26 @@ function PreviewRenderer({
               | "left"
               | "center"
               | "right"
+          }
+          brandName={
+            component.footer?.brandName ??
+            "Brand"
+          }
+          description={
+            component.footer?.description ??
+            "Build beautiful websites with a flexible and modern visual editor."
+          }
+          newsletterTitle={
+            component.footer?.newsletterTitle ??
+            "Stay in the loop"
+          }
+          newsletterText={
+            component.footer?.newsletterText ??
+            "Get product updates and useful design tips in your inbox."
+          }
+          copyright={
+            component.footer?.copyright ??
+            "© 2026 Brand. All rights reserved."
           }
         />
       )}
