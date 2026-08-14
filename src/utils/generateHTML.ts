@@ -14,6 +14,12 @@ function escapeHtml(
     .replace(/'/g, "&#039;");
 }
 
+function escapeAttribute(
+  value: string = ""
+) {
+  return escapeHtml(value);
+}
+
 function getStyleString(
   styles?: BuilderStyles
 ) {
@@ -283,6 +289,19 @@ function getStyleString(
   return css.join(" ");
 }
 
+function getStyleAttribute(
+  styles?: BuilderStyles
+) {
+  const style =
+    getStyleString(styles);
+
+  return style
+    ? ` style="${escapeAttribute(
+        style
+      )}"`
+    : "";
+}
+
 function getLayoutAttributes(
   component: BuilderComponent
 ) {
@@ -364,7 +383,7 @@ function getResponsiveAttributes(
     : "";
 }
 
-function generateNavbarLinks(
+function getNavbarLinks(
   component: BuilderComponent
 ) {
   const links =
@@ -393,29 +412,503 @@ function generateNavbarLinks(
     ];
 
   return links
-    .map(
-      (link) =>
-        `    <li><a href="${escapeHtml(
+    .map((link) => {
+      const target =
+        link.openInNewTab
+          ? ` target="_blank" rel="noopener noreferrer"`
+          : "";
+
+      return `      <li>
+        <a href="${escapeAttribute(
           link.url
-        )}">${escapeHtml(
-          link.label
-        )}</a></li>`
-    )
+        )}"${target}>
+          ${escapeHtml(
+            link.label
+          )}
+        </a>
+      </li>`;
+    })
     .join("\n");
+}
+
+function generateNavbarHTML(
+  component: BuilderComponent,
+  styleAttribute: string,
+  childrenHTML: string
+) {
+  const navbar =
+    component.navbar;
+
+  const logo =
+    navbar?.logoText ??
+    component.text ??
+    "Logo";
+
+  const linksHTML =
+    getNavbarLinks(
+      component
+    );
+
+  return `
+<nav class="navbar"${styleAttribute}>
+  <div class="navbar-inner">
+    <a
+      class="logo"
+      href="#"
+    >
+      ${escapeHtml(logo)}
+    </a>
+    <ul class="nav-links">
+${linksHTML}
+    </ul>
+    <a
+      class="navbar-cta"
+      href="#contact"
+    >
+      Get Started
+    </a>
+  </div>
+  ${childrenHTML}
+</nav>
+`;
+}
+
+function generateHeroHTML(
+  component: BuilderComponent,
+  styleAttribute: string,
+  childrenHTML: string
+) {
+  const hero =
+    component.hero;
+
+  const title =
+    hero?.title ??
+    component.heroTitle ??
+    "Hero Title";
+
+  const subtitle =
+    hero?.subtitle ??
+    component.heroSubtitle ??
+    "Hero Subtitle goes here";
+
+  const buttonText =
+    hero?.buttonText ??
+    component.heroButtonText ??
+    "Get Started";
+
+  const buttonUrl =
+    hero?.buttonUrl ??
+    "#";
+
+  const buttonStyle =
+    hero?.buttonStyle ??
+    "solid";
+
+  const contentWidth =
+    hero?.contentWidth ??
+    900;
+
+  const contentWidthUnit =
+    hero?.contentWidthUnit ??
+    "px";
+
+  const verticalPadding =
+    hero?.verticalPadding ??
+    80;
+
+  const textAlign =
+    hero?.textAlign ??
+    "center";
+
+  return `
+<section
+  class="hero"
+  data-button-style="${buttonStyle}"
+  data-text-align="${textAlign}"
+  style="--hero-content-width: ${contentWidth}${contentWidthUnit}; --hero-padding-y: ${verticalPadding}px;${styleAttribute.replace(
+    /^ style="/,
+    ""
+  )}"
+>
+  <div class="hero-content">
+    <span class="hero-badge">
+      Welcome
+    </span>
+    <h1>
+      ${escapeHtml(title)}
+    </h1>
+    <p>
+      ${escapeHtml(subtitle)}
+    </p>
+    <div class="hero-actions">
+      <a
+        class="hero-primary-button"
+        href="${escapeAttribute(
+          buttonUrl
+        )}"
+      >
+        ${escapeHtml(
+          buttonText
+        )}
+      </a>
+      <a
+        class="hero-secondary-button"
+        href="#"
+      >
+        Learn More
+      </a>
+    </div>
+  </div>
+  <div
+    class="hero-decoration hero-decoration-top"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="hero-decoration hero-decoration-bottom"
+    aria-hidden="true"
+  ></div>
+  ${childrenHTML}
+</section>
+`;
+}
+
+function generateSectionHTML(
+  component: BuilderComponent,
+  styleAttribute: string,
+  childrenHTML: string
+) {
+  const section =
+    component.section;
+
+  const title =
+    section?.title ??
+    component.text ??
+    "Section Title";
+
+  const content =
+    section?.content ??
+    "Section content goes here. Add more components inside this section to build your page.";
+
+  const contentWidth =
+    section?.contentWidth ??
+    1100;
+
+  const contentWidthUnit =
+    section?.contentWidthUnit ??
+    "px";
+
+  const textAlign =
+    section?.textAlign ??
+    "left";
+
+  return `
+<section
+  class="section"
+  data-text-align="${textAlign}"
+  style="--section-content-width: ${contentWidth}${contentWidthUnit};${styleAttribute.replace(
+    /^ style="/,
+    ""
+  )}"
+>
+  <div class="section-content">
+    <span class="section-badge">
+      Section
+    </span>
+    <h2>
+      ${escapeHtml(title)}
+    </h2>
+    <p>
+      ${escapeHtml(content)}
+    </p>
+    <div class="section-actions">
+      <span class="section-feature">
+        <span class="section-feature-dot"></span>
+        Modern &amp; flexible
+      </span>
+      <a
+        class="section-button"
+        href="#"
+      >
+        Explore
+      </a>
+    </div>
+  </div>
+  <div
+    class="section-decoration section-decoration-top"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="section-decoration section-decoration-bottom"
+    aria-hidden="true"
+  ></div>
+  ${childrenHTML}
+</section>
+`;
+}
+
+function generateCardHTML(
+  component: BuilderComponent,
+  styleAttribute: string,
+  childrenHTML: string
+) {
+  const card =
+    component.card;
+
+  const title =
+    card?.title ??
+    component.text ??
+    "Card Title";
+
+  const content =
+    card?.content ??
+    "Card description goes here. Create a clean and flexible content block for your website.";
+
+  const buttonText =
+    card?.buttonText ??
+    "Learn More";
+
+  const buttonUrl =
+    card?.buttonUrl ??
+    "#";
+
+  const showButton =
+    card?.showButton ??
+    true;
+
+  const imageUrl =
+    card?.imageUrl ??
+    "";
+
+  const imageHTML =
+    imageUrl
+      ? `
+    <div class="card-image">
+      <img
+        src="${escapeAttribute(
+          imageUrl
+        )}"
+        alt="${escapeAttribute(
+          title
+        )}"
+      >
+    </div>`
+      : "";
+
+  const buttonHTML =
+    showButton
+      ? `
+      <div class="card-actions">
+        <span class="card-learn-more">
+          Learn more
+        </span>
+        <a
+          class="card-button"
+          href="${escapeAttribute(
+            buttonUrl
+          )}"
+        >
+          ${escapeHtml(
+            buttonText
+          )} →
+        </a>
+      </div>`
+      : "";
+
+  return `
+<article class="card"${styleAttribute}>
+  ${imageHTML}
+  <div class="card-topline">
+    <span class="card-badge">
+      Featured
+    </span>
+    <span class="card-number">
+      01
+    </span>
+  </div>
+  <div class="card-content">
+    <h3>
+      ${escapeHtml(title)}
+    </h3>
+    <p>
+      ${escapeHtml(content)}
+    </p>
+  </div>
+  <div class="card-tags">
+    <span>Modern</span>
+    <span>Flexible</span>
+  </div>
+  ${buttonHTML}
+  <div
+    class="card-decoration"
+    aria-hidden="true"
+  ></div>
+  ${childrenHTML}
+</article>
+`;
+}
+
+function generateFooterHTML(
+  component: BuilderComponent,
+  styleAttribute: string,
+  childrenHTML: string
+) {
+  const footer =
+    component.footer;
+
+  const brandName =
+    footer?.brandName ??
+    component.text ??
+    "Brand";
+
+  const description =
+    footer?.description ??
+    "Build beautiful websites with a flexible and modern visual editor.";
+
+  const newsletterTitle =
+    footer?.newsletterTitle ??
+    "Stay in the loop";
+
+  const newsletterDescription =
+    footer?.newsletterDescription ??
+    "Subscribe for updates and new content.";
+
+  const copyright =
+    footer?.copyright ??
+    "© 2026 Brand. All rights reserved.";
+
+  const showNewsletter =
+    footer?.showNewsletter ??
+    false;
+
+  const newsletterHTML =
+    showNewsletter
+      ? `
+      <div class="footer-newsletter">
+        <h4>
+          ${escapeHtml(
+            newsletterTitle
+          )}
+        </h4>
+        <p>
+          ${escapeHtml(
+            newsletterDescription
+          )}
+        </p>
+        <div class="footer-newsletter-form">
+          <input
+            type="email"
+            placeholder="Email address"
+          >
+          <button type="button">
+            Join
+          </button>
+        </div>
+      </div>`
+      : "";
+
+  const socialLinks = [
+    "X",
+    "in",
+    "GH",
+  ];
+
+  return `
+<footer class="footer"${styleAttribute}>
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-brand-title">
+          <span class="footer-brand-icon">
+            ${escapeHtml(
+              brandName
+                .charAt(0)
+                .toUpperCase()
+            )}
+          </span>
+          <span>
+            ${escapeHtml(
+              brandName
+            )}
+          </span>
+        </div>
+        <p>
+          ${escapeHtml(
+            description
+          )}
+        </p>
+        <div class="footer-socials">
+          ${socialLinks
+            .map(
+              (social) =>
+                `<a href="#" aria-label="${escapeAttribute(
+                  social
+                )}">${social}</a>`
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Templates</a>
+        <a href="#">Integrations</a>
+      </div>
+
+      <div class="footer-column">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </div>
+
+      <div class="footer-column">
+        <h4>Resources</h4>
+        <a href="#">Documentation</a>
+        <a href="#">Help Center</a>
+        <a href="#">Community</a>
+        <a href="#">Status</a>
+      </div>
+
+      ${newsletterHTML}
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-bottom">
+      <span>
+        ${escapeHtml(
+          copyright
+        )}
+      </span>
+
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="footer-decoration"
+    aria-hidden="true"
+  ></div>
+
+  ${childrenHTML}
+</footer>
+`;
 }
 
 function generateComponentHTML(
   component: BuilderComponent
 ): string {
-  const style =
-    getStyleString(
+  const styleAttribute =
+    getStyleAttribute(
       component.styles
     );
-
-  const styleAttribute =
-    style
-      ? ` style="${style}"`
-      : "";
 
   const layoutAttributes =
     getLayoutAttributes(
@@ -443,39 +936,18 @@ function generateComponentHTML(
     component.type
   ) {
     case "Navbar":
-      return `
-<nav class="navbar"${styleAttribute}>
-  <div class="logo">
-    ${escapeHtml(
-      component.navbar?.logoText ??
-      component.text ??
-      "Logo"
-    )}
-  </div>
-  <ul class="nav-links">
-${generateNavbarLinks(component)}
-  </ul>
-</nav>
-`;
+      return generateNavbarHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
 
     case "Hero":
-      return `
-<section class="hero"${styleAttribute}>
-  <h1>${escapeHtml(
-    component.heroTitle ??
-      "Hero Title"
-  )}</h1>
-  <p>${escapeHtml(
-    component.heroSubtitle ??
-      "Hero Subtitle goes here"
-  )}</p>
-  <button>${escapeHtml(
-    component.heroButtonText ??
-      "Get Started"
-  )}</button>
-  ${childrenHTML}
-</section>
-`;
+      return generateHeroHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
 
     case "Heading":
       return `
@@ -499,40 +971,42 @@ ${generateNavbarLinks(component)}
 
     case "Button":
       return `
-<button
-  class="custom-button"${styleAttribute}
+<a
+  class="custom-button"
+  href="#"
+${styleAttribute}
 >
   ${escapeHtml(
     component.text ??
       "Button"
   )}
-</button>
+</a>
 `;
 
     case "Section":
-      return `
-<section class="section"${styleAttribute}>
-  ${childrenHTML}
-</section>
-`;
+      return generateSectionHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
 
     case "Card":
-      return `
-<div class="card"${styleAttribute}>
-  <h3>Card Title</h3>
-  <p>Card Content</p>
-  ${childrenHTML}
-</div>
-`;
+      return generateCardHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
 
     case "Container":
       return `
 <div
   class="container"${layoutAttributes}${responsiveAttributes}${styleAttribute}
 >
-  ${children.length > 0
-    ? childrenHTML
-    : "Container"}
+  ${
+    children.length > 0
+      ? childrenHTML
+      : "Container"
+  }
 </div>
 `;
 
@@ -541,9 +1015,11 @@ ${generateNavbarLinks(component)}
 <div
   class="row"${layoutAttributes}${responsiveAttributes}${styleAttribute}
 >
-  ${children.length > 0
-    ? childrenHTML
-    : "Row"}
+  ${
+    children.length > 0
+      ? childrenHTML
+      : "Row"
+  }
 </div>
 `;
 
@@ -552,9 +1028,11 @@ ${generateNavbarLinks(component)}
 <div
   class="stack"${layoutAttributes}${responsiveAttributes}${styleAttribute}
 >
-  ${children.length > 0
-    ? childrenHTML
-    : "Stack"}
+  ${
+    children.length > 0
+      ? childrenHTML
+      : "Stack"
+  }
 </div>
 `;
 
@@ -566,7 +1044,7 @@ ${generateNavbarLinks(component)}
 >
   <img
     class="image"
-    src="${escapeHtml(
+    src="${escapeAttribute(
       component.imageUrl
     )}"
     alt="Website image"
@@ -584,12 +1062,11 @@ ${generateNavbarLinks(component)}
 `;
 
     case "Footer":
-      return `
-<footer class="footer"${styleAttribute}>
-  Footer Content
-  ${childrenHTML}
-</footer>
-`;
+      return generateFooterHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
 
     default:
       return "";
