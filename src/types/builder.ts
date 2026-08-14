@@ -61,11 +61,18 @@ export interface BuilderStyles {
   letterSpacing?: number;
   textAlign?: "left" | "center" | "right";
   borderWidth?: number;
-  borderStyle?: "none" | "solid" | "dashed" | "dotted";
+  borderStyle?:
+    | "none"
+    | "solid"
+    | "dashed"
+    | "dotted";
   borderColor?: string;
   borderRadius?: number;
   opacity?: number;
-  overflow?: "visible" | "hidden" | "auto";
+  overflow?:
+    | "visible"
+    | "hidden"
+    | "auto";
   zIndex?: number;
 }
 
@@ -101,11 +108,17 @@ export interface HeroSettings {
   subtitle?: string;
   buttonText?: string;
   buttonUrl?: string;
-  buttonStyle?: "solid" | "outline" | "ghost";
+  buttonStyle?:
+    | "solid"
+    | "outline"
+    | "ghost";
   contentWidth?: number;
   contentWidthUnit?: "px" | "%";
   verticalPadding?: number;
-  textAlign?: "left" | "center" | "right";
+  textAlign?:
+    | "left"
+    | "center"
+    | "right";
 }
 
 export interface SectionSettings {
@@ -113,7 +126,10 @@ export interface SectionSettings {
   content?: string;
   contentWidth?: number;
   contentWidthUnit?: "px" | "%";
-  textAlign?: "left" | "center" | "right";
+  textAlign?:
+    | "left"
+    | "center"
+    | "right";
 }
 
 export interface CardSettings {
@@ -123,6 +139,10 @@ export interface CardSettings {
   buttonUrl?: string;
   showButton?: boolean;
   imageUrl?: string;
+  textAlign?:
+    | "left"
+    | "center"
+    | "right";
 }
 
 export interface FooterSettings {
@@ -132,6 +152,10 @@ export interface FooterSettings {
   showNewsletter?: boolean;
   newsletterTitle?: string;
   newsletterDescription?: string;
+  textAlign?:
+    | "left"
+    | "center"
+    | "right";
 }
 
 export interface BuilderComponent {
@@ -157,4 +181,4 @@ export interface BuilderComponent {
   styles?: BuilderStyles;
   responsive?: ResponsiveStyles;
   children?: BuilderComponent[];
-} 
+}
