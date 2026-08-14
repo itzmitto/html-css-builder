@@ -11,28 +11,69 @@ function AppearanceProperties({
   styles,
   updateStyles,
 }: AppearancePropertiesProps) {
+  const inputStyle = {
+    width: "100%",
+    padding: "10px",
+    marginTop: "8px",
+    borderRadius: "8px",
+    border: "none",
+    boxSizing: "border-box" as const,
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    background: "#ffffff",
+    color: "#111827",
+  };
+
+  const colorInputStyle = {
+    width: "100%",
+    height: "46px",
+    marginTop: "8px",
+    padding: "3px",
+    border: "none",
+    borderRadius: "8px",
+    background: "#ffffff",
+    cursor: "pointer",
+    boxSizing: "border-box" as const,
+  };
+
+  const sectionTitleStyle = {
+    marginTop: "25px",
+    marginBottom: "12px",
+    color: "#d1d5db",
+    fontSize: "13px",
+    fontWeight: 700,
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.06em",
+  };
+
+  const labelStyle = {
+    display: "block",
+    marginTop: "14px",
+    color: "#d1d5db",
+    fontSize: "13px",
+  };
+
+  const valueStyle = {
+    marginTop: "7px",
+    color: "#9ca3af",
+    fontSize: "12px",
+  };
+
   return (
     <div>
-      <h3
-        style={{
-          marginTop: "25px",
-          marginBottom: "15px",
-        }}
-      >
+      <h3 className="property-section-title">
         Appearance
       </h3>
 
-      <h4
-        style={{
-          marginTop: "10px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
-      >
+      <h4 style={sectionTitleStyle}>
         Background
       </h4>
 
-      <p>Background Color</p>
+      <label style={labelStyle}>
+        Background Color
+      </label>
 
       <input
         type="color"
@@ -46,55 +87,61 @@ function AppearanceProperties({
               e.target.value,
           })
         }
-        style={{
-          width: "100%",
-          height: "50px",
-          marginTop: "8px",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
+        style={colorInputStyle}
       />
 
-      <h4
-        style={{
-          marginTop: "25px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
-      >
+      <label style={labelStyle}>
+        Text Color
+      </label>
+
+      <input
+        type="color"
+        value={
+          styles.color ??
+          "#000000"
+        }
+        onChange={(e) =>
+          updateStyles({
+            color:
+              e.target.value,
+          })
+        }
+        style={colorInputStyle}
+      />
+
+      <h4 style={sectionTitleStyle}>
         Border
       </h4>
 
-      <p>Border Width</p>
+      <label style={labelStyle}>
+        Border Width
+      </label>
 
       <input
         type="number"
         min="0"
         max="50"
         value={
-          styles.borderWidth ?? 0
+          styles.borderWidth ??
+          0
         }
         onChange={(e) =>
           updateStyles({
             borderWidth:
-              Number(
-                e.target.value
+              Math.max(
+                0,
+                Number(
+                  e.target.value
+                )
               ),
           })
         }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
+        style={inputStyle}
       />
 
-      <p style={{ marginTop: "15px" }}>
+      <label style={labelStyle}>
         Border Style
-      </p>
+      </label>
 
       <select
         value={
@@ -111,13 +158,7 @@ function AppearanceProperties({
                 | "dotted",
           })
         }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
+        style={selectStyle}
       >
         <option value="none">
           None
@@ -133,15 +174,15 @@ function AppearanceProperties({
         </option>
       </select>
 
-      <p style={{ marginTop: "15px" }}>
+      <label style={labelStyle}>
         Border Color
-      </p>
+      </label>
 
       <input
         type="color"
         value={
           styles.borderColor ??
-          "#000000"
+          "#e5e7eb"
         }
         onChange={(e) =>
           updateStyles({
@@ -149,55 +190,48 @@ function AppearanceProperties({
               e.target.value,
           })
         }
-        style={{
-          width: "100%",
-          height: "50px",
-          marginTop: "8px",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
+        style={colorInputStyle}
       />
 
-      <p style={{ marginTop: "15px" }}>
+      <label style={labelStyle}>
         Border Radius
-      </p>
+      </label>
 
       <input
         type="number"
         min="0"
-        max="100"
+        max="200"
         value={
-          styles.borderRadius ?? 0
+          styles.borderRadius ??
+          0
         }
         onChange={(e) =>
           updateStyles({
             borderRadius:
-              Number(
-                e.target.value
+              Math.max(
+                0,
+                Number(
+                  e.target.value
+                )
               ),
           })
         }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
+        style={inputStyle}
       />
 
-      <h4
-        style={{
-          marginTop: "25px",
-          marginBottom: "10px",
-          color: "#d1d5db",
-        }}
-      >
+      <div style={valueStyle}>
+        {styles.borderRadius ??
+          0}
+        px
+      </div>
+
+      <h4 style={sectionTitleStyle}>
         Effects
       </h4>
 
-      <p>Opacity</p>
+      <label style={labelStyle}>
+        Opacity
+      </label>
 
       <input
         type="range"
@@ -209,34 +243,30 @@ function AppearanceProperties({
         }
         onChange={(e) =>
           updateStyles({
-            opacity: Number(
-              e.target.value
-            ),
+            opacity:
+              Number(
+                e.target.value
+              ),
           })
         }
         style={{
           width: "100%",
-          marginTop: "8px",
+          marginTop: "10px",
+          cursor: "pointer",
         }}
       />
 
-      <p
-        style={{
-          marginTop: "8px",
-          color: "#9ca3af",
-          fontSize: "13px",
-        }}
-      >
+      <div style={valueStyle}>
         {Math.round(
           (styles.opacity ?? 1) *
             100
         )}
         %
-      </p>
+      </div>
 
-      <p style={{ marginTop: "15px" }}>
+      <label style={labelStyle}>
         Overflow
-      </p>
+      </label>
 
       <select
         value={
@@ -252,13 +282,7 @@ function AppearanceProperties({
                 | "auto",
           })
         }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
+        style={selectStyle}
       >
         <option value="visible">
           Visible
@@ -271,9 +295,9 @@ function AppearanceProperties({
         </option>
       </select>
 
-      <p style={{ marginTop: "15px" }}>
+      <label style={labelStyle}>
         Z-Index
-      </p>
+      </label>
 
       <input
         type="number"
@@ -288,14 +312,152 @@ function AppearanceProperties({
               ),
           })
         }
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "8px",
-          borderRadius: "8px",
-          border: "none",
-        }}
+        style={inputStyle}
       />
+
+      <h4 style={sectionTitleStyle}>
+        Quick Presets
+      </h4>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(2, 1fr)",
+          gap: "8px",
+          marginTop: "10px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              backgroundColor:
+                "#ffffff",
+              color:
+                "#111827",
+              borderWidth: 1,
+              borderStyle:
+                "solid",
+              borderColor:
+                "#e5e7eb",
+              borderRadius:
+                12,
+              opacity: 1,
+            })
+          }
+          style={{
+            padding: "10px",
+            border:
+              "1px solid #374151",
+            borderRadius: "8px",
+            background:
+              "#111827",
+            color: "#ffffff",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          Clean
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              backgroundColor:
+                "#f8fafc",
+              color:
+                "#111827",
+              borderWidth: 1,
+              borderStyle:
+                "solid",
+              borderColor:
+                "#e2e8f0",
+              borderRadius:
+                16,
+              opacity: 1,
+            })
+          }
+          style={{
+            padding: "10px",
+            border:
+              "1px solid #374151",
+            borderRadius: "8px",
+            background:
+              "#111827",
+            color: "#ffffff",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          Soft
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              backgroundColor:
+                "#7c3aed",
+              color:
+                "#ffffff",
+              borderWidth: 0,
+              borderStyle:
+                "none",
+              borderRadius:
+                14,
+              opacity: 1,
+            })
+          }
+          style={{
+            padding: "10px",
+            border:
+              "1px solid #374151",
+            borderRadius: "8px",
+            background:
+              "#111827",
+            color: "#ffffff",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          Accent
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            updateStyles({
+              backgroundColor:
+                "#0f172a",
+              color:
+                "#ffffff",
+              borderWidth: 1,
+              borderStyle:
+                "solid",
+              borderColor:
+                "#1e293b",
+              borderRadius:
+                14,
+              opacity: 1,
+            })
+          }
+          style={{
+            padding: "10px",
+            border:
+              "1px solid #374151",
+            borderRadius: "8px",
+            background:
+              "#111827",
+            color: "#ffffff",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          Dark
+        </button>
+      </div>
     </div>
   );
 }
