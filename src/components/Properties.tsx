@@ -400,7 +400,7 @@ function Properties({
         >
           <h4
             style={{
-              color: "#d1d5db",
+              color: "#334155",
               margin: 0,
             }}
           >
@@ -408,7 +408,7 @@ function Properties({
           </h4>
           <span
             style={{
-              color: "#94a3b8",
+              color: "#64748b",
               fontSize: "12px",
             }}
           >
@@ -431,9 +431,9 @@ function Properties({
                 <div
                   key={link.id}
                   style={{
-                    border: "1px solid #374151",
+                    border: "1px solid #e2e8f0",
                     borderRadius: "9px",
-                    background: "#111827",
+                    background: "#f8fafc",
                     overflow: "hidden",
                   }}
                 >
@@ -458,7 +458,7 @@ function Properties({
                         border: "none",
                         borderRadius: "6px",
                         background: "transparent",
-                        color: "#9ca3af",
+                        color: "#64748b",
                         cursor: "pointer",
                       }}
                     >
@@ -524,10 +524,10 @@ function Properties({
                       style={{
                         width: "30px",
                         height: "30px",
-                        border: "1px solid #7f1d1d",
+                        border: "1px solid #fecdd3",
                         borderRadius: "6px",
-                        background: "#450a0a",
-                        color: "#fca5a5",
+                        background: "#fff1f2",
+                        color: "#e11d48",
                         cursor: "pointer",
                         fontSize: "14px",
                       }}
@@ -586,7 +586,7 @@ function Properties({
                             "space-between",
                           gap: "10px",
                           marginTop: "12px",
-                          color: "#d1d5db",
+                          color: "#334155",
                           fontSize: "13px",
                           cursor: "pointer",
                         }}
@@ -629,7 +629,7 @@ function Properties({
               borderRadius: "8px",
               background:
                 "rgba(124,58,237,0.08)",
-              color: "#c4b5fd",
+              color: "#7c3aed",
               cursor: "pointer",
               fontSize: "13px",
               fontWeight: 600,
@@ -665,7 +665,7 @@ function Properties({
           style={{
             marginTop: "10px",
             marginBottom: "10px",
-            color: "#d1d5db",
+            color: "#334155",
           }}
         >
           Branding
@@ -715,7 +715,7 @@ function Properties({
           style={{
             marginTop: "25px",
             marginBottom: "10px",
-            color: "#d1d5db",
+            color: "#334155",
           }}
         >
           Layout
@@ -864,7 +864,7 @@ function Properties({
           style={{
             marginTop: "25px",
             marginBottom: "10px",
-            color: "#d1d5db",
+            color: "#334155",
           }}
         >
           Border
@@ -958,7 +958,7 @@ function Properties({
           style={{
             marginTop: "25px",
             marginBottom: "10px",
-            color: "#d1d5db",
+            color: "#334155",
           }}
         >
           Effects
@@ -971,7 +971,7 @@ function Properties({
               "space-between",
             gap: "10px",
             marginTop: "12px",
-            color: "#d1d5db",
+            color: "#334155",
             fontSize: "13px",
             cursor: "pointer",
           }}
@@ -1006,7 +1006,7 @@ function Properties({
               "space-between",
             gap: "10px",
             marginTop: "15px",
-            color: "#d1d5db",
+            color: "#334155",
             fontSize: "13px",
             cursor: "pointer",
           }}
@@ -1602,7 +1602,7 @@ function Properties({
               "space-between",
             gap: "10px",
             marginTop: "15px",
-            color: "#d1d5db",
+            color: "#334155",
             fontSize: "13px",
             cursor: "pointer",
           }}
@@ -1756,7 +1756,7 @@ function Properties({
               "space-between",
             gap: "10px",
             marginTop: "15px",
-            color: "#d1d5db",
+            color: "#334155",
             fontSize: "13px",
             cursor: "pointer",
           }}
