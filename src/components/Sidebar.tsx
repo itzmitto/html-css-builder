@@ -30,20 +30,6 @@ function getLayerIcon(
   type: ComponentType
 ) {
   switch (type) {
-    case "Container":
-      return "▣";
-    case "Row":
-      return "↔";
-    case "Stack":
-      return "↕";
-    case "Heading":
-      return "H";
-    case "Paragraph":
-      return "P";
-    case "Button":
-      return "B";
-    case "Image":
-      return "▧";
     case "Navbar":
       return "N";
     case "Hero":
@@ -54,6 +40,20 @@ function getLayerIcon(
       return "C";
     case "Footer":
       return "F";
+    case "Heading":
+      return "H";
+    case "Paragraph":
+      return "P";
+    case "Button":
+      return "B";
+    case "Image":
+      return "▧";
+    case "Container":
+      return "▣";
+    case "Row":
+      return "↔";
+    case "Stack":
+      return "↕";
     default:
       return "□";
   }
@@ -66,13 +66,89 @@ function getLayerLabel(
     component.children?.length ?? 0;
 
   if (
-    component.type === "Container" ||
-    component.type === "Row" ||
-    component.type === "Stack"
+    component.type ===
+      "Container" ||
+    component.type ===
+      "Row" ||
+    component.type ===
+      "Stack"
   ) {
     return childCount > 0
       ? `${component.type} (${childCount})`
       : component.type;
+  }
+
+  if (
+    component.type ===
+    "Navbar"
+  ) {
+    return (
+      component.navbar
+        ?.logoText ??
+      component.text ??
+      "Navbar"
+    );
+  }
+
+  if (
+    component.type ===
+    "Hero"
+  ) {
+    return (
+      component.hero
+        ?.title ??
+      "Hero"
+    );
+  }
+
+  if (
+    component.type ===
+    "Section"
+  ) {
+    return (
+      component.section
+        ?.title ??
+      component.text ??
+      "Section"
+    );
+  }
+
+  if (
+    component.type ===
+    "Card"
+  ) {
+    return (
+      component.card
+        ?.title ??
+      component.text ??
+      "Card"
+    );
+  }
+
+  if (
+    component.type ===
+    "Footer"
+  ) {
+    return (
+      component.footer
+        ?.brandName ??
+      component.text ??
+      "Footer"
+    );
+  }
+
+  if (
+    component.type ===
+      "Heading" ||
+    component.type ===
+      "Paragraph" ||
+    component.type ===
+      "Button"
+  ) {
+    return (
+      component.text ??
+      component.type
+    );
   }
 
   return component.type;
@@ -114,6 +190,8 @@ function LayerItem({
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>
   ) => {
+    event.stopPropagation();
+
     event.dataTransfer.effectAllowed =
       "move";
 
@@ -121,12 +199,25 @@ function LayerItem({
       "componentId",
       component.id
     );
+
+    event.currentTarget.classList.add(
+      "layer-dragging"
+    );
+  };
+
+  const handleDragEnd = (
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.currentTarget.classList.remove(
+      "layer-dragging"
+    );
   };
 
   const handleDragOver = (
     event: React.DragEvent<HTMLDivElement>
   ) => {
     event.preventDefault();
+    event.stopPropagation();
 
     event.dataTransfer.dropEffect =
       "move";
@@ -148,7 +239,8 @@ function LayerItem({
     }
 
     if (
-      activeId === component.id
+      activeId ===
+      component.id
     ) {
       return;
     }
@@ -177,10 +269,15 @@ function LayerItem({
         onDragStart={
           handleDragStart
         }
+        onDragEnd={
+          handleDragEnd
+        }
         onDragOver={
           handleDragOver
         }
-        onDrop={handleDrop}
+        onDrop={
+          handleDrop
+        }
       >
         {hasChildren ? (
           <button
@@ -188,6 +285,11 @@ function LayerItem({
             className="layer-toggle"
             onClick={
               handleToggle
+            }
+            aria-label={
+              expanded
+                ? "Collapse layer"
+                : "Expand layer"
             }
           >
             {expanded
@@ -204,6 +306,11 @@ function LayerItem({
           onClick={
             handleSelect
           }
+          title={
+            getLayerLabel(
+              component
+            )
+          }
         >
           <span className="layer-icon">
             {getLayerIcon(
@@ -211,7 +318,7 @@ function LayerItem({
             )}
           </span>
 
-          <span>
+          <span className="layer-label">
             {getLayerLabel(
               component
             )}
@@ -252,6 +359,29 @@ function LayerItem({
   );
 }
 
+function ComponentButton({
+  label,
+  type,
+  addComponent,
+}: {
+  label: string;
+  type: ComponentType;
+  addComponent: (
+    type: ComponentType
+  ) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        addComponent(type)
+      }
+    >
+      {label}
+    </button>
+  );
+}
+
 function Sidebar({
   components,
   selectedId,
@@ -266,108 +396,81 @@ function Sidebar({
       </h2>
 
       <div className="component-group">
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Navbar"
-            )
+        <ComponentButton
+          label="Navbar"
+          type="Navbar"
+          addComponent={
+            addComponent
           }
-        >
-          Navbar
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Hero"
-            )
+        <ComponentButton
+          label="Hero"
+          type="Hero"
+          addComponent={
+            addComponent
           }
-        >
-          Hero
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Section"
-            )
+        <ComponentButton
+          label="Section"
+          type="Section"
+          addComponent={
+            addComponent
           }
-        >
-          Section
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Card"
-            )
+        <ComponentButton
+          label="Card"
+          type="Card"
+          addComponent={
+            addComponent
           }
-        >
-          Card
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Footer"
-            )
+        <ComponentButton
+          label="Footer"
+          type="Footer"
+          addComponent={
+            addComponent
           }
-        >
-          Footer
-        </button>
+        />
       </div>
 
       <hr />
 
       <div className="component-group">
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Heading"
-            )
+        <ComponentButton
+          label="Heading"
+          type="Heading"
+          addComponent={
+            addComponent
           }
-        >
-          Heading
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Paragraph"
-            )
+        <ComponentButton
+          label="Paragraph"
+          type="Paragraph"
+          addComponent={
+            addComponent
           }
-        >
-          Paragraph
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Button"
-            )
+        <ComponentButton
+          label="Button"
+          type="Button"
+          addComponent={
+            addComponent
           }
-        >
-          Button
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Image"
-            )
+        <ComponentButton
+          label="Image"
+          type="Image"
+          addComponent={
+            addComponent
           }
-        >
-          Image
-        </button>
+        />
       </div>
 
       <hr />
@@ -377,38 +480,29 @@ function Sidebar({
       </h2>
 
       <div className="component-group">
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Container"
-            )
+        <ComponentButton
+          label="Container"
+          type="Container"
+          addComponent={
+            addComponent
           }
-        >
-          Container
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Row"
-            )
+        <ComponentButton
+          label="Row"
+          type="Row"
+          addComponent={
+            addComponent
           }
-        >
-          Row
-        </button>
+        />
 
-        <button
-          type="button"
-          onClick={() =>
-            addComponent(
-              "Stack"
-            )
+        <ComponentButton
+          label="Stack"
+          type="Stack"
+          addComponent={
+            addComponent
           }
-        >
-          Stack
-        </button>
+        />
       </div>
 
       <hr />
@@ -426,6 +520,8 @@ function Sidebar({
                 "#9ca3af",
               fontSize:
                 "13px",
+              padding:
+                "8px",
             }}
           >
             No components

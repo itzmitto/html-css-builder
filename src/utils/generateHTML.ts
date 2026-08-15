@@ -3,9 +3,7 @@ import type {
   BuilderStyles,
 } from "../types/builder";
 
-function escapeHtml(
-  value: string = ""
-) {
+function escapeHtml(value: string = "") {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -14,15 +12,11 @@ function escapeHtml(
     .replace(/'/g, "&#039;");
 }
 
-function escapeAttribute(
-  value: string = ""
-) {
+function escapeAttribute(value: string = "") {
   return escapeHtml(value);
 }
 
-function getStyleString(
-  styles?: BuilderStyles
-) {
+function getStyleString(styles?: BuilderStyles) {
   if (!styles) {
     return "";
   }
@@ -265,11 +259,10 @@ function getStyleString(
     "center"
   ) {
     css.push(
-      `margin-left: auto;`
+      "margin-left: auto;"
     );
-
     css.push(
-      `margin-right: auto;`
+      "margin-right: auto;"
     );
   }
 
@@ -278,12 +271,12 @@ function getStyleString(
     "right"
   ) {
     css.push(
-      `margin-left: auto;`
+      "margin-left: auto;"
     );
   }
 
   css.push(
-    `box-sizing: border-box;`
+    "box-sizing: border-box;"
   );
 
   return css.join(" ");
@@ -296,55 +289,8 @@ function getStyleAttribute(
     getStyleString(styles);
 
   return style
-    ? ` style="${escapeAttribute(
-        style
-      )}"`
+    ? ` style="${escapeAttribute(style)}"`
     : "";
-}
-
-function getLayoutAttributes(
-  component: BuilderComponent
-) {
-  const styles =
-    component.styles;
-
-  if (
-    component.type !==
-      "Container" &&
-    component.type !==
-      "Row" &&
-    component.type !==
-      "Stack"
-  ) {
-    return "";
-  }
-
-  if (
-    styles?.display ===
-    "grid"
-  ) {
-    const columns =
-      styles.gridColumns ??
-      1;
-
-    return ` data-layout="grid" data-columns="${columns}"`;
-  }
-
-  if (
-    component.type ===
-    "Row"
-  ) {
-    return ` data-layout="row"`;
-  }
-
-  if (
-    component.type ===
-    "Stack"
-  ) {
-    return ` data-layout="stack"`;
-  }
-
-  return ` data-layout="vertical"`;
 }
 
 function getResponsiveAttributes(
@@ -359,9 +305,7 @@ function getResponsiveAttributes(
   const attributes: string[] = [];
 
   if (
-    tabletStyles &&
-    tabletStyles.display ===
-      "grid"
+    tabletStyles?.display === "grid"
   ) {
     attributes.push(
       `data-tablet-columns="${tabletStyles.gridColumns ?? 1}"`
@@ -369,9 +313,7 @@ function getResponsiveAttributes(
   }
 
   if (
-    mobileStyles &&
-    mobileStyles.display ===
-      "grid"
+    mobileStyles?.display === "grid"
   ) {
     attributes.push(
       `data-mobile-columns="${mobileStyles.gridColumns ?? 1}"`
@@ -381,6 +323,41 @@ function getResponsiveAttributes(
   return attributes.length > 0
     ? ` ${attributes.join(" ")}`
     : "";
+}
+
+function getLayoutAttributes(
+  component: BuilderComponent
+) {
+  const styles =
+    component.styles;
+
+  if (
+    component.type !== "Container" &&
+    component.type !== "Row" &&
+    component.type !== "Stack"
+  ) {
+    return "";
+  }
+
+  if (
+    styles?.display === "grid"
+  ) {
+    return ` data-layout="grid" data-columns="${styles.gridColumns ?? 1}"`;
+  }
+
+  if (
+    component.type === "Row"
+  ) {
+    return ` data-layout="row"`;
+  }
+
+  if (
+    component.type === "Stack"
+  ) {
+    return ` data-layout="stack"`;
+  }
+
+  return ` data-layout="vertical"`;
 }
 
 function getNavbarLinks(
@@ -418,17 +395,16 @@ function getNavbarLinks(
           ? ` target="_blank" rel="noopener noreferrer"`
           : "";
 
-      return `      <li>
-        <a href="${escapeAttribute(
-          link.url
-        )}"${target}>
-          ${escapeHtml(
-            link.label
-          )}
+      return `
+      <li>
+        <a
+          href="${escapeAttribute(link.url)}"${target}
+        >
+          ${escapeHtml(link.label)}
         </a>
       </li>`;
     })
-    .join("\n");
+    .join("");
 }
 
 function generateNavbarHTML(
@@ -444,13 +420,64 @@ function generateNavbarHTML(
     component.text ??
     "Logo";
 
-  const linksHTML =
-    getNavbarLinks(
-      component
-    );
+  const logoSize =
+    navbar?.logoSize ??
+    20;
+
+  const navGap =
+    navbar?.navGap ??
+    24;
+
+  const padding =
+    navbar?.padding ??
+    20;
+
+  const height =
+    navbar?.height ??
+    72;
+
+  const borderRadius =
+    navbar?.borderRadius ??
+    10;
+
+  const borderWidth =
+    navbar?.borderWidth ??
+    1;
+
+  const borderColor =
+    navbar?.borderColor ??
+    "#e4e7ef";
+
+  const boxShadow =
+    navbar?.boxShadow ??
+    "0 4px 16px rgba(15, 23, 42, 0.06)";
+
+  const sticky =
+    navbar?.sticky ??
+    false;
+
+  const navbarClass =
+    sticky
+      ? "navbar navbar-sticky"
+      : "navbar";
 
   return `
-<nav class="navbar"${styleAttribute}>
+<nav
+  class="${navbarClass}"
+  style="
+    --navbar-logo-size: ${logoSize}px;
+    --navbar-gap: ${navGap}px;
+    --navbar-padding: ${padding}px;
+    --navbar-height: ${height}px;
+    --navbar-radius: ${borderRadius}px;
+    --navbar-border-width: ${borderWidth}px;
+    --navbar-border-color: ${escapeAttribute(borderColor)};
+    --navbar-shadow: ${escapeAttribute(boxShadow)};
+    ${styleAttribute
+      .replace(/^ style="/, "")
+      .replace(/"$/, "")}
+  "
+>
   <div class="navbar-inner">
     <a
       class="logo"
@@ -458,9 +485,11 @@ function generateNavbarHTML(
     >
       ${escapeHtml(logo)}
     </a>
+
     <ul class="nav-links">
-${linksHTML}
+      ${getNavbarLinks(component)}
     </ul>
+
     <a
       class="navbar-cta"
       href="#contact"
@@ -468,6 +497,7 @@ ${linksHTML}
       Get Started
     </a>
   </div>
+
   ${childrenHTML}
 </nav>
 `;
@@ -523,34 +553,37 @@ function generateHeroHTML(
   return `
 <section
   class="hero"
-  data-button-style="${buttonStyle}"
-  data-text-align="${textAlign}"
-  style="--hero-content-width: ${contentWidth}${contentWidthUnit}; --hero-padding-y: ${verticalPadding}px;${styleAttribute.replace(
-    /^ style="/,
-    ""
-  )}"
+  data-button-style="${escapeAttribute(buttonStyle)}"
+  data-text-align="${escapeAttribute(textAlign)}"
+  style="
+    --hero-content-width: ${contentWidth}${contentWidthUnit};
+    --hero-padding-y: ${verticalPadding}px;
+    ${styleAttribute
+      .replace(/^ style="/, "")
+      .replace(/"$/, "")}
+  "
 >
   <div class="hero-content">
     <span class="hero-badge">
       Welcome
     </span>
+
     <h1>
       ${escapeHtml(title)}
     </h1>
+
     <p>
       ${escapeHtml(subtitle)}
     </p>
+
     <div class="hero-actions">
       <a
         class="hero-primary-button"
-        href="${escapeAttribute(
-          buttonUrl
-        )}"
+        href="${escapeAttribute(buttonUrl)}"
       >
-        ${escapeHtml(
-          buttonText
-        )}
+        ${escapeHtml(buttonText)}
       </a>
+
       <a
         class="hero-secondary-button"
         href="#"
@@ -559,14 +592,17 @@ function generateHeroHTML(
       </a>
     </div>
   </div>
+
   <div
     class="hero-decoration hero-decoration-top"
     aria-hidden="true"
   ></div>
+
   <div
     class="hero-decoration hero-decoration-bottom"
     aria-hidden="true"
   ></div>
+
   ${childrenHTML}
 </section>
 `;
@@ -604,27 +640,33 @@ function generateSectionHTML(
   return `
 <section
   class="section"
-  data-text-align="${textAlign}"
-  style="--section-content-width: ${contentWidth}${contentWidthUnit};${styleAttribute.replace(
-    /^ style="/,
-    ""
-  )}"
+  data-text-align="${escapeAttribute(textAlign)}"
+  style="
+    --section-content-width: ${contentWidth}${contentWidthUnit};
+    ${styleAttribute
+      .replace(/^ style="/, "")
+      .replace(/"$/, "")}
+  "
 >
   <div class="section-content">
     <span class="section-badge">
       Section
     </span>
+
     <h2>
       ${escapeHtml(title)}
     </h2>
+
     <p>
       ${escapeHtml(content)}
     </p>
+
     <div class="section-actions">
       <span class="section-feature">
         <span class="section-feature-dot"></span>
         Modern &amp; flexible
       </span>
+
       <a
         class="section-button"
         href="#"
@@ -633,14 +675,17 @@ function generateSectionHTML(
       </a>
     </div>
   </div>
+
   <div
     class="section-decoration section-decoration-top"
     aria-hidden="true"
   ></div>
+
   <div
     class="section-decoration section-decoration-bottom"
     aria-hidden="true"
   ></div>
+
   ${childrenHTML}
 </section>
 `;
@@ -684,64 +729,67 @@ function generateCardHTML(
       ? `
     <div class="card-image">
       <img
-        src="${escapeAttribute(
-          imageUrl
-        )}"
-        alt="${escapeAttribute(
-          title
-        )}"
+        src="${escapeAttribute(imageUrl)}"
+        alt="${escapeAttribute(title)}"
       >
-    </div>`
+    </div>
+`
       : "";
 
   const buttonHTML =
     showButton
       ? `
-      <div class="card-actions">
-        <span class="card-learn-more">
-          Learn more
-        </span>
-        <a
-          class="card-button"
-          href="${escapeAttribute(
-            buttonUrl
-          )}"
-        >
-          ${escapeHtml(
-            buttonText
-          )} →
-        </a>
-      </div>`
+  <div class="card-actions">
+    <span class="card-learn-more">
+      Learn more
+    </span>
+
+    <a
+      class="card-button"
+      href="${escapeAttribute(buttonUrl)}"
+    >
+      ${escapeHtml(buttonText)} →
+    </a>
+  </div>
+`
       : "";
 
   return `
 <article class="card"${styleAttribute}>
   ${imageHTML}
+
   <div class="card-topline">
     <span class="card-badge">
       Featured
     </span>
+
     <span class="card-number">
       01
     </span>
   </div>
+
   <div class="card-content">
     <h3>
       ${escapeHtml(title)}
     </h3>
+
     <p>
       ${escapeHtml(content)}
     </p>
   </div>
+
   <div class="card-tags">
     <span>Modern</span>
     <span>Flexible</span>
   </div>
+
   ${buttonHTML}
+
   <div
     class="card-decoration"
     aria-hidden="true"
   ></div>
+
   ${childrenHTML}
 </article>
 `;
@@ -785,32 +833,26 @@ function generateFooterHTML(
       ? `
       <div class="footer-newsletter">
         <h4>
-          ${escapeHtml(
-            newsletterTitle
-          )}
+          ${escapeHtml(newsletterTitle)}
         </h4>
+
         <p>
-          ${escapeHtml(
-            newsletterDescription
-          )}
+          ${escapeHtml(newsletterDescription)}
         </p>
+
         <div class="footer-newsletter-form">
           <input
             type="email"
             placeholder="Email address"
           >
+
           <button type="button">
             Join
           </button>
         </div>
-      </div>`
+      </div>
+`
       : "";
-
-  const socialLinks = [
-    "X",
-    "in",
-    "GH",
-  ];
 
   return `
 <footer class="footer"${styleAttribute}>
@@ -820,56 +862,98 @@ function generateFooterHTML(
         <div class="footer-brand-title">
           <span class="footer-brand-icon">
             ${escapeHtml(
-              brandName
-                .charAt(0)
-                .toUpperCase()
+              brandName.charAt(0).toUpperCase()
             )}
           </span>
+
           <span>
-            ${escapeHtml(
-              brandName
-            )}
+            ${escapeHtml(brandName)}
           </span>
         </div>
+
         <p>
-          ${escapeHtml(
-            description
-          )}
+          ${escapeHtml(description)}
         </p>
+
         <div class="footer-socials">
-          ${socialLinks
-            .map(
-              (social) =>
-                `<a href="#" aria-label="${escapeAttribute(
-                  social
-                )}">${social}</a>`
-            )
-            .join("")}
+          <a href="#" aria-label="X">
+            X
+          </a>
+
+          <a href="#" aria-label="LinkedIn">
+            in
+          </a>
+
+          <a href="#" aria-label="GitHub">
+            GH
+          </a>
         </div>
       </div>
 
       <div class="footer-column">
-        <h4>Product</h4>
-        <a href="#">Features</a>
-        <a href="#">Pricing</a>
-        <a href="#">Templates</a>
-        <a href="#">Integrations</a>
+        <h4>
+          Product
+        </h4>
+
+        <a href="#">
+          Features
+        </a>
+
+        <a href="#">
+          Pricing
+        </a>
+
+        <a href="#">
+          Templates
+        </a>
+
+        <a href="#">
+          Integrations
+        </a>
       </div>
 
       <div class="footer-column">
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Blog</a>
-        <a href="#">Contact</a>
+        <h4>
+          Company
+        </h4>
+
+        <a href="#">
+          About
+        </a>
+
+        <a href="#">
+          Careers
+        </a>
+
+        <a href="#">
+          Blog
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
       </div>
 
       <div class="footer-column">
-        <h4>Resources</h4>
-        <a href="#">Documentation</a>
-        <a href="#">Help Center</a>
-        <a href="#">Community</a>
-        <a href="#">Status</a>
+        <h4>
+          Resources
+        </h4>
+
+        <a href="#">
+          Documentation
+        </a>
+
+        <a href="#">
+          Help Center
+        </a>
+
+        <a href="#">
+          Community
+        </a>
+
+        <a href="#">
+          Status
+        </a>
       </div>
 
       ${newsletterHTML}
@@ -879,15 +963,21 @@ function generateFooterHTML(
 
     <div class="footer-bottom">
       <span>
-        ${escapeHtml(
-          copyright
-        )}
+        ${escapeHtml(copyright)}
       </span>
 
       <div class="footer-legal">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Cookies</a>
+        <a href="#">
+          Privacy
+        </a>
+
+        <a href="#">
+          Terms
+        </a>
+
+        <a href="#">
+          Cookies
+        </a>
       </div>
     </div>
   </div>
@@ -899,6 +989,70 @@ function generateFooterHTML(
 
   ${childrenHTML}
 </footer>
+`;
+}
+
+function generateImageHTML(
+  component: BuilderComponent,
+  styleAttribute: string
+) {
+  const width =
+    component.imageWidth ??
+    100;
+
+  const height =
+    component.imageHeight ??
+    300;
+
+  const borderRadius =
+    component.imageBorderRadius ??
+    8;
+
+  if (component.imageUrl) {
+    return `
+<div
+  class="image-container"
+  style="
+    width: ${width}%;
+    ${styleAttribute
+      .replace(/^ style="/, "")
+      .replace(/"$/, "")}
+  "
+>
+  <img
+    class="image"
+    src="${escapeAttribute(component.imageUrl)}"
+    alt="Website image"
+    style="
+      width: 100%;
+      height: ${height}px;
+      border-radius: ${borderRadius}px;
+    "
+  >
+</div>
+`;
+  }
+
+  return `
+<div
+  class="image-container"
+  style="
+    width: ${width}%;
+    ${styleAttribute
+      .replace(/^ style="/, "")
+      .replace(/"$/, "")}
+  "
+>
+  <div
+    class="image-placeholder"
+    style="
+      height: ${height}px;
+      border-radius: ${borderRadius}px;
+    "
+  >
+    Image
+  </div>
+</div>
 `;
 }
 
@@ -926,15 +1080,11 @@ function generateComponentHTML(
   const childrenHTML =
     children
       .map((child) =>
-        generateComponentHTML(
-          child
-        )
+        generateComponentHTML(child)
       )
       .join("\n");
 
-  switch (
-    component.type
-  ) {
+  switch (component.type) {
     case "Navbar":
       return generateNavbarHTML(
         component,
@@ -949,40 +1099,6 @@ function generateComponentHTML(
         childrenHTML
       );
 
-    case "Heading":
-      return `
-<h1 class="heading"${styleAttribute}>
-  ${escapeHtml(
-    component.text ??
-      "Heading"
-  )}
-</h1>
-`;
-
-    case "Paragraph":
-      return `
-<p class="paragraph"${styleAttribute}>
-  ${escapeHtml(
-    component.text ??
-      "Paragraph"
-  )}
-</p>
-`;
-
-    case "Button":
-      return `
-<a
-  class="custom-button"
-  href="#"
-${styleAttribute}
->
-  ${escapeHtml(
-    component.text ??
-      "Button"
-  )}
-</a>
-`;
-
     case "Section":
       return generateSectionHTML(
         component,
@@ -996,6 +1112,44 @@ ${styleAttribute}
         styleAttribute,
         childrenHTML
       );
+
+    case "Footer":
+      return generateFooterHTML(
+        component,
+        styleAttribute,
+        childrenHTML
+      );
+
+    case "Heading":
+      return `
+<h1 class="heading"${styleAttribute}>
+  ${escapeHtml(
+    component.text ?? "Heading"
+  )}
+</h1>
+`;
+
+    case "Paragraph":
+      return `
+<p class="paragraph"${styleAttribute}>
+  ${escapeHtml(
+    component.text ?? "Paragraph"
+  )}
+</p>
+`;
+
+    case "Button":
+      return `
+<a
+  class="custom-button"
+  href="#"
+${styleAttribute}
+>
+  ${escapeHtml(
+    component.text ?? "Button"
+  )}
+</a>
+`;
 
     case "Container":
       return `
@@ -1037,35 +1191,9 @@ ${styleAttribute}
 `;
 
     case "Image":
-      return component.imageUrl
-        ? `
-<div
-  class="image-container"${styleAttribute}
->
-  <img
-    class="image"
-    src="${escapeAttribute(
-      component.imageUrl
-    )}"
-    alt="Website image"
-  >
-</div>
-`
-        : `
-<div
-  class="image-container"${styleAttribute}
->
-  <div class="image-placeholder">
-    Image
-  </div>
-</div>
-`;
-
-    case "Footer":
-      return generateFooterHTML(
+      return generateImageHTML(
         component,
-        styleAttribute,
-        childrenHTML
+        styleAttribute
       );
 
     default:
@@ -1093,9 +1221,7 @@ export function generateHTML(
 <body>
 ${components
   .map((component) =>
-    generateComponentHTML(
-      component
-    )
+    generateComponentHTML(component)
   )
   .join("\n")}
 </body>
